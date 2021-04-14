@@ -1,0 +1,156 @@
+/** @file
+ *
+ * Multi object tracker implementation.
+ *
+ * @author Jan Razlaw
+ */
+
+#ifndef __MULTI_OBJECT_TRACKING_NODE_H__
+#define __MULTI_OBJECT_TRACKING_NODE_H__
+
+#include <chrono>
+#include <iostream>
+#include <fstream>
+
+#include <ros/ros.h>
+#include <ros/console.h>
+
+#include <geometry_msgs/Point.h>
+#include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/PoseArray.h>
+
+#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/point_cloud2_iterator.h>
+
+#include <tf/transform_listener.h>
+#include <tf_conversions/tf_eigen.h>
+
+#include <thesis_msgs/ObjectDetections.h>
+
+#include <multi_object_tracking/multi_hypothesis_tracker.h>
+#include <multi_object_tracking/mot_publisher.h>
+
+
+namespace MultiHypothesisTracker
+{
+
+/**
+ * @brief Ros node to track multiple objects simultaneously.
+ */
+class Tracker
+{
+public:
+  /** @brief Constructor. */
+  Tracker();
+  /** @brief Destructor. */
+  ~Tracker(){ m_time_file.close(); };
+
+  /**
+   * @brief Publishes the hypotheses in several versions.
+   */
+  void publish(const ros::Time& stamp);
+
+  /**
+   * @brief Callback function for PoseArray messages.
+   *
+   * Converts messages to measurements.
+   * Transforms measurements to #m_world_frame and passes those to the tracking algorithm.
+   *
+   * @param [in] msg    poses of the detections.
+   */
+  void detectionPosesCallback(const geometry_msgs::PoseArray::ConstPtr& msg);
+
+  /**
+   * @brief Callback function for ObjectDetection messages.
+   *
+   * Converts messages to measurements.
+   * Transforms measurements to #m_world_frame and passes those to the tracking algorithm.
+   *
+   * @param [in] msg    detections.
+   */
+  void detectionCallback(const thesis_msgs::ObjectDetections::ConstPtr& msg);
+
+  /**
+   * @brief Transforms measurements to the target_frame.
+   *
+   * @param[in,out] measurements   measurements.
+   * @param[in]     header         header - in case there are no measurements we still want to continue to tell the tracker exactly that.
+   * @param[in]     target_frame   frame the measurements are transformed to.
+   *
+   * @return false if at least one measurement couldn't be transformed, true otherwise
+   */
+  bool transformToFrame(std::vector<Measurement>& measurements,
+                        const std_msgs::Header& header,
+                        const std::string& target_frame);
+
+  /**
+   * @brief Converts the detection's poses from the laser into the internal format
+   *
+   * @param[in]     msg             poses of the detections.
+   * @param[out]    measurements    detections in tracker format.
+   */
+  void convert(const geometry_msgs::PoseArray::ConstPtr& msg,
+               std::vector<Measurement>& measurements);
+
+  /**
+   * @brief Converts the detections from the laser into the internal format
+   *
+   * @param[in]     msg             detections.
+   * @param[out]    measurements    detections in tracker format.
+   */
+  void convert(const thesis_msgs::ObjectDetections::ConstPtr& msg,
+               std::vector<Measurement>& measurements);
+
+  /**
+   * @brief Performs one prediction and correction step for every hypothesis.
+   *
+   * Invokes prediction step for every hypothesis.
+   * Passes measurements to multi hypothesis tracker for correction step.
+   * Filters out weak hypotheses.
+   *
+   * @param measurements    new detections.
+   */
+  void processMeasurements(const std::vector<Measurement> &measurements);
+
+  /** @brief Getter for hypotheses vector. */
+  const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
+
+  /** @brief Getter for hypotheses that are about to get deleted. */
+  std::queue<Hypothesis>& getDeletedHypotheses();
+
+private:
+  /** @brief Subscribes to detections. */
+  ros::Subscriber m_laser_detection_subscriber;
+  /** @brief Publishes results. */
+  MOTPublisher m_mot_publisher;
+
+  /** @brief Provides transforms to world frame. */
+  std::shared_ptr<tf::TransformListener> m_transform_listener;
+
+  /** @brief The functionality. */
+  MultiHypothesisTracker m_multi_hypothesis_tracker;
+
+
+  //Params
+  /** @brief Fixed frame the detections and tracks are in. */
+  std::string m_world_frame;
+  /** @brief Hypotheses are merged if their distance is below this parameter. */
+  double m_merge_distance;
+  /** @brief Hypotheses are deleted if their covariance is above this parameter. */
+  float m_max_covariance;
+  /** @brief If true, the likelihood of the measurements given the hypotheses' states is computed. */
+  bool m_compute_likelihood;
+
+  /** @brief Time when the last prediction was performed. */
+  double m_last_prediction_time;
+
+  bool m_measure_time;
+  std::chrono::microseconds m_summed_time_for_callbacks;
+  int m_number_of_callbacks;
+  std::ofstream m_time_file;
+  bool m_got_first_detections;
+};
+
+}
+
+#endif
