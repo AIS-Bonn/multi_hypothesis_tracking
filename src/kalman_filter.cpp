@@ -11,9 +11,9 @@ namespace MultiHypothesisTracker
 {
 
 KalmanFilter::KalmanFilter(const Eigen::VectorXf& state)
-: m_measurement_dimensions(3)
- , m_control_dimensions(1)
- , m_covariance_per_second(0.5)
+  : m_measurement_dimensions(3)
+    , m_control_dimensions(1)
+    , m_covariance_per_second(0.5)
 {
   m_state_dimensions = state.size();
   m_state = state;
@@ -69,7 +69,8 @@ void KalmanFilter::predict(float dt,
     m_process_noise_covariance(i, i) = dt * m_covariance_per_second;
 
   // update error covariance
-  m_error_covariance = m_state_transition_model * m_error_covariance * m_state_transition_model.transpose() + m_process_noise_covariance;
+  m_error_covariance =
+    m_state_transition_model * m_error_covariance * m_state_transition_model.transpose() + m_process_noise_covariance;
 
   // check if cov matrix is symmetric as is should be
   if(!isAlmostSymmetric(m_error_covariance))
@@ -129,7 +130,8 @@ bool KalmanFilter::isAlmostSymmetric(const Eigen::MatrixXf& matrix,
 float KalmanFilter::computeLikelihood(const Eigen::VectorXf& measurement)
 {
   Eigen::VectorXf y = measurement - m_observation_model * m_state;
-  Eigen::MatrixXf S = m_observation_model * m_error_covariance * m_observation_model.transpose() + m_observation_noise_covariance;
+  Eigen::MatrixXf S =
+    m_observation_model * m_error_covariance * m_observation_model.transpose() + m_observation_noise_covariance;
 
   float exponential_input = -0.5f * (y.transpose() * S.inverse() * y).value();
   double likelihood = exp(exponential_input) / sqrt(pow(2.0 * M_PI, y.size()) * S.determinant());

@@ -11,11 +11,11 @@ namespace MultiHypothesisTracker
 {
 
 Tracker::Tracker()
-: m_multi_hypothesis_tracker(std::make_shared<HypothesisFactory>())
-  , m_last_prediction_time(0)
-  , m_measure_time(false)
-  , m_number_of_callbacks(0)
-  , m_got_first_detections(false)
+  : m_multi_hypothesis_tracker(std::make_shared<HypothesisFactory>())
+    , m_last_prediction_time(0)
+    , m_measure_time(false)
+    , m_number_of_callbacks(0)
+    , m_got_first_detections(false)
 {
   ros::NodeHandle n("~");
   ros::NodeHandle pub_n;
@@ -49,13 +49,16 @@ Tracker::Tracker()
   {
     std::string path_to_results_file = "/tmp/times_multi_hypothesis_tracking";
     m_time_file.open(path_to_results_file);
-  }  
+  }
   m_summed_time_for_callbacks = std::chrono::microseconds::zero();
 
   if(subscribe_to_poses_only)
-    m_laser_detection_subscriber = n.subscribe<geometry_msgs::PoseArray>(input_topic, 1, &Tracker::detectionPosesCallback, this);
+    m_laser_detection_subscriber = n.subscribe<geometry_msgs::PoseArray>(input_topic, 1,
+                                                                         &Tracker::detectionPosesCallback, this);
   else
-    m_laser_detection_subscriber = n.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(input_topic, 1, &Tracker::detectionCallback, this);
+    m_laser_detection_subscriber = n.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(input_topic, 1,
+                                                                                                 &Tracker::detectionCallback,
+                                                                                                 this);
 }
 
 void Tracker::publish(const ros::Time& stamp)
@@ -73,7 +76,7 @@ void Tracker::detectionPosesCallback(const geometry_msgs::PoseArray::ConstPtr& m
 
 //  double start = getTimeHighRes();
 
-  std::vector<Measurement> measurements;
+  std::vector <Measurement> measurements;
   convert(msg, measurements);
 
   if(!transformToFrame(measurements, msg->header, m_world_frame))
@@ -94,7 +97,7 @@ void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDete
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
-  std::vector<Measurement> measurements;
+  std::vector <Measurement> measurements;
   convert(msg, measurements);
 
   if(!transformToFrame(measurements, msg->header, m_world_frame))
@@ -111,19 +114,22 @@ void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDete
 
   if(m_measure_time && m_got_first_detections)
   {
-    std::chrono::microseconds time_for_one_callback = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - callback_start_time);
+    std::chrono::microseconds time_for_one_callback = std::chrono::duration_cast<std::chrono::microseconds>(
+      std::chrono::high_resolution_clock::now() - callback_start_time);
     ROS_DEBUG_STREAM("Time for tracking for one cloud: " << time_for_one_callback.count() << " microseconds.");
-    m_time_file << (double)time_for_one_callback.count()/1000.0 << std::endl;
+    m_time_file << (double)time_for_one_callback.count() / 1000.0 << std::endl;
     m_summed_time_for_callbacks += time_for_one_callback;
     m_number_of_callbacks++;
-    ROS_DEBUG_STREAM("Mean time for tracking for one cloud: " << m_summed_time_for_callbacks.count() / m_number_of_callbacks << " microseconds.");
+    ROS_DEBUG_STREAM(
+      "Mean time for tracking for one cloud: " << m_summed_time_for_callbacks.count() / m_number_of_callbacks
+                                               << " microseconds.");
   }
 
   publish(msg->header.stamp);
 }
 
 void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-                      std::vector<Measurement>& measurements)
+                      std::vector <Measurement>& measurements)
 {
   Measurement measurement;
   measurement.frame = msg->header.frame_id;
@@ -150,7 +156,7 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
 }
 
 void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
-                      std::vector<Measurement>& measurements)
+                      std::vector <Measurement>& measurements)
 {
   Measurement measurement;
   measurement.frame = msg->header.frame_id;
@@ -188,7 +194,7 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
   }
 }
 
-bool Tracker::transformToFrame(std::vector<Measurement>& measurements,
+bool Tracker::transformToFrame(std::vector <Measurement>& measurements,
                                const std_msgs::Header& header,
                                const std::string& target_frame)
 {
@@ -208,7 +214,8 @@ bool Tracker::transformToFrame(std::vector<Measurement>& measurements,
   }
   catch(tf::TransformException& ex)
   {
-    ROS_ERROR("Received an exception trying to transform a point from \"%s\" to \"%s\"", header.frame_id.c_str(), target_frame.c_str());
+    ROS_ERROR("Received an exception trying to transform a point from \"%s\" to \"%s\"", header.frame_id.c_str(),
+              target_frame.c_str());
     return false;
   }
 
@@ -229,7 +236,7 @@ bool Tracker::transformToFrame(std::vector<Measurement>& measurements,
   return true;
 }
 
-void Tracker::processMeasurements(const std::vector<Measurement> &measurements)
+void Tracker::processMeasurements(const std::vector <Measurement>& measurements)
 {
   if(measurements.empty())
     return;
@@ -249,12 +256,12 @@ void Tracker::processMeasurements(const std::vector<Measurement> &measurements)
   m_multi_hypothesis_tracker.mergeCloseHypotheses(m_merge_distance);
 }
 
-const std::vector<std::shared_ptr<Hypothesis>>& Tracker::getHypotheses()
+const std::vector <std::shared_ptr<Hypothesis>>& Tracker::getHypotheses()
 {
   return m_multi_hypothesis_tracker.getHypotheses();
 }
 
-std::queue<Hypothesis>& Tracker::getDeletedHypotheses()
+std::queue <Hypothesis>& Tracker::getDeletedHypotheses()
 {
   return m_multi_hypothesis_tracker.getDeletedHypotheses();
 }
@@ -262,7 +269,8 @@ std::queue<Hypothesis>& Tracker::getDeletedHypotheses()
 }
 
 
-int main(int argc, char** argv)
+int main(int argc,
+         char** argv)
 {
   ros::init(argc, argv, "multi_hypothesis_tracking");
 

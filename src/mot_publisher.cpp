@@ -10,36 +10,49 @@
 namespace MultiHypothesisTracker
 {
 
-MOTPublisher::MOTPublisher():
-  m_debug_counter(0)
+MOTPublisher::MOTPublisher()
+  : m_debug_counter(0)
 {
   ros::NodeHandle n("~");
   ros::NodeHandle pub_n;
 
   m_hypotheses_full_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::HypothesesFull>("hypotheses_full", 1);
-  m_hypotheses_predictions_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>("hypotheses_predictions", 1);
+  m_hypotheses_predictions_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>(
+    "hypotheses_predictions", 1);
 
-  m_measurement_positions_publisher           = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/measurements_positions", 1);
-  m_measurements_covariances_publisher        = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/measurements_covariances", 1);
-  m_measurements_points_publisher             = n.advertise<pcl::PointCloud<pcl::PointXYZ>>(n.getNamespace()+ "/measurements_points", 1);
-  m_hypotheses_positions_publisher            = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/hypotheses_positions", 1);
-  m_hypotheses_points_publisher               = n.advertise<pcl::PointCloud<pcl::PointXYZ>>(n.getNamespace()+ "/hypotheses_points", 1);
-  m_track_line_publisher                      = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/track_line", 1);
-  m_hypotheses_covariance_publisher           = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/hypotheses_covariances", 1);
-  m_static_hypotheses_positions_publisher     = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/static_hypotheses_positions", 1);
-  m_dynamic_hypotheses_positions_publisher    = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/dynamic_hypotheses_positions", 1);
-  m_hypotheses_predicted_positions_publisher  = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/hypotheses_predicted_positions", 1);
-  m_hypotheses_point_indices_publisher        = n.advertise<multi_hypothesis_tracking_msgs::HypothesesPointIndices>(n.getNamespace()+ "/hypotheses_point_indices", 1, true);
-  m_hypotheses_box_evaluation_publisher       = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(n.getNamespace()+ "/hypotheses_boxes_evaluation", 1, true);
-  m_hypotheses_boxes_history_publisher        = n.advertise<multi_hypothesis_tracking_msgs::HypothesesBoxesArray>(n.getNamespace()+ "/hypotheses_boxes_history", 1, true);
-  m_likelihood_publisher                      = n.advertise<std_msgs::Float32>(n.getNamespace()+ "/likelihood", 1);
+  m_measurement_positions_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/measurements_positions", 1);
+  m_measurements_covariances_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/measurements_covariances", 1);
+  m_measurements_points_publisher =
+    n.advertise < pcl::PointCloud < pcl::PointXYZ >> (n.getNamespace() + "/measurements_points", 1);
+  m_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(n.getNamespace() + "/hypotheses_positions",
+                                                                             1);
+  m_hypotheses_points_publisher =
+    n.advertise < pcl::PointCloud < pcl::PointXYZ >> (n.getNamespace() + "/hypotheses_points", 1);
+  m_track_line_publisher = n.advertise<visualization_msgs::Marker>(n.getNamespace() + "/track_line", 1);
+  m_hypotheses_covariance_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/hypotheses_covariances", 1);
+  m_static_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/static_hypotheses_positions", 1);
+  m_dynamic_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/dynamic_hypotheses_positions", 1);
+  m_hypotheses_predicted_positions_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/hypotheses_predicted_positions", 1);
+  m_hypotheses_point_indices_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesPointIndices>(
+    n.getNamespace() + "/hypotheses_point_indices", 1, true);
+  m_hypotheses_box_evaluation_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(
+    n.getNamespace() + "/hypotheses_boxes_evaluation", 1, true);
+  m_hypotheses_boxes_history_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesBoxesArray>(
+    n.getNamespace() + "/hypotheses_boxes_history", 1, true);
+  m_likelihood_publisher = n.advertise<std_msgs::Float32>(n.getNamespace() + "/likelihood", 1);
 
   n.param<std::string>("world_frame", m_world_frame, "world");
   n.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
   n.param<double>("future_time", m_future_time, 0.0);
 }
 
-void MOTPublisher::publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishAll(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                               const ros::Time& stamp)
 {
   if(hypotheses.empty())
@@ -65,42 +78,43 @@ void MOTPublisher::publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hy
 visualization_msgs::Marker MOTPublisher::createMarker(float r, float g, float b, std::string ns)
 {
   visualization_msgs::Marker marker;
-  marker.header.frame_id    = m_world_frame;
-  marker.header.stamp       = ros::Time::now();
-  marker.ns                 = ns;
-  marker.id                 = 0;
-  marker.type               = visualization_msgs::Marker::POINTS;
-  marker.action             = visualization_msgs::Marker::ADD;
-  marker.pose.position.x    = 0.0;
-  marker.pose.position.y    = 0.0;
-  marker.pose.position.z    = 0.0;
+  marker.header.frame_id = m_world_frame;
+  marker.header.stamp = ros::Time::now();
+  marker.ns = ns;
+  marker.id = 0;
+  marker.type = visualization_msgs::Marker::POINTS;
+  marker.action = visualization_msgs::Marker::ADD;
+  marker.pose.position.x = 0.0;
+  marker.pose.position.y = 0.0;
+  marker.pose.position.z = 0.0;
   marker.pose.orientation.x = 0.0;
   marker.pose.orientation.y = 0.0;
   marker.pose.orientation.z = 0.0;
   marker.pose.orientation.w = 1.0;
-  marker.scale.x            = 0.1;
-  marker.scale.y            = 0.1;
-  marker.scale.z            = 0.1;
-  marker.color.a            = 1.0; // Don't forget to set the alpha!
-  marker.color.r            = r;
-  marker.color.g            = g;
-  marker.color.b            = b;
-  marker.lifetime           = ros::Duration(1.0);
+  marker.scale.x = 0.1;
+  marker.scale.y = 0.1;
+  marker.scale.z = 0.1;
+  marker.color.a = 1.0; // Don't forget to set the alpha!
+  marker.color.r = r;
+  marker.color.g = g;
+  marker.color.b = b;
+  marker.lifetime = ros::Duration(1.0);
   return marker;
 }
 
-void MOTPublisher::publishMeasurementPositions(const std::vector<Measurement> &measurements,
+void MOTPublisher::publishMeasurementPositions(const std::vector <Measurement>& measurements,
                                                const ros::Time& stamp)
 {
   if(m_measurement_positions_publisher.getNumSubscribers() == 0 || measurements.empty())
     return;
 
-  visualization_msgs::Marker measurement_positions_marker = createMarker(1.0, 0.0, 0.0, "mot_measurements_markers"); //red marker
+  visualization_msgs::Marker measurement_positions_marker = createMarker(1.0, 0.0, 0.0,
+                                                                         "mot_measurements_markers"); //red marker
   measurement_positions_marker.header.frame_id = measurements.at(0).frame;
   measurement_positions_marker.header.stamp = stamp;
 
   measurement_positions_marker.points.resize(measurements.size());
-  for(size_t i = 0; i < measurements.size(); i++) 
+  for(size_t i = 0; i < measurements.size(); i++)
   {
     measurement_positions_marker.points[i].x = measurements[i].pos(0);
     measurement_positions_marker.points[i].y = measurements[i].pos(1);
@@ -109,7 +123,7 @@ void MOTPublisher::publishMeasurementPositions(const std::vector<Measurement> &m
   m_measurement_positions_publisher.publish(measurement_positions_marker);
 }
 
-void MOTPublisher::publishMeasurementsCovariances(const std::vector<Measurement> &measurements,
+void MOTPublisher::publishMeasurementsCovariances(const std::vector <Measurement>& measurements,
                                                   const ros::Time& stamp)
 {
   if(m_measurements_covariances_publisher.getNumSubscribers() == 0 || measurements.empty())
@@ -120,29 +134,29 @@ void MOTPublisher::publishMeasurementsCovariances(const std::vector<Measurement>
   measurement_cov_marker.color.a = 0.5f;
   measurement_cov_marker.header.stamp = stamp;
 
-  for(size_t i = 0; i < measurements.size(); i++) 
+  for(size_t i = 0; i < measurements.size(); i++)
   {
-    measurement_cov_marker.header.frame_id    = measurements.at(i).frame;
-    measurement_cov_marker.id                 = (int)i;
-    measurement_cov_marker.pose.position.x    = measurements[i].pos(0);
-    measurement_cov_marker.pose.position.y    = measurements[i].pos(1);
-    measurement_cov_marker.pose.position.z    = measurements[i].pos(2);
+    measurement_cov_marker.header.frame_id = measurements.at(i).frame;
+    measurement_cov_marker.id = (int)i;
+    measurement_cov_marker.pose.position.x = measurements[i].pos(0);
+    measurement_cov_marker.pose.position.y = measurements[i].pos(1);
+    measurement_cov_marker.pose.position.z = measurements[i].pos(2);
 
-    measurement_cov_marker.scale.x            = sqrt(4.204) * sqrt(measurements[i].cov(0, 0));
-    measurement_cov_marker.scale.y            = sqrt(4.204) * sqrt(measurements[i].cov(1, 1));
-    measurement_cov_marker.scale.z            = sqrt(4.204) * sqrt(measurements[i].cov(2, 2));
+    measurement_cov_marker.scale.x = sqrt(4.204) * sqrt(measurements[i].cov(0, 0));
+    measurement_cov_marker.scale.y = sqrt(4.204) * sqrt(measurements[i].cov(1, 1));
+    measurement_cov_marker.scale.z = sqrt(4.204) * sqrt(measurements[i].cov(2, 2));
 
     m_measurements_covariances_publisher.publish(measurement_cov_marker);
   }
 }
 
-void MOTPublisher::publishMeasurementsPoints(const std::vector<Measurement> &measurements,
+void MOTPublisher::publishMeasurementsPoints(const std::vector <Measurement>& measurements,
                                              const ros::Time& stamp)
 {
   if(m_measurements_points_publisher.getNumSubscribers() == 0 || measurements.empty())
     return;
 
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud <pcl::PointXYZ>);
   cloud->header.frame_id = measurements.at(0).frame;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
@@ -159,7 +173,7 @@ void MOTPublisher::publishMeasurementsPoints(const std::vector<Measurement> &mea
   m_measurements_points_publisher.publish(cloud);
 }
 
-void MOTPublisher::publishHypothesesCovariances(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+void MOTPublisher::publishHypothesesCovariances(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                                 const ros::Time& stamp)
 {
   if(m_hypotheses_covariance_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -174,14 +188,14 @@ void MOTPublisher::publishHypothesesCovariances(const std::vector<std::shared_pt
 
   for(size_t i = 0; i < hypotheses.size(); i++)
   {
-    hyp_covariance_marker.id                 = (int)i;
-    hyp_covariance_marker.pose.position.x    = hypotheses[i]->getPosition()(0);
-    hyp_covariance_marker.pose.position.y    = hypotheses[i]->getPosition()(1);
-    hyp_covariance_marker.pose.position.z    = hypotheses[i]->getPosition()(2);
+    hyp_covariance_marker.id = (int)i;
+    hyp_covariance_marker.pose.position.x = hypotheses[i]->getPosition()(0);
+    hyp_covariance_marker.pose.position.y = hypotheses[i]->getPosition()(1);
+    hyp_covariance_marker.pose.position.z = hypotheses[i]->getPosition()(2);
 
-    hyp_covariance_marker.scale.x            = sqrt( 4.204 ) * sqrt(hypotheses[i]->getCovariance()(0, 0));
-    hyp_covariance_marker.scale.y            = sqrt( 4.204 ) * sqrt(hypotheses[i]->getCovariance()(1, 1));
-    hyp_covariance_marker.scale.z            = sqrt( 4.204 ) * sqrt(hypotheses[i]->getCovariance()(2, 2));
+    hyp_covariance_marker.scale.x = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(0, 0));
+    hyp_covariance_marker.scale.y = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(1, 1));
+    hyp_covariance_marker.scale.z = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(2, 2));
 
     if(current_time - hypotheses[i]->getBornTime() >= m_born_time_threshold)
       m_hypotheses_covariance_publisher.publish(hyp_covariance_marker);
@@ -189,8 +203,7 @@ void MOTPublisher::publishHypothesesCovariances(const std::vector<std::shared_pt
 }
 
 
-
-void MOTPublisher::publishHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                               const ros::Time& stamp)
 {
   if(m_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -202,7 +215,7 @@ void MOTPublisher::publishHypothesesPositions(const std::vector<std::shared_ptr<
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     const Eigen::Vector3f& mean = hypothesis->getPosition();
     geometry_msgs::Point p;
@@ -216,13 +229,13 @@ void MOTPublisher::publishHypothesesPositions(const std::vector<std::shared_ptr<
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
 }
 
-void MOTPublisher::publishHypothesesPoints(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPoints(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                            const ros::Time& stamp)
 {
   if(m_hypotheses_points_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud <pcl::PointXYZ>);
   cloud->header.frame_id = m_world_frame;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
@@ -250,13 +263,14 @@ void MOTPublisher::publishHypothesesPoints(const std::vector<std::shared_ptr<Hyp
   m_hypotheses_points_publisher.publish(cloud);
 }
 
-void MOTPublisher::publishHypothesesFull(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesFull(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                          const ros::Time& stamp)
 {
   if(m_hypotheses_full_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  multi_hypothesis_tracking_msgs::HypothesesFullPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesFull());
+  multi_hypothesis_tracking_msgs::HypothesesFullPtr hypotheses_msg(
+    new multi_hypothesis_tracking_msgs::HypothesesFull());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
@@ -265,7 +279,7 @@ void MOTPublisher::publishHypothesesFull(const std::vector<std::shared_ptr<Hypot
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     // TODO: add something like confidence to message to be able to seperate hypotheses that were just assigned from those that are tracked for a while
 
@@ -302,7 +316,7 @@ void MOTPublisher::publishHypothesesFull(const std::vector<std::shared_ptr<Hypot
   m_hypotheses_full_publisher.publish(hypotheses_msg);
 }
 
-void MOTPublisher::publishHypothesesPredictions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPredictions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                                 const ros::Time& stamp)
 {
   if(m_hypotheses_predictions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -317,7 +331,7 @@ void MOTPublisher::publishHypothesesPredictions(const std::vector<std::shared_pt
   // Publish tracks
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
     Eigen::Vector3f mean = hypothesis->getPosition();
 
     //Predict a little bit into the future
@@ -333,19 +347,20 @@ void MOTPublisher::publishHypothesesPredictions(const std::vector<std::shared_pt
   m_hypotheses_predictions_publisher.publish(object_detecions);
 }
 
-void MOTPublisher::publishHypothesesPredictedPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPredictedPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                                        const ros::Time& stamp)
 {
   if(m_hypotheses_predicted_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  visualization_msgs::Marker hypothesis_marker = createMarker(0.0, 0.0, 1.0, "mot_hypotheses_predicted_positions_markers");
+  visualization_msgs::Marker hypothesis_marker = createMarker(0.0, 0.0, 1.0,
+                                                              "mot_hypotheses_predicted_positions_markers");
   hypothesis_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     //Predict a little bit into the future
     Eigen::Vector3f mean = hypothesis->getPosition();
@@ -362,7 +377,7 @@ void MOTPublisher::publishHypothesesPredictedPositions(const std::vector<std::sh
   m_hypotheses_predicted_positions_publisher.publish(hypothesis_marker);
 }
 
-void MOTPublisher::publishStaticHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishStaticHypothesesPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                                     const ros::Time& stamp)
 {
   if(m_static_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -377,7 +392,7 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector<std::share
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     if(hypothesis->isStatic() && current_time - hypothesis->getBornTime() >= m_born_time_threshold)
     {
@@ -405,7 +420,7 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector<std::share
   m_static_hypotheses_positions_publisher.publish(static_objects_marker);
 }
 
-void MOTPublisher::publishDynamicHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishDynamicHypothesesPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                                      const ros::Time& stamp)
 {
   if(m_dynamic_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -421,7 +436,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector<std::shar
   // Publish tracks
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     if(!hypothesis->isStatic() && current_time - hypothesis->getBornTime() >= m_born_time_threshold)
     {
@@ -450,7 +465,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector<std::shar
 }
 
 // TODO: implement
-void MOTPublisher::publishFullTracks(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishFullTracks(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                      const ros::Time& stamp)
 {
   if(m_track_line_publisher.getNumSubscribers() == 0)
@@ -470,36 +485,39 @@ void MOTPublisher::publishFullTracks(const std::vector<std::shared_ptr<Hypothesi
 //  m_track_line_publisher.publish(dynamic_objects_marker);
 }
 
-void MOTPublisher::publishHypothesesPointIndices(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
-                                                 const ros::Time &stamp)
+void MOTPublisher::publishHypothesesPointIndices(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
+                                                 const ros::Time& stamp)
 {
   if(m_hypotheses_point_indices_publisher.getNumSubscribers() == 0)
     return;
 
-  multi_hypothesis_tracking_msgs::HypothesesPointIndicesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesPointIndices());
+  multi_hypothesis_tracking_msgs::HypothesesPointIndicesPtr hypotheses_msg(
+    new multi_hypothesis_tracking_msgs::HypothesesPointIndices());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     if(!hypothesis->isStatic() && stamp.toSec() == hypothesis->getLastCorrectionTime())
     {
       hypotheses_msg->point_ids.reserve(hypotheses_msg->point_ids.size() + hypothesis->getPointIds().size());
-      hypotheses_msg->point_ids.insert(hypotheses_msg->point_ids.end(), hypothesis->getPointIds().begin(), hypothesis->getPointIds().end());
+      hypotheses_msg->point_ids.insert(hypotheses_msg->point_ids.end(), hypothesis->getPointIds().begin(),
+                                       hypothesis->getPointIds().end());
     }
   }
   m_hypotheses_point_indices_publisher.publish(hypotheses_msg);
 }
 
-void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                                     const ros::Time& stamp)
 {
   if(m_hypotheses_box_evaluation_publisher.getNumSubscribers() == 0)
     return;
 
-  multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes());
+  multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxesPtr hypotheses_msg(
+    new multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
@@ -507,53 +525,55 @@ void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector<std::share
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     // TODO: dont check for last correction time and use box hypothesis below
     // publish if hypothesis was assigned to a detection in the current step
 //    if(stamp.toSec() == hypothesis->getLastCorrectionTime())
 //    {
-      box.id = hypothesis->getID();
+    box.id = hypothesis->getID();
 
-      box.dynamic = !hypothesis->isStatic();
-      const Eigen::Array3f& min_box = hypothesis->getMinBoxHypothesis();
+    box.dynamic = !hypothesis->isStatic();
+    const Eigen::Array3f& min_box = hypothesis->getMinBoxHypothesis();
 //      const Eigen::Array3f& min_box = hypothesis->getMinBoxDetection();
-      box.min_corner.x = min_box(0);
-      box.min_corner.y = min_box(1);
-      box.min_corner.z = min_box(2);
+    box.min_corner.x = min_box(0);
+    box.min_corner.y = min_box(1);
+    box.min_corner.z = min_box(2);
 
-      const Eigen::Array3f& max_box = hypothesis->getMaxBoxHypothesis();
+    const Eigen::Array3f& max_box = hypothesis->getMaxBoxHypothesis();
 //      const Eigen::Array3f& max_box = hypothesis->getMaxBoxDetection();
-      box.max_corner.x = max_box(0);
-      box.max_corner.y = max_box(1);
-      box.max_corner.z = max_box(2);
+    box.max_corner.x = max_box(0);
+    box.max_corner.y = max_box(1);
+    box.max_corner.z = max_box(2);
 
-      hypotheses_msg->boxes.push_back(box);
+    hypotheses_msg->boxes.push_back(box);
 //    }
   }
   m_hypotheses_box_evaluation_publisher.publish(hypotheses_msg);
 }
 
-void MOTPublisher::publishHypothesesBoxesHistory(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesBoxesHistory(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                                  const ros::Time& stamp)
 {
   if(m_hypotheses_boxes_history_publisher.getNumSubscribers() == 0)
     return;
 
-  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(
+    new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
 
-  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxes());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(
+    new multi_hypothesis_tracking_msgs::HypothesesBoxes());
   hypotheses_msg->header.frame_id = m_world_frame;
 
   multi_hypothesis_tracking_msgs::Box box;
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
     if(hypothesis->turnedDynamicNow() || hypothesis->recoveredTrack())
     {
-      std::vector<StampedBox> boxes;
+      std::vector <StampedBox> boxes;
       if(hypothesis->turnedDynamicNow())
         boxes = hypothesis->getBoxHistory();
       else
@@ -603,7 +623,7 @@ void MOTPublisher::publishHypothesesBoxesHistory(const std::vector<std::shared_p
     m_hypotheses_boxes_history_publisher.publish(hypotheses_array_msg);
 }
 
-void MOTPublisher::publishDeletedHypotheses(std::queue<Hypothesis>& hypotheses)
+void MOTPublisher::publishDeletedHypotheses(std::queue <Hypothesis>& hypotheses)
 {
   if(hypotheses.empty())
     return;
@@ -611,9 +631,11 @@ void MOTPublisher::publishDeletedHypotheses(std::queue<Hypothesis>& hypotheses)
   if(m_hypotheses_boxes_history_publisher.getNumSubscribers() == 0)
     return;
 
-  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(
+    new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
 
-  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxes());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(
+    new multi_hypothesis_tracking_msgs::HypothesesBoxes());
   hypotheses_msg->header.frame_id = m_world_frame;
 
   multi_hypothesis_tracking_msgs::Box box;
@@ -622,7 +644,7 @@ void MOTPublisher::publishDeletedHypotheses(std::queue<Hypothesis>& hypotheses)
   {
     Hypothesis& hypothesis = hypotheses.front();
 
-    const std::vector<StampedBox>& boxes = hypothesis.getBoxHistory();
+    const std::vector <StampedBox>& boxes = hypothesis.getBoxHistory();
 
     //std::cout << "publishDeletedHypotheses: number of boxes for this hypothesis " << (int)boxes.size() << " " << std::endl;
 

@@ -13,15 +13,15 @@ namespace MultiHypothesisTracker
 Hypothesis::Hypothesis(const Measurement& measurement,
                        unsigned int id,
                        double covariance_per_second)
-: m_id(id)
-  , m_born_time(measurement.time)
-  , m_last_correction_time(measurement.time)
-  , m_is_static(true)
-  , m_turned_dynamic_now(false)
-  , m_static_distance_threshold(0.3f)
-  , m_cap_velocity(true)
-  , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
-  , m_max_tracked_velocity(0.0)
+  : m_id(id)
+    , m_born_time(measurement.time)
+    , m_last_correction_time(measurement.time)
+    , m_is_static(true)
+    , m_turned_dynamic_now(false)
+    , m_static_distance_threshold(0.3f)
+    , m_cap_velocity(true)
+    , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
+    , m_max_tracked_velocity(0.0)
 {
   int number_of_state_dimensions = 6;   // position x,y,z + velocity x,y,z
   Eigen::VectorXf meas(number_of_state_dimensions);
@@ -115,17 +115,17 @@ void Hypothesis::correct(const Measurement& measurement)
       current_velocity.normalize();
       current_velocity *= m_max_allowed_velocity;
       for(int i = 0; i < 3; i++)
-        m_kalman->getState()(3+i) = current_velocity(i);
+        m_kalman->getState()(3 + i) = current_velocity(i);
     }
 
     // set the corrected velocity
     for(int i = 0; i < 3; i++)
-      m_kalman->getState()(3+i) = current_velocity(i);
+      m_kalman->getState()(3 + i) = current_velocity(i);
   }
 
   // transform measurement points to the current state's position and add them to the hypothesis' points
   auto transform_measurement_to_corrected = (getPosition() - measurement.pos).eval();
-  std::vector<Eigen::Vector3f> corrected_measurement_points;
+  std::vector <Eigen::Vector3f> corrected_measurement_points;
   corrected_measurement_points.reserve(measurement.points.size());
   for(const auto& point : measurement.points)
     corrected_measurement_points.emplace_back(Eigen::Vector3f(point + transform_measurement_to_corrected));
@@ -168,13 +168,17 @@ void Hypothesis::correct(const Measurement& measurement)
       auto interpolation_factor = static_cast<float>(interpolation_time / time_diff_current_corrections);
 
       // interpolate box and save
-      Eigen::Array3f interpolated_min_corner = m_previous_correction_box.min_corner + interpolation_factor * interpolation_vector_min_corners;
-      Eigen::Array3f interpolated_max_corner = m_previous_correction_box.max_corner + interpolation_factor * interpolation_vector_max_corners;
+      Eigen::Array3f interpolated_min_corner =
+        m_previous_correction_box.min_corner + interpolation_factor * interpolation_vector_min_corners;
+      Eigen::Array3f interpolated_max_corner =
+        m_previous_correction_box.max_corner + interpolation_factor * interpolation_vector_max_corners;
 
       if(m_is_static)
-        m_box_history.emplace_back(StampedBox(m_last_correction_time + interpolation_time, interpolated_min_corner, interpolated_max_corner));
+        m_box_history.emplace_back(
+          StampedBox(m_last_correction_time + interpolation_time, interpolated_min_corner, interpolated_max_corner));
       else
-        m_interpolated_boxes.emplace_back(StampedBox(m_last_correction_time + interpolation_time, interpolated_min_corner, interpolated_max_corner));
+        m_interpolated_boxes.emplace_back(
+          StampedBox(m_last_correction_time + interpolation_time, interpolated_min_corner, interpolated_max_corner));
 
       m_prediction_times_since_previous_correction.pop();
     }
@@ -195,14 +199,14 @@ void Hypothesis::correct(const Measurement& measurement)
   m_last_correction_time = measurement.time;
 }
 
-void Hypothesis::transformPoints(std::vector<Eigen::Vector3f>& points,
+void Hypothesis::transformPoints(std::vector <Eigen::Vector3f>& points,
                                  const Eigen::Vector3f& transform)
 {
   for(auto& point : points)
     point += transform;
 }
 
-void Hypothesis::computeBoundingBox(const std::vector<Eigen::Vector3f>& points,
+void Hypothesis::computeBoundingBox(const std::vector <Eigen::Vector3f>& points,
                                     Eigen::Array3f& min_bounding_box,
                                     Eigen::Array3f& max_bounding_box)
 {
@@ -221,7 +225,7 @@ void Hypothesis::computeBoundingBox(const std::vector<Eigen::Vector3f>& points,
 bool Hypothesis::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
                                       float max_covariance)
 {
-  Eigen::EigenSolver<Eigen::Matrix3f> eigen_solver(covariance);
+  Eigen::EigenSolver <Eigen::Matrix3f> eigen_solver(covariance);
   auto eigen_values = eigen_solver.eigenvalues();
 
 //  std::cout << "eigen values of hyp with id = " << m_id << " are " << eigen_values.col(0)[0].real() << " "
@@ -270,7 +274,7 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
       m_is_static = false;
       m_turned_dynamic_now = true;
     }
-    // else assume it's static for now
+      // else assume it's static for now
     else
     {
       // if detection BB encloses init BB, update init BB as it's likely that object was occluded
@@ -301,9 +305,8 @@ float Hypothesis::computeLikelihood(const Measurement& measurement)
 }
 
 
-
-std::shared_ptr<Hypothesis> HypothesisFactory::createHypothesis(const Measurement& measurement,
-                                                                unsigned int id)
+std::shared_ptr <Hypothesis> HypothesisFactory::createHypothesis(const Measurement& measurement,
+                                                                 unsigned int id)
 {
   return std::make_shared<Hypothesis>(measurement, id, m_covariance_per_second);
 }

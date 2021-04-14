@@ -30,7 +30,7 @@ class MultiHypothesisTracker
 {
 public:
   /** @brief Constructor. */
-  explicit MultiHypothesisTracker(std::shared_ptr<HypothesisFactory> hypothesis_factory);
+  explicit MultiHypothesisTracker(std::shared_ptr <HypothesisFactory> hypothesis_factory);
   /** @brief Destructor. */
   ~MultiHypothesisTracker() = default;
 
@@ -55,7 +55,7 @@ public:
    *
    * @param[in] measurements    measurements
    */
-  void correct(const std::vector<Measurement>& measurements);
+  void correct(const std::vector <Measurement>& measurements);
 
   /**
    * @brief Deletes hypotheses that are spurious
@@ -79,19 +79,29 @@ public:
   void deleteMarkedHypotheses();
 
   /** @brief Getter for #m_hypotheses. */
-  inline std::vector<std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_hypotheses; }
+  inline std::vector <std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_hypotheses; }
 
   /** @brief Getter for #m_heavens_gate. */
-  inline std::queue<Hypothesis>& getDeletedHypotheses(){ return m_heavens_gate; }
+  inline std::queue <Hypothesis>& getDeletedHypotheses(){ return m_heavens_gate; }
 
   /** @brief Getter for #m_heavens_gate. */
-  void clearDeletedHypotheses(){ std::queue<Hypothesis> empty; std::swap(m_heavens_gate, empty); }
+  void clearDeletedHypotheses()
+  {
+    std::queue <Hypothesis> empty;
+    std::swap(m_heavens_gate, empty);
+  }
 
   /** @brief Setter for distance threshold #m_max_bhattacharyya_distance. */
-  inline void setMaxCorrespondenceDistance(double distance){ m_max_bhattacharyya_distance = (int)m_dist_scale * distance; }
+  inline void setMaxCorrespondenceDistance(double distance)
+  {
+    m_max_bhattacharyya_distance = (int)m_dist_scale * distance;
+  }
 
   /** @brief Setter for distance threshold #m_max_bhattacharyya_distance. */
-  inline void setKalmanCovariancePerSecond(double covariance_per_second){ m_hypothesis_factory->setKalmanCovariancePerSecond(covariance_per_second); }
+  inline void setKalmanCovariancePerSecond(double covariance_per_second)
+  {
+    m_hypothesis_factory->setKalmanCovariancePerSecond(covariance_per_second);
+  }
 
   /** @brief Setter for #m_compute_likelihood. */
   inline void setComputeLikelihood(bool compute_likelihood){ m_compute_likelihood = compute_likelihood; }
@@ -116,8 +126,8 @@ protected:
    * @param[in]     hypotheses      already existing hypotheses.
    * @param[out]    cost_matrix     cost matrix.
    */
-  void setupCostMatrix(const std::vector<Measurement>& measurements,
-                       std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void setupCostMatrix(const std::vector <Measurement>& measurements,
+                       std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                        int**& cost_matrix);
 
   /**
@@ -134,8 +144,8 @@ protected:
    */
   void applyAssignments(int**& assignments,
                         int**& cost_matrix,
-                        const std::vector<Measurement>& measurements,
-                        std::vector<std::shared_ptr<Hypothesis>>& hypotheses);
+                        const std::vector <Measurement>& measurements,
+                        std::vector <std::shared_ptr<Hypothesis>>& hypotheses);
 
   /** @brief Sets members used to compute the average likelihood to zero. */
   void resetAverageLikelihood()
@@ -162,13 +172,17 @@ protected:
    *
    * @returns iterator to entry after deleted entry.
    */
-  std::vector<std::shared_ptr<Hypothesis>>::iterator erase(std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
-                                                           std::vector<std::shared_ptr<Hypothesis>>::iterator& it);
+  std::vector<std::shared_ptr < Hypothesis>>::
+  iterator erase(std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
+                 std::vector<std::shared_ptr < Hypothesis>>
+  ::
+  iterator& it
+  );
 
   /** @brief Hypothesis factory.*/
-  std::shared_ptr<HypothesisFactory> m_hypothesis_factory;
+  std::shared_ptr <HypothesisFactory> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses.*/
-  std::vector<std::shared_ptr<Hypothesis>> m_hypotheses;
+  std::vector <std::shared_ptr<Hypothesis>> m_hypotheses;
 
   /** @brief Counter for hypotheses IDs.*/
   unsigned int m_current_hypothesis_id;
@@ -185,7 +199,7 @@ protected:
   int m_assigned_hypotheses_counter;
 
   /** @brief Queue for hypotheses that were marked for deletion.*/
-  std::queue<Hypothesis> m_heavens_gate;
+  std::queue <Hypothesis> m_heavens_gate;
 };
 
 };

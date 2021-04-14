@@ -79,7 +79,7 @@ public:
    *
    * @return false if at least one measurement couldn't be transformed, true otherwise
    */
-  bool transformToFrame(std::vector<Measurement>& measurements,
+  bool transformToFrame(std::vector <Measurement>& measurements,
                         const std_msgs::Header& header,
                         const std::string& target_frame);
 
@@ -90,7 +90,7 @@ public:
    * @param[out]    measurements    detections in tracker format.
    */
   void convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-               std::vector<Measurement>& measurements);
+               std::vector <Measurement>& measurements);
 
   /**
    * @brief Converts the detections from the laser into the internal format
@@ -99,7 +99,7 @@ public:
    * @param[out]    measurements    detections in tracker format.
    */
   void convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
-               std::vector<Measurement>& measurements);
+               std::vector <Measurement>& measurements);
 
   /**
    * @brief Performs one prediction and correction step for every hypothesis.
@@ -110,13 +110,13 @@ public:
    *
    * @param measurements    new detections.
    */
-  void processMeasurements(const std::vector<Measurement> &measurements);
+  void processMeasurements(const std::vector <Measurement>& measurements);
 
   /** @brief Getter for hypotheses vector. */
-  const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
+  const std::vector <std::shared_ptr<Hypothesis>>& getHypotheses();
 
   /** @brief Getter for hypotheses that are about to get deleted. */
-  std::queue<Hypothesis>& getDeletedHypotheses();
+  std::queue <Hypothesis>& getDeletedHypotheses();
 
 private:
   /** @brief Subscribes to detections. */
@@ -125,7 +125,7 @@ private:
   MOTPublisher m_mot_publisher;
 
   /** @brief Provides transforms to world frame. */
-  std::shared_ptr<tf::TransformListener> m_transform_listener;
+  std::shared_ptr <tf::TransformListener> m_transform_listener;
 
   /** @brief The functionality. */
   MultiHypothesisTracker m_multi_hypothesis_tracker;

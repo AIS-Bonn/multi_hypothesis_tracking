@@ -53,47 +53,47 @@ public:
   ~MOTPublisher(){};
 
   /** @brief Calls all publishers. */
-  void publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishAll(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                   const ros::Time& stamp);
 
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishHypothesesPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                   const ros::Time& stamp);
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPoints(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishHypothesesPoints(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                const ros::Time& stamp);
   /** @brief Publish hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesFull(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishHypothesesFull(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                              const ros::Time& stamp);
   /** @brief Publish hypotheses' predictions that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPredictions(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishHypothesesPredictions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                     const ros::Time& stamp);
   /** @brief Publish predicted positions of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPredictedPositions(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishHypothesesPredictedPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                            const ros::Time& stamp);
   /** @brief Publish covariances of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesCovariances(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishHypothesesCovariances(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                     const ros::Time& stamp);
   /** @brief Publish positions of static hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishStaticHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishStaticHypothesesPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                         const ros::Time& stamp);  //publishes a vertical line indicating which hypothesis are static (non-moveable)
   /** @brief Publish positions of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishDynamicHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
+  void publishDynamicHypothesesPositions(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                          const ros::Time& stamp);
   /** @brief Publish full tracks of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishFullTracks(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishFullTracks(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                          const ros::Time& stamp);
   /** @brief Publish the bounding boxes of dynamic hypotheses. */
-  void publishHypothesesPointIndices(const std::vector<std::shared_ptr<Hypothesis>> &hypotheses,
-                                     const ros::Time &stamp);
+  void publishHypothesesPointIndices(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
+                                     const ros::Time& stamp);
   /** @brief Publish the bounding boxes of dynamic hypotheses that were assigned in the current step. */
-  void publishHypothesesBoxesEvaluation(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesBoxesEvaluation(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                         const ros::Time& stamp);
   /** @brief Publish the bounding boxes history of hypotheses that turned from static to dynamic in the current step. */
-  void publishHypothesesBoxesHistory(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesBoxesHistory(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                      const ros::Time& stamp);
   /** @brief Publish the bounding boxes history of hypotheses that were marked for deletion. */
-  void publishDeletedHypotheses(std::queue<Hypothesis>& hypotheses);
+  void publishDeletedHypotheses(std::queue <Hypothesis>& hypotheses);
 
   /**
    * @brief Return a rather specific marker.
@@ -115,7 +115,7 @@ public:
    *
    * @param[in] measurements   detections.
    */
-  void publishMeasurementPositions(const std::vector<Measurement> &measurements,
+  void publishMeasurementPositions(const std::vector <Measurement>& measurements,
                                    const ros::Time& stamp);
 
   /**
@@ -123,7 +123,7 @@ public:
    *
    * @param[in] measurements   detections.
    */
-  void publishMeasurementsCovariances(const std::vector<Measurement> &measurements,
+  void publishMeasurementsCovariances(const std::vector <Measurement>& measurements,
                                       const ros::Time& stamp);
 
   /**
@@ -131,7 +131,7 @@ public:
    *
    * @param[in] measurements   detections.
    */
-  void publishMeasurementsPoints(const std::vector<Measurement> &measurements,
+  void publishMeasurementsPoints(const std::vector <Measurement>& measurements,
                                  const ros::Time& stamp);
 
   /** @brief Publish the likelihood. */
