@@ -5,7 +5,7 @@
  * @author Jan Razlaw
  */
 
-#include <multi_object_tracking/mot_publisher.h>
+#include <multi_hypothesis_tracking/mot_publisher.h>
 
 namespace MultiHypothesisTracker
 {
@@ -16,8 +16,8 @@ MOTPublisher::MOTPublisher():
   ros::NodeHandle n("~");
   ros::NodeHandle pub_n;
 
-  m_hypotheses_full_publisher = pub_n.advertise<thesis_msgs::HypothesesFull>("hypotheses_full", 1);
-  m_hypotheses_predictions_publisher = pub_n.advertise<thesis_msgs::ObjectDetections>("hypotheses_predictions", 1);
+  m_hypotheses_full_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::HypothesesFull>("hypotheses_full", 1);
+  m_hypotheses_predictions_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>("hypotheses_predictions", 1);
 
   m_measurement_positions_publisher           = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/measurements_positions", 1);
   m_measurements_covariances_publisher        = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/measurements_covariances", 1);
@@ -29,9 +29,9 @@ MOTPublisher::MOTPublisher():
   m_static_hypotheses_positions_publisher     = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/static_hypotheses_positions", 1);
   m_dynamic_hypotheses_positions_publisher    = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/dynamic_hypotheses_positions", 1);
   m_hypotheses_predicted_positions_publisher  = n.advertise<visualization_msgs::Marker>(n.getNamespace()+ "/hypotheses_predicted_positions", 1);
-  m_hypotheses_point_indices_publisher        = n.advertise<thesis_msgs::HypothesesPointIndices>(n.getNamespace()+ "/hypotheses_point_indices", 1, true);
-  m_hypotheses_box_evaluation_publisher       = n.advertise<thesis_msgs::HypothesesEvaluationBoxes>(n.getNamespace()+ "/hypotheses_boxes_evaluation", 1, true);
-  m_hypotheses_boxes_history_publisher        = n.advertise<thesis_msgs::HypothesesBoxesArray>(n.getNamespace()+ "/hypotheses_boxes_history", 1, true);
+  m_hypotheses_point_indices_publisher        = n.advertise<multi_hypothesis_tracking_msgs::HypothesesPointIndices>(n.getNamespace()+ "/hypotheses_point_indices", 1, true);
+  m_hypotheses_box_evaluation_publisher       = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(n.getNamespace()+ "/hypotheses_boxes_evaluation", 1, true);
+  m_hypotheses_boxes_history_publisher        = n.advertise<multi_hypothesis_tracking_msgs::HypothesesBoxesArray>(n.getNamespace()+ "/hypotheses_boxes_history", 1, true);
   m_likelihood_publisher                      = n.advertise<std_msgs::Float32>(n.getNamespace()+ "/likelihood", 1);
 
   n.param<std::string>("world_frame", m_world_frame, "world");
@@ -256,12 +256,12 @@ void MOTPublisher::publishHypothesesFull(const std::vector<std::shared_ptr<Hypot
   if(m_hypotheses_full_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  thesis_msgs::HypothesesFullPtr hypotheses_msg(new thesis_msgs::HypothesesFull());
+  multi_hypothesis_tracking_msgs::HypothesesFullPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesFull());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
-  thesis_msgs::State state;
-  thesis_msgs::Box box;
+  multi_hypothesis_tracking_msgs::State state;
+  multi_hypothesis_tracking_msgs::Box box;
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
@@ -309,8 +309,8 @@ void MOTPublisher::publishHypothesesPredictions(const std::vector<std::shared_pt
     return;
 
   double current_time = getTimeHighRes();
-  thesis_msgs::ObjectDetections object_detecions;
-  thesis_msgs::ObjectDetection object;
+  multi_hypothesis_tracking_msgs::ObjectDetections object_detecions;
+  multi_hypothesis_tracking_msgs::ObjectDetection object;
   object_detecions.header.stamp = stamp;
   object_detecions.header.frame_id = m_world_frame;
 
@@ -476,7 +476,7 @@ void MOTPublisher::publishHypothesesPointIndices(const std::vector<std::shared_p
   if(m_hypotheses_point_indices_publisher.getNumSubscribers() == 0)
     return;
 
-  thesis_msgs::HypothesesPointIndicesPtr hypotheses_msg(new thesis_msgs::HypothesesPointIndices());
+  multi_hypothesis_tracking_msgs::HypothesesPointIndicesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesPointIndices());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
@@ -499,11 +499,11 @@ void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector<std::share
   if(m_hypotheses_box_evaluation_publisher.getNumSubscribers() == 0)
     return;
 
-  thesis_msgs::HypothesesEvaluationBoxesPtr hypotheses_msg(new thesis_msgs::HypothesesEvaluationBoxes());
+  multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
-  thesis_msgs::EvaluationBox box;
+  multi_hypothesis_tracking_msgs::EvaluationBox box;
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
@@ -540,12 +540,12 @@ void MOTPublisher::publishHypothesesBoxesHistory(const std::vector<std::shared_p
   if(m_hypotheses_boxes_history_publisher.getNumSubscribers() == 0)
     return;
 
-  thesis_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new thesis_msgs::HypothesesBoxesArray());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
 
-  thesis_msgs::HypothesesBoxesPtr hypotheses_msg(new thesis_msgs::HypothesesBoxes());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxes());
   hypotheses_msg->header.frame_id = m_world_frame;
 
-  thesis_msgs::Box box;
+  multi_hypothesis_tracking_msgs::Box box;
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
@@ -611,12 +611,12 @@ void MOTPublisher::publishDeletedHypotheses(std::queue<Hypothesis>& hypotheses)
   if(m_hypotheses_boxes_history_publisher.getNumSubscribers() == 0)
     return;
 
-  thesis_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new thesis_msgs::HypothesesBoxesArray());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
 
-  thesis_msgs::HypothesesBoxesPtr hypotheses_msg(new thesis_msgs::HypothesesBoxes());
+  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxes());
   hypotheses_msg->header.frame_id = m_world_frame;
 
-  thesis_msgs::Box box;
+  multi_hypothesis_tracking_msgs::Box box;
 
   while(!hypotheses.empty())
   {

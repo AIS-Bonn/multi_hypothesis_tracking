@@ -25,10 +25,10 @@
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
 
-#include <thesis_msgs/ObjectDetections.h>
+#include <multi_hypothesis_tracking_msgs/ObjectDetections.h>
 
-#include <multi_object_tracking/multi_hypothesis_tracker.h>
-#include <multi_object_tracking/mot_publisher.h>
+#include <multi_hypothesis_tracking/multi_hypothesis_tracker.h>
+#include <multi_hypothesis_tracking/mot_publisher.h>
 
 
 namespace MultiHypothesisTracker
@@ -68,7 +68,7 @@ public:
    *
    * @param [in] msg    detections.
    */
-  void detectionCallback(const thesis_msgs::ObjectDetections::ConstPtr& msg);
+  void detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg);
 
   /**
    * @brief Transforms measurements to the target_frame.
@@ -98,7 +98,7 @@ public:
    * @param[in]     msg             detections.
    * @param[out]    measurements    detections in tracker format.
    */
-  void convert(const thesis_msgs::ObjectDetections::ConstPtr& msg,
+  void convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
                std::vector<Measurement>& measurements);
 
   /**

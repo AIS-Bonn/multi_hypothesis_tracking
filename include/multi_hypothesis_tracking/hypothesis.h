@@ -13,7 +13,7 @@
 #include <iomanip> // for std::setprecision
 #include <queue>
 
-#include <multi_object_tracking/kalman_filter.h>
+#include <multi_hypothesis_tracking/kalman_filter.h>
 
 /**
  * @brief Description of detection.

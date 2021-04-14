@@ -5,7 +5,7 @@
  * @author Jan Razlaw
  */
 
-#include "multi_object_tracking/hypothesis.h"
+#include "multi_hypothesis_tracking/hypothesis.h"
 
 namespace MultiHypothesisTracker
 {

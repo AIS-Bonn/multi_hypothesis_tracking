@@ -29,16 +29,16 @@
 
 #include <visualization_msgs/Marker.h>
 
-#include <thesis_msgs/ObjectDetections.h>
-#include <thesis_msgs/Box.h>
-#include <thesis_msgs/HypothesesBoxes.h>
-#include <thesis_msgs/HypothesesEvaluationBoxes.h>
-#include <thesis_msgs/HypothesesBoxesArray.h>
-#include <thesis_msgs/HypothesesFull.h>
-#include <thesis_msgs/HypothesesPointIndices.h>
+#include <multi_hypothesis_tracking_msgs/ObjectDetections.h>
+#include <multi_hypothesis_tracking_msgs/Box.h>
+#include <multi_hypothesis_tracking_msgs/HypothesesBoxes.h>
+#include <multi_hypothesis_tracking_msgs/HypothesesEvaluationBoxes.h>
+#include <multi_hypothesis_tracking_msgs/HypothesesBoxesArray.h>
+#include <multi_hypothesis_tracking_msgs/HypothesesFull.h>
+#include <multi_hypothesis_tracking_msgs/HypothesesPointIndices.h>
 
-#include <multi_object_tracking/hypothesis.h>
-#include <multi_object_tracking/utils.h>
+#include <multi_hypothesis_tracking/hypothesis.h>
+#include <multi_hypothesis_tracking/utils.h>
 
 
 namespace MultiHypothesisTracker

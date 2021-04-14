@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(multi_object_tracking)
+project(multi_hypothesis_tracking)
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DAPC_CAPTURE_DEBUG=1")
 find_package(Eigen3 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
 	visualization_msgs
-	thesis_msgs
+	multi_hypothesis_tracking_msgs
 	message_filters
 	tf
 	tf_conversions
@@ -57,18 +57,18 @@ target_link_libraries(multi_hypothesis_tracker
 )
 
 # Nodes
-add_executable(multi_object_tracking_node
-	src/multi_object_tracking_node.cpp
+add_executable(multi_hypothesis_tracking_node
+	src/multi_hypothesis_tracking_node.cpp
 	src/mot_publisher.cpp
 )
 
-target_link_libraries(multi_object_tracking_node
+target_link_libraries(multi_hypothesis_tracking_node
 	multi_hypothesis_tracker
 	${catkin_LIBRARIES}
 )
 
 ## Add cmake target dependencies of the executable
-add_dependencies(multi_object_tracking_node
+add_dependencies(multi_hypothesis_tracking_node
 	${${PROJECT_NAME}_EXPORTED_TARGETS}
 	${catkin_EXPORTED_TARGETS}
 )

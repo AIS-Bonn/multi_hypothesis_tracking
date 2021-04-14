@@ -1,5 +1,5 @@
 <!-- -*- mode: XML -*- -->
-<!-- run multi_object_tracking/multi_object_tracking_node in a node -->
+<!-- run multi_hypothesis_tracking/multi_hypothesis_tracking_node in a node -->
 
 <launch>
 
@@ -19,7 +19,7 @@
 
   <arg name="measure_time" default="false" />
 
-  <node pkg="multi_object_tracking" type="multi_object_tracking_node" name="multi_object_tracking_node"
+  <node pkg="multi_hypothesis_tracking" type="multi_hypothesis_tracking_node" name="multi_hypothesis_tracking_node"
         output="screen">
 
     <param name="input_topic" value="$(arg input_topic)" />

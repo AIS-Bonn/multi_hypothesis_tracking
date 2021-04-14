@@ -5,7 +5,7 @@
  * @author Jan Razlaw
  */
 
-#include <multi_object_tracking/multi_object_tracking_node.h>
+#include <multi_hypothesis_tracking/multi_hypothesis_tracking_node.h>
 
 namespace MultiHypothesisTracker
 {
@@ -47,7 +47,7 @@ Tracker::Tracker()
   n.getParam("measure_time", m_measure_time);
   if(m_measure_time)
   {
-    std::string path_to_results_file = "/tmp/times_multi_object_tracking";
+    std::string path_to_results_file = "/tmp/times_multi_hypothesis_tracking";
     m_time_file.open(path_to_results_file);
   }  
   m_summed_time_for_callbacks = std::chrono::microseconds::zero();
@@ -55,7 +55,7 @@ Tracker::Tracker()
   if(subscribe_to_poses_only)
     m_laser_detection_subscriber = n.subscribe<geometry_msgs::PoseArray>(input_topic, 1, &Tracker::detectionPosesCallback, this);
   else
-    m_laser_detection_subscriber = n.subscribe<thesis_msgs::ObjectDetections>(input_topic, 1, &Tracker::detectionCallback, this);
+    m_laser_detection_subscriber = n.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(input_topic, 1, &Tracker::detectionCallback, this);
 }
 
 void Tracker::publish(const ros::Time& stamp)
@@ -88,7 +88,7 @@ void Tracker::detectionPosesCallback(const geometry_msgs::PoseArray::ConstPtr& m
   publish(msg->header.stamp);
 }
 
-void Tracker::detectionCallback(const thesis_msgs::ObjectDetections::ConstPtr& msg)
+void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg)
 {
   ROS_DEBUG_STREAM("Tracker::detectionCallback.");
 
@@ -149,7 +149,7 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
   }
 }
 
-void Tracker::convert(const thesis_msgs::ObjectDetections::ConstPtr& msg,
+void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
                       std::vector<Measurement>& measurements)
 {
   Measurement measurement;
@@ -264,7 +264,7 @@ std::queue<Hypothesis>& Tracker::getDeletedHypotheses()
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "multi_object_tracking");
+  ros::init(argc, argv, "multi_hypothesis_tracking");
 
   if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info))
     ros::console::notifyLoggerLevelsChanged();

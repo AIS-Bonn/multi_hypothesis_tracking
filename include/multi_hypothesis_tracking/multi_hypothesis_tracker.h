@@ -13,10 +13,10 @@
 #include <iostream>
 #include <limits.h> // for INT_MAX
 
-#include <multi_object_tracking/hypothesis.h>
-#include <multi_object_tracking/hungarian.h>
+#include <multi_hypothesis_tracking/hypothesis.h>
+#include <multi_hypothesis_tracking/hungarian.h>
 
-#include <multi_object_tracking/utils.h>
+#include <multi_hypothesis_tracking/utils.h>
 
 namespace MultiHypothesisTracker
 {

@@ -5,7 +5,7 @@
  * @author Jan Razlaw
  */
 
-#include "multi_object_tracking/kalman_filter.h"
+#include "multi_hypothesis_tracking/kalman_filter.h"
 
 namespace MultiHypothesisTracker
 {
