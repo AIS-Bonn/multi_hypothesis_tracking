@@ -14,7 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
 	tf_conversions
 	message_generation
 	genmsg
-	object_detection
 	std_msgs
 	geometry_msgs
 	sensor_msgs

@@ -23,7 +23,6 @@
 	<build_depend>eigen</build_depend>
 	<build_depend>opencv2</build_depend>
 	<build_depend>message_generation</build_depend>
-	<build_depend>object_detection</build_depend>
 	<build_depend>tf_conversions</build_depend>
 	<build_depend>pcl_ros</build_depend>
 
