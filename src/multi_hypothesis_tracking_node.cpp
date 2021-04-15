@@ -1,6 +1,6 @@
 /** @file
  *
- * Multi object tracker implementation.
+ * Multi hypothesis tracking node receiving detection messages and providing those to the multi hypothesis tracker.
  *
  * @author Jan Razlaw
  */
