@@ -29,7 +29,7 @@ MOTPublisher::MOTPublisher()
                                                                              1);
   m_hypotheses_points_publisher =
     n.advertise < pcl::PointCloud < pcl::PointXYZ >> (n.getNamespace() + "/hypotheses_points", 1);
-  m_track_line_publisher = n.advertise<visualization_msgs::Marker>(n.getNamespace() + "/track_line", 1);
+  m_hypotheses_paths_publisher = n.advertise<visualization_msgs::Marker>(n.getNamespace() + "/hypotheses_paths", 1);
   m_hypotheses_covariance_publisher = n.advertise<visualization_msgs::Marker>(
     n.getNamespace() + "/hypotheses_covariances", 1);
   m_static_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(
@@ -74,7 +74,7 @@ void MOTPublisher::publishAll(const std::vector <std::shared_ptr<Hypothesis>>& h
 
   publishHypothesesBoxesHistory(hypotheses, stamp);
 
-//  publishFullTracks(hypotheses);
+  publishFullTracks(hypotheses, stamp);
 //  publishDebug(hypotheses);
 }
 
@@ -531,25 +531,75 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const std::vector <std::shared
   m_hypotheses_bounding_boxes_publisher.publish(bounding_boxes_markers);
 }
 
-// TODO: implement
 void MOTPublisher::publishFullTracks(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                      const ros::Time& stamp)
 {
-  if(m_track_line_publisher.getNumSubscribers() == 0)
+  if(m_hypotheses_paths_publisher.getNumSubscribers() == 0)
     return;
 
-  //Full track for first hypothesis
-  // std::vector<Hypothesis*> hypotheses = m_algorithm->getHypotheses();
-  // Hypothesis *hypothesis = (Hypothesis *) hypotheses[0];
-  // const Eigen::Vector3f& mean = hypothesis->getPosition();
-  // geometry_msgs::Point p;
-  // p.x=mean(0);
-  // p.y=mean(1);
-  // p.z=mean(2);
-  // full_track.points.push_back(p);
-  // m_track_line_publisher.publish(full_track);
+  double color_alpha = 1.0;
+  visualization_msgs::Marker hypotheses_paths_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_paths");
+  hypotheses_paths_marker.type = visualization_msgs::Marker::LINE_LIST;
+  hypotheses_paths_marker.color.a = color_alpha;
+  hypotheses_paths_marker.scale.x = 0.325;
+  hypotheses_paths_marker.header.stamp = stamp;
+  double current_time = getTimeHighRes();
 
-//  m_track_line_publisher.publish(dynamic_objects_marker);
+  std_msgs::ColorRGBA predictions_color;
+  predictions_color.a = color_alpha;
+  predictions_color.r = 0.f;
+  predictions_color.g = 0.f;
+  predictions_color.b = 0.f;
+
+  // Publish paths
+  for(size_t i = 0; i < hypotheses.size(); ++i)
+  {
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+
+    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
+       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+    {
+      const std::vector <Eigen::Vector3f>& positions = hypothesis->getPositionHistory();
+      const std::vector<bool>& was_assigned = hypothesis->getWasAssignedHistory();
+
+      if(positions.size() <= 1)
+        continue;
+
+      srand(hypothesis->getID());
+      std_msgs::ColorRGBA assigned_color;
+      assigned_color.a = color_alpha;
+      assigned_color.r = (rand() % 1000) / 1000.f;
+      assigned_color.g = (rand() % 1000) / 1000.f;
+      assigned_color.b = (rand() % 1000) / 1000.f;
+
+      size_t last_index = positions.size() - 1;
+      for(size_t j = 0; j < positions.size(); j++)
+      {
+        const auto& position = positions[j];
+
+        geometry_msgs::Point p;
+        p.x = position(0);
+        p.y = position(1);
+        p.z = position(2);
+        hypotheses_paths_marker.points.push_back(p);
+        if(was_assigned[j])
+          hypotheses_paths_marker.colors.push_back(assigned_color);
+        else
+          hypotheses_paths_marker.colors.push_back(predictions_color);
+
+        if(j == 0 || j == last_index)
+          continue;
+
+        // Add current position again, as the start of the next line segment
+        hypotheses_paths_marker.points.push_back(p);
+        if(was_assigned[j])
+          hypotheses_paths_marker.colors.push_back(assigned_color);
+        else
+          hypotheses_paths_marker.colors.push_back(predictions_color);
+      }
+    }
+  }
+  m_hypotheses_paths_publisher.publish(hypotheses_paths_marker);
 }
 
 void MOTPublisher::publishHypothesesPointIndices(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,

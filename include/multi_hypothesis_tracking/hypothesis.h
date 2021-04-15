@@ -176,6 +176,10 @@ public:
   inline std::vector<StampedBox>& getBoxHistory(){ return m_box_history; }
   /** @brief Clears #m_box_history. */
   inline void clearBoxHistory(){ m_box_history.clear(); }
+  /** @brief Getter for #m_position_history. */
+  inline std::vector<Eigen::Vector3f>& getPositionHistory(){ return m_position_history; }
+  /** @brief Getter for #m_was_assigned_history. */
+  inline std::vector<bool>& getWasAssignedHistory(){ return m_was_assigned_history; }
   /** @brief Getter for #m_was_assigned_counter. */
   inline int getNumberOfAssignments(){ return m_was_assigned_counter; }
   /** @brief Getter for #m_interpolated_boxes. */
@@ -254,6 +258,11 @@ protected:
 
   /** @brief Time stamps of predictions since the previous correction step. */
   std::queue<double> m_prediction_times_since_previous_correction;
+
+  /** @brief All positions of the hypothesis. */
+  std::vector<Eigen::Vector3f> m_position_history;
+  /** @brief Vector of bools indicating whether this hypothesis was assigned to a detection in the corresponding step.*/
+  std::vector<bool> m_was_assigned_history;
 
   /** @brief The number of times this hypotheses was assigned to a detection. */
   int m_was_assigned_counter;

@@ -34,6 +34,8 @@ Hypothesis::Hypothesis(const Measurement& measurement,
   m_kalman->setCovariancePerSecond(covariance_per_second);
 
   m_first_position_in_track = getPosition();
+  m_position_history.push_back(m_first_position_in_track);
+  m_was_assigned_history.push_back(true);
 
   m_point_ids = measurement.point_ids;
 
@@ -64,6 +66,10 @@ void Hypothesis::predict(float dt,
 
   m_kalman->predict(dt);
 
+  // safe predicted position
+  m_position_history.push_back(getPosition());
+  m_was_assigned_history.push_back(false);
+
   // update the positions of the points corresponding to that hypothesis
   auto transform_current_to_predicted = (getPosition() - current_position).eval();
   transformPoints(m_points, transform_current_to_predicted);
@@ -81,6 +87,9 @@ void Hypothesis::correct(const Measurement& measurement)
 
   m_kalman->correct(measurement.pos, measurement.cov);
 
+  // if hypothesis' position was corrected, replace the latest predicted position by the corrected
+  m_position_history.back() = getPosition();
+  m_was_assigned_history.back() = true;
   m_was_assigned_counter++;
 
   // update the positions of the points corresponding to that hypothesis

@@ -164,7 +164,7 @@ private:
   ros::Publisher m_measurements_covariances_publisher;
   ros::Publisher m_measurements_points_publisher;
   ros::Publisher m_hypotheses_covariance_publisher;
-  ros::Publisher m_track_line_publisher;
+  ros::Publisher m_hypotheses_paths_publisher;
   ros::Publisher m_static_hypotheses_positions_publisher;
   ros::Publisher m_dynamic_hypotheses_positions_publisher;
   ros::Publisher m_hypotheses_bounding_boxes_publisher;
