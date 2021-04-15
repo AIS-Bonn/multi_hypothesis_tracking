@@ -9,26 +9,26 @@
 #define __MULTI_OBJECT_TRACKING_NODE_H__
 
 #include <chrono>
-#include <iostream>
 #include <fstream>
-
-#include <ros/ros.h>
-#include <ros/console.h>
+#include <iostream>
 
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/PoseArray.h>
+
+#include <multi_hypothesis_tracking/multi_hypothesis_tracker.h>
+#include <multi_hypothesis_tracking/mot_publisher.h>
+
+#include <multi_hypothesis_tracking_msgs/ObjectDetections.h>
+
+#include <ros/ros.h>
+#include <ros/console.h>
 
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/point_cloud2_iterator.h>
 
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
-
-#include <multi_hypothesis_tracking_msgs/ObjectDetections.h>
-
-#include <multi_hypothesis_tracking/multi_hypothesis_tracker.h>
-#include <multi_hypothesis_tracking/mot_publisher.h>
 
 
 namespace MultiHypothesisTracker
