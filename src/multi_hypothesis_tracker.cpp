@@ -155,8 +155,7 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
           // if assigned but distance too high -> prohibited assignment -> hypothesis unassignment
 
           // create new hypothesis from measurement
-          m_hypotheses.emplace_back(
-            m_hypothesis_factory->createHypothesis(measurements[j], m_current_hypothesis_id++));
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(measurements[j], m_current_hypothesis_id++));
         }
       }
       else if(i < hyp_size && j >= meas_size)
@@ -167,8 +166,7 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
       {
         // if measurement assigned to dummy hypothesis AND is class_a_detection -> create new hypothesis
         if(assignments[i][j] == HUNGARIAN_ASSIGNED && measurements[j].class_a_detection)
-          m_hypotheses.emplace_back(
-            m_hypothesis_factory->createHypothesis(measurements[j], m_current_hypothesis_id++));
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(measurements[j], m_current_hypothesis_id++));
       }
       else if(i >= hyp_size && j >= meas_size)
       {
