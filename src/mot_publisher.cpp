@@ -393,7 +393,7 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector <std::shar
   visualization_msgs::Marker static_objects_marker = createMarker(0.0, 1.0, 0.0, "mot_static_hypotheses_positions");
   static_objects_marker.type = visualization_msgs::Marker::LINE_LIST;
   static_objects_marker.color.a = color_alpha;
-  static_objects_marker.scale.x = 1.0;
+  static_objects_marker.scale.x = 0.4;
   static_objects_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
 
@@ -421,7 +421,7 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector <std::shar
       static_objects_marker.colors.push_back(color);
 
       //push another point for the second point of the line
-      p.z += 10;
+      p.z += 2;
       static_objects_marker.points.push_back(p);
       static_objects_marker.colors.push_back(color);
     }
@@ -439,7 +439,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector <std::sha
   visualization_msgs::Marker dynamic_objects_marker = createMarker(0.0, 0.5, 0.5, "mot_dynamic_hypotheses_positions");
   dynamic_objects_marker.type = visualization_msgs::Marker::LINE_LIST;
   dynamic_objects_marker.color.a = color_alpha;
-  dynamic_objects_marker.scale.x = 0.5;
+  dynamic_objects_marker.scale.x = 0.2;
   dynamic_objects_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
 
@@ -468,7 +468,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector <std::sha
       dynamic_objects_marker.colors.push_back(color);
 
       //push another point for the second point of the line
-      p.z += 20;
+      p.z += 4;
       dynamic_objects_marker.points.push_back(p);
       dynamic_objects_marker.colors.push_back(color);
     }
