@@ -389,9 +389,10 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector <std::shar
   if(m_static_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
+  double color_alpha = 0.5;
   visualization_msgs::Marker static_objects_marker = createMarker(0.0, 1.0, 0.0, "mot_static_hypotheses_positions");
   static_objects_marker.type = visualization_msgs::Marker::LINE_LIST;
-  static_objects_marker.color.a = 1;
+  static_objects_marker.color.a = color_alpha;
   static_objects_marker.scale.x = 1.0;
   static_objects_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
@@ -406,7 +407,7 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector <std::shar
     {
       srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
-      color.a = 1.f;
+      color.a = color_alpha;
       color.r = (rand() % 1000) / 1000.f;
       color.g = (rand() % 1000) / 1000.f;
       color.b = (rand() % 1000) / 1000.f;
@@ -434,9 +435,10 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector <std::sha
   if(m_dynamic_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
+  double color_alpha = 0.5;
   visualization_msgs::Marker dynamic_objects_marker = createMarker(0.0, 0.5, 0.5, "mot_dynamic_hypotheses_positions");
   dynamic_objects_marker.type = visualization_msgs::Marker::LINE_LIST;
-  dynamic_objects_marker.color.a = 1.0;
+  dynamic_objects_marker.color.a = color_alpha;
   dynamic_objects_marker.scale.x = 0.5;
   dynamic_objects_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
@@ -452,7 +454,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector <std::sha
     {
       srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
-      color.a = 1.f;
+      color.a = color_alpha;
       color.r = (rand() % 1000) / 1000.f;
       color.g = (rand() % 1000) / 1000.f;
       color.b = (rand() % 1000) / 1000.f;
