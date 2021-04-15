@@ -22,6 +22,7 @@ Hypothesis::Hypothesis(const Measurement& measurement,
     , m_cap_velocity(true)
     , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
     , m_max_tracked_velocity(0.0)
+    , m_was_assigned_counter(0)
 {
   int number_of_state_dimensions = 6;   // position x,y,z + velocity x,y,z
   Eigen::VectorXf meas(number_of_state_dimensions);
@@ -79,6 +80,8 @@ void Hypothesis::correct(const Measurement& measurement)
   auto current_position = getPosition();
 
   m_kalman->correct(measurement.pos, measurement.cov);
+
+  m_was_assigned_counter++;
 
   // update the positions of the points corresponding to that hypothesis
   auto transform_predicted_to_corrected = (getPosition() - current_position).eval();
