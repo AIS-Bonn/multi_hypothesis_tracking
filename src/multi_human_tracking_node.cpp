@@ -125,6 +125,13 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
     measurement.cov(1, 1) = measurement_std * measurement_std;
     measurement.cov(2, 2) = measurement_std * measurement_std;
 
+    measurement.points.clear();
+    for(const auto& joint : person_detection.keypoints)
+      if(joint.score > 0.0)
+        measurement.points.emplace_back(Eigen::Vector3f(joint.joint.x,
+                                                        joint.joint.y,
+                                                        joint.joint.z));
+    
     measurement.class_a_detection = true;
 
     measurements.push_back(measurement);
@@ -163,6 +170,10 @@ bool Tracker::transformToFrame(std::vector <Measurement>& measurements,
     Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
 
     measurement.pos = transform_eigenf * measurement.pos;
+
+    for(auto& point : measurement.points)
+      point = transform_eigenf * point;
+    
     measurement.frame = target_frame;
   }
 
