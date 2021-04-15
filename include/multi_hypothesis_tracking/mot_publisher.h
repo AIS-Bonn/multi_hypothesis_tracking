@@ -28,6 +28,7 @@
 #include <pcl_ros/point_cloud.h>
 
 #include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
 
 #include <multi_hypothesis_tracking_msgs/ObjectDetections.h>
 #include <multi_hypothesis_tracking_msgs/Box.h>
@@ -80,6 +81,9 @@ public:
   /** @brief Publish positions of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
   void publishDynamicHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                                          const ros::Time& stamp);
+  /** @brief Publish bounding boxes of all hypotheses that are tracked longer than #m_born_time_threshold */
+  void publishHypothesesBoundingBoxes(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+                                      const ros::Time& stamp);
   /** @brief Publish full tracks of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
   void publishFullTracks(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                          const ros::Time& stamp);
@@ -163,6 +167,7 @@ private:
   ros::Publisher m_track_line_publisher;
   ros::Publisher m_static_hypotheses_positions_publisher;
   ros::Publisher m_dynamic_hypotheses_positions_publisher;
+  ros::Publisher m_hypotheses_bounding_boxes_publisher;
   ros::Publisher m_hypotheses_full_publisher;
   ros::Publisher m_hypotheses_predictions_publisher;
   ros::Publisher m_hypotheses_point_indices_publisher;

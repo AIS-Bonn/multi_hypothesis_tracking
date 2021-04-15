@@ -36,6 +36,8 @@ MOTPublisher::MOTPublisher()
     n.getNamespace() + "/static_hypotheses_positions", 1);
   m_dynamic_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(
     n.getNamespace() + "/dynamic_hypotheses_positions", 1);
+  m_hypotheses_bounding_boxes_publisher = n.advertise<visualization_msgs::MarkerArray>(
+    n.getNamespace() + "/hypotheses_bounding_boxes", 1);
   m_hypotheses_predicted_positions_publisher = n.advertise<visualization_msgs::Marker>(
     n.getNamespace() + "/hypotheses_predicted_positions", 1);
   m_hypotheses_point_indices_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesPointIndices>(
@@ -66,6 +68,7 @@ void MOTPublisher::publishAll(const std::vector <std::shared_ptr<Hypothesis>>& h
   publishHypothesesCovariances(hypotheses, stamp);
   publishStaticHypothesesPositions(hypotheses, stamp);
   publishDynamicHypothesesPositions(hypotheses, stamp);
+  publishHypothesesBoundingBoxes(hypotheses, stamp);
   publishHypothesesBoxesEvaluation(hypotheses, stamp);
   publishHypothesesPointIndices(hypotheses, stamp);
 
@@ -470,6 +473,62 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector <std::sha
     }
   }
   m_dynamic_hypotheses_positions_publisher.publish(dynamic_objects_marker);
+}
+
+void MOTPublisher::publishHypothesesBoundingBoxes(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
+                                                  const ros::Time& stamp)
+{
+  if(m_hypotheses_bounding_boxes_publisher.getNumSubscribers() == 0 || hypotheses.empty())
+    return;
+
+  visualization_msgs::MarkerArray bounding_boxes_markers;
+
+  double color_alpha = 0.5;
+  visualization_msgs::Marker hypotheses_boxes_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_bounding_boxes");
+  hypotheses_boxes_marker.type = visualization_msgs::Marker::CUBE;
+  hypotheses_boxes_marker.action = visualization_msgs::Marker::ADD;
+  hypotheses_boxes_marker.color.a = color_alpha;
+  hypotheses_boxes_marker.header.stamp = stamp;
+  double current_time = getTimeHighRes();
+
+  // Publish bounding boxes
+  for(size_t i = 0; i < hypotheses.size(); ++i)
+  {
+    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+
+    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
+       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+    {
+      hypotheses_boxes_marker.id = hypothesis->getID();
+      srand(hypothesis->getID());
+      hypotheses_boxes_marker.color.a = color_alpha;
+      hypotheses_boxes_marker.color.r = (rand() % 1000) / 1000.f;
+      hypotheses_boxes_marker.color.g = (rand() % 1000) / 1000.f;
+      hypotheses_boxes_marker.color.b = (rand() % 1000) / 1000.f;
+
+      const Eigen::Vector3f& mean = hypothesis->getPosition();
+      geometry_msgs::Point p;
+      p.x = mean(0);
+      p.y = mean(1);
+      p.z = mean(2);
+      hypotheses_boxes_marker.pose.position = p;
+
+      hypotheses_boxes_marker.pose.orientation.x = 0.0;
+      hypotheses_boxes_marker.pose.orientation.y = 0.0;
+      hypotheses_boxes_marker.pose.orientation.z = 0.0;
+      hypotheses_boxes_marker.pose.orientation.w = 1.0;
+
+      auto box_size = hypothesis->getHypothesisBoxSize();
+      hypotheses_boxes_marker.scale.x = std::max(static_cast<float>(box_size.x()), 0.1f);
+      hypotheses_boxes_marker.scale.y = std::max(static_cast<float>(box_size.y()), 0.1f);
+      hypotheses_boxes_marker.scale.z = std::max(static_cast<float>(box_size.z()), 0.1f);
+
+      hypotheses_boxes_marker.lifetime = ros::Duration(0, 100000000); // 0.1 seconds
+
+      bounding_boxes_markers.markers.push_back(hypotheses_boxes_marker);
+    }
+  }
+  m_hypotheses_bounding_boxes_publisher.publish(bounding_boxes_markers);
 }
 
 // TODO: implement

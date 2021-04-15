@@ -170,6 +170,8 @@ public:
   inline Eigen::Array3f& getMinBoxHypothesis(){ return m_min_corner_hypothesis; }
   /** @brief Getter for #m_max_corner_hypothesis. */
   inline Eigen::Array3f& getMaxBoxHypothesis(){ return m_max_corner_hypothesis; }
+  /** @brief Getter for size of hypothesis' bounding box. */
+  inline Eigen::Array3f getHypothesisBoxSize(){ return (m_max_corner_hypothesis - m_min_corner_hypothesis).eval(); }
   /** @brief Getter for #m_box_history. */
   inline std::vector<StampedBox>& getBoxHistory(){ return m_box_history; }
   /** @brief Clears #m_box_history. */
