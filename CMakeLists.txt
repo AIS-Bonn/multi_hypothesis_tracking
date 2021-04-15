@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   tf_conversions
   visualization_msgs
-  )
+)
 
 add_definitions(-std=gnu++11 -fext-numeric-literals)
 
@@ -33,41 +33,41 @@ include_directories(
 add_library(hypotheses
   src/hypothesis.cpp
   src/kalman_filter.cpp
-  )
+)
 
 target_link_libraries(hypotheses
   ${EIGEN3_LIBRARIES}
-  )
+)
 
 add_library(hungarian
   src/hungarian.cpp
-  )
+)
 
 add_library(multi_hypothesis_tracker
   src/multi_hypothesis_tracker.cpp
-  )
+)
 
 target_link_libraries(multi_hypothesis_tracker
   hypotheses
   hungarian
-  )
+)
 
 # Nodes
 add_executable(${PROJECT_NAME}_node
   src/${PROJECT_NAME}_node.cpp
   src/mot_publisher.cpp
-  )
+)
 
 target_link_libraries(${PROJECT_NAME}_node
   multi_hypothesis_tracker
   ${catkin_LIBRARIES}
-  )
+)
 
 ## Add cmake target dependencies of the executable
 add_dependencies(${PROJECT_NAME}_node
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
-  )
+)
 
 # Dummy target for IDE's
 FILE(GLOB_RECURSE all_headers_for_ides
