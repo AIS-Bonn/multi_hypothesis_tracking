@@ -29,41 +29,38 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
 )
 
-# Libraries
+# Library for a hypothesis using a Kalman Filter for pose updates
 add_library(hypotheses
   src/hypothesis.cpp
   src/kalman_filter.cpp
 )
-
 target_link_libraries(hypotheses
   ${EIGEN3_LIBRARIES}
 )
 
+# Library for the hungarian method used for assigning detections to hypotheses
 add_library(hungarian
   src/hungarian.cpp
 )
 
+# Library for the Multi Hypothesis Tracker combining hypotheses and assignment method
 add_library(multi_hypothesis_tracker
   src/multi_hypothesis_tracker.cpp
 )
-
 target_link_libraries(multi_hypothesis_tracker
   hypotheses
   hungarian
 )
 
-# Nodes
+# Ros node as interface between incoming messages and tracker
 add_executable(${PROJECT_NAME}_node
   src/${PROJECT_NAME}_node.cpp
   src/mot_publisher.cpp
 )
-
 target_link_libraries(${PROJECT_NAME}_node
   multi_hypothesis_tracker
   ${catkin_LIBRARIES}
 )
-
-## Add cmake target dependencies of the executable
 add_dependencies(${PROJECT_NAME}_node
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
