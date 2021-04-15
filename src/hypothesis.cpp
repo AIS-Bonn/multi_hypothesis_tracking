@@ -18,7 +18,7 @@ Hypothesis::Hypothesis(const Measurement& measurement,
     , m_last_correction_time(measurement.time)
     , m_is_static(true)
     , m_turned_dynamic_now(false)
-    , m_static_distance_threshold(0.3f)
+    , m_static_distance_threshold(1.f)
     , m_cap_velocity(true)
     , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
     , m_max_tracked_velocity(0.0)
