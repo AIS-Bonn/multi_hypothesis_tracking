@@ -56,18 +56,18 @@ target_link_libraries(multi_hypothesis_tracker
   )
 
 # Nodes
-add_executable(multi_hypothesis_tracking_node
-  src/multi_hypothesis_tracking_node.cpp
+add_executable(${PROJECT_NAME}_node
+  src/${PROJECT_NAME}_node.cpp
   src/mot_publisher.cpp
   )
 
-target_link_libraries(multi_hypothesis_tracking_node
+target_link_libraries(${PROJECT_NAME}_node
   multi_hypothesis_tracker
   ${catkin_LIBRARIES}
   )
 
 ## Add cmake target dependencies of the executable
-add_dependencies(multi_hypothesis_tracking_node
+add_dependencies(${PROJECT_NAME}_node
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
   )
