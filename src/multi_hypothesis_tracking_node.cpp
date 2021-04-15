@@ -17,33 +17,33 @@ Tracker::Tracker()
     , m_number_of_callbacks(0)
     , m_got_first_detections(false)
 {
-  ros::NodeHandle n("~");
+  ros::NodeHandle private_node_handle("~");
 
   m_transform_listener = std::make_shared<tf::TransformListener>();
 
   std::string input_topic;
-  n.param<std::string>("input_topic", input_topic, "/object_poses");
+  private_node_handle.param<std::string>("input_topic", input_topic, "/object_poses");
 
-  n.param<std::string>("world_frame", m_world_frame, "world");
+  private_node_handle.param<std::string>("world_frame", m_world_frame, "world");
 
-  n.param<double>("merge_close_hypotheses_distance", m_merge_distance, 0.1);
-  n.param<float>("max_covariance", m_max_covariance, 5.f);
+  private_node_handle.param<double>("merge_close_hypotheses_distance", m_merge_distance, 0.1);
+  private_node_handle.param<float>("max_covariance", m_max_covariance, 5.f);
 
   double max_correspondence_distance;
-  n.param<double>("max_correspondence_distance", max_correspondence_distance, 3.75);
+  private_node_handle.param<double>("max_correspondence_distance", max_correspondence_distance, 3.75);
   m_multi_hypothesis_tracker.setMaxCorrespondenceDistance(max_correspondence_distance);
 
   double kalman_covariance_per_second;
-  n.param<double>("kalman_covariance_per_second", kalman_covariance_per_second, 0.5);
+  private_node_handle.param<double>("kalman_covariance_per_second", kalman_covariance_per_second, 0.5);
   m_multi_hypothesis_tracker.setKalmanCovariancePerSecond(kalman_covariance_per_second);
 
-  n.param<bool>("compute_likelihood", m_compute_likelihood, false);
+  private_node_handle.param<bool>("compute_likelihood", m_compute_likelihood, false);
   m_multi_hypothesis_tracker.setComputeLikelihood(m_compute_likelihood);
 
   bool subscribe_to_poses_only;
-  n.param<bool>("subscribe_to_poses_only", subscribe_to_poses_only, false);
+  private_node_handle.param<bool>("subscribe_to_poses_only", subscribe_to_poses_only, false);
 
-  n.getParam("measure_time", m_measure_time);
+  private_node_handle.getParam("measure_time", m_measure_time);
   if(m_measure_time)
   {
     std::string path_to_results_file = "/tmp/times_multi_hypothesis_tracking";
@@ -52,12 +52,12 @@ Tracker::Tracker()
   m_summed_time_for_callbacks = std::chrono::microseconds::zero();
 
   if(subscribe_to_poses_only)
-    m_laser_detection_subscriber = n.subscribe<geometry_msgs::PoseArray>(input_topic, 1,
-                                                                         &Tracker::detectionPosesCallback, this);
+    m_laser_detection_subscriber = private_node_handle.subscribe<geometry_msgs::PoseArray>(input_topic, 1,
+                                                                                           &Tracker::detectionPosesCallback, this);
   else
-    m_laser_detection_subscriber = n.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(input_topic, 1,
-                                                                                                 &Tracker::detectionCallback,
-                                                                                                 this);
+    m_laser_detection_subscriber = private_node_handle.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(input_topic, 1,
+                                                                                                                   &Tracker::detectionCallback,
+                                                                                                                   this);
 }
 
 void Tracker::publish(const ros::Time& stamp)
