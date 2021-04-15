@@ -2,7 +2,8 @@
 	<name>multi_hypothesis_tracking</name>
 	<version>0.0.0</version>
 	<description>
-		Provides generic nodes and libraries for object tracking
+		Provides generic libraries for Multi Hypothesis Tracking and a Ros node providing detection 
+		messages to the tracker.
 	</description>
 
 	<author email="stueckler@ais.uni-bonn.de">Jörg Stückler</author>
