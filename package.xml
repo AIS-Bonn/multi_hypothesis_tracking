@@ -15,6 +15,7 @@
 	<buildtool_depend>catkin</buildtool_depend>
 	<depend>eigen</depend>
 	<depend>geometry_msgs</depend>
+	<depend>person_msgs</depend>
 	<depend>multi_hypothesis_tracking_msgs</depend>
 	<depend>pcl_ros</depend>
 	<depend>roscpp</depend>

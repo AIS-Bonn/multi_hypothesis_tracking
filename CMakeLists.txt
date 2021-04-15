@@ -8,6 +8,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DAPC_CAPTURE_DEBUG=1")
 find_package(Eigen3 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
+  person_msgs
   multi_hypothesis_tracking_msgs
   pcl_ros
   sensor_msgs
@@ -62,6 +63,20 @@ target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
 add_dependencies(${PROJECT_NAME}_node
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
+
+# Ros node as interface between incoming human_msgs and tracker
+add_executable(multi_human_tracking_node
+  src/multi_human_tracking_node.cpp
+  src/mot_publisher.cpp
+)
+target_link_libraries(multi_human_tracking_node
+  multi_hypothesis_tracker
+  ${catkin_LIBRARIES}
+)
+add_dependencies(multi_human_tracking_node
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )
