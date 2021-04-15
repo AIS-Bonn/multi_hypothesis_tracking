@@ -18,7 +18,6 @@ Tracker::Tracker()
     , m_got_first_detections(false)
 {
   ros::NodeHandle n("~");
-  ros::NodeHandle pub_n;
 
   m_transform_listener = std::make_shared<tf::TransformListener>();
 
