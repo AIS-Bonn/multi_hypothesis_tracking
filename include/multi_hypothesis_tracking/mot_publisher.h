@@ -147,6 +147,8 @@ private:
    * will be removed by the isSpurious.
    */
   double m_born_time_threshold;
+  /** @brief Number of times a hypotheses has to be assigned to detections to be considered valid. */
+  int m_number_of_assignments_threshold;
   /** @brief Time offset for predictions. */
   double m_future_time;
 

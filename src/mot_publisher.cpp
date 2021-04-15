@@ -48,6 +48,7 @@ MOTPublisher::MOTPublisher()
 
   n.param<std::string>("world_frame", m_world_frame, "world");
   n.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
+  n.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
   n.param<double>("future_time", m_future_time, 0.0);
 }
 
@@ -196,7 +197,8 @@ void MOTPublisher::publishHypothesesCovariances(const std::vector <std::shared_p
     hyp_covariance_marker.scale.y = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(1, 1));
     hyp_covariance_marker.scale.z = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(2, 2));
 
-    if(current_time - hypotheses[i]->getBornTime() >= m_born_time_threshold)
+    if(current_time - hypotheses[i]->getBornTime() >= m_born_time_threshold
+       && hypotheses[i]->getNumberOfAssignments() >= m_number_of_assignments_threshold)
       m_hypotheses_covariance_publisher.publish(hyp_covariance_marker);
   }
 }
@@ -222,7 +224,8 @@ void MOTPublisher::publishHypothesesPositions(const std::vector <std::shared_ptr
     p.y = mean(1);
     p.z = mean(2);
 
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold)
+    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
+       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
       hypothesis_marker.points.push_back(p);
   }
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
@@ -340,7 +343,8 @@ void MOTPublisher::publishHypothesesPredictions(const std::vector <std::shared_p
     object.centroid.y = mean(1);
     object.centroid.z = mean(2);
 
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold)
+    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
+       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
       object_detecions.object_detections.push_back(object);
   }
   m_hypotheses_predictions_publisher.publish(object_detecions);
@@ -370,7 +374,8 @@ void MOTPublisher::publishHypothesesPredictedPositions(const std::vector <std::s
     p.y = mean(1);
     p.z = mean(2);
 
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold)
+    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
+       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
       hypothesis_marker.points.push_back(p);
   }
   m_hypotheses_predicted_positions_publisher.publish(hypothesis_marker);
@@ -393,7 +398,9 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector <std::shar
   {
     std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(hypothesis->isStatic() && current_time - hypothesis->getBornTime() >= m_born_time_threshold)
+    if(hypothesis->isStatic()
+       && current_time - hypothesis->getBornTime() >= m_born_time_threshold
+       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
     {
       srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
@@ -437,7 +444,9 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector <std::sha
   {
     std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(!hypothesis->isStatic() && current_time - hypothesis->getBornTime() >= m_born_time_threshold)
+    if(!hypothesis->isStatic()
+       && current_time - hypothesis->getBornTime() >= m_born_time_threshold
+       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
     {
       srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
