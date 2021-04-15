@@ -26,6 +26,10 @@ Tracker::Tracker()
   private_node_handle.param<double>("merge_close_hypotheses_distance", m_merge_distance, 0.1);
   private_node_handle.param<float>("max_covariance", m_max_covariance, 5.f);
 
+  bool use_bhattacharyya_distance;
+  private_node_handle.param<bool>("use_bhattacharyya_distance", use_bhattacharyya_distance, true);
+  m_multi_hypothesis_tracker.setUseBhattacharyyaDistance(use_bhattacharyya_distance);
+
   double max_correspondence_distance;
   private_node_handle.param<double>("max_correspondence_distance", max_correspondence_distance, 3.75);
   m_multi_hypothesis_tracker.setMaxCorrespondenceDistance(max_correspondence_distance);

@@ -91,13 +91,14 @@ public:
     std::swap(m_heavens_gate, empty);
   }
 
-  /** @brief Setter for distance threshold #m_max_bhattacharyya_distance. */
-  inline void setMaxCorrespondenceDistance(double distance)
-  {
-    m_max_bhattacharyya_distance = (int)m_dist_scale * distance;
-  }
+  /** @brief Setter for #m_use_bhattacharyya_for_assignments. */
+  inline void
+  setUseBhattacharyyaDistance(bool use_bhattacharyya){ m_use_bhattacharyya_for_assignments = use_bhattacharyya; }
 
-  /** @brief Setter for distance threshold #m_max_bhattacharyya_distance. */
+  /** @brief Setter for distance threshold #m_max_distance. */
+  inline void setMaxCorrespondenceDistance(double distance){ m_max_distance = (int)m_dist_scale * distance; }
+
+  /** @brief Setter for covariance increase per second. */
   inline void setKalmanCovariancePerSecond(double covariance_per_second)
   {
     m_hypothesis_factory->setKalmanCovariancePerSecond(covariance_per_second);
@@ -113,14 +114,14 @@ protected:
   /**
    * @brief Set up cost matrix for hungarian method.
    *
-   * Top left block: Pairwise thresholded Mahalanobis distance between each
+   * Top left block: Pairwise thresholded distance between each
    * measurement and each hypothesis.
    * Top right block: Fake distance of hypotheses to dummy measurements
-   *    -> #m_max_mahalanobis_distance
+   *    -> #m_max_distance
    * Bottom left block: Fake distance of measurements to dummy hypotheses
-   *    -> #m_max_mahalanobis_distance
+   *    -> #m_max_distance
    * Bottom right block: Fake distance between dummy measurements and dummy
-   * hyptheses -> Zeroes.
+   * hypotheses -> Zeroes.
    *
    * @param[in]     measurements    detections.
    * @param[in]     hypotheses      already existing hypotheses.
@@ -183,10 +184,12 @@ protected:
   /** @brief Counter for hypotheses IDs.*/
   unsigned int m_current_hypothesis_id;
 
+  /** @brief If true, bhattacharyya distance is used for correspondences, else euclidean is used.*/
+  bool m_use_bhattacharyya_for_assignments;
   /** @brief Scale from double to int, because distance is in double but hungarian needs int costs.*/
   int m_dist_scale;
   /** @brief Scaled distance threshold for assignments.*/
-  int m_max_bhattacharyya_distance;
+  int m_max_distance;
   /** @brief If true, computes m_average_likelihood.*/
   bool m_compute_likelihood;
   /** @brief Sum of likelihoods of measurements given the states.*/

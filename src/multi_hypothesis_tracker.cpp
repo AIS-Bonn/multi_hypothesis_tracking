@@ -13,8 +13,9 @@ namespace MultiHypothesisTracker
 MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr <HypothesisFactory> hypothesis_factory)
   : m_hypothesis_factory(hypothesis_factory)
     , m_current_hypothesis_id(0)
+    , m_use_bhattacharyya_for_assignments(true)
     , m_dist_scale(10000)
-    , m_max_bhattacharyya_distance((int)(m_dist_scale * 20.0))
+    , m_max_distance((int)(m_dist_scale * 20.0))
     , m_compute_likelihood(false)
     , m_likelihood_sum(0.f)
     , m_assigned_hypotheses_counter(0)
@@ -77,19 +78,26 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Measurement>& me
       if(i < hyp_size && j < meas_size)
       {
         // Calculate distance between hypothesis and measurement
-        double bhattacharyya_distance = bhattacharyya(m_hypotheses[i]->getPosition(),
-                                                      measurements[j].pos.block<3, 1>(0, 0),
-                                                      m_hypotheses[i]->getCovariance(),
-                                                      measurements[j].cov.block<3, 3>(0, 0));
-
-        int scaled_bhattacharyya_distance = (int)(m_dist_scale * bhattacharyya_distance);
-        if(scaled_bhattacharyya_distance < m_max_bhattacharyya_distance)
+        double distance = -1.0;
+        if(m_use_bhattacharyya_for_assignments)
+        {
+          distance = bhattacharyya(m_hypotheses[i]->getPosition(),
+                                   measurements[j].pos.block<3, 1>(0, 0),
+                                   m_hypotheses[i]->getCovariance(),
+                                   measurements[j].cov.block<3, 3>(0, 0));
+        }
+        else
+        {
+          distance = (m_hypotheses[i]->getPosition() - measurements[j].pos.block<3, 1>(0, 0)).norm();
+        }
+        int scaled_distance = (int)(m_dist_scale * distance);
+        if(scaled_distance < m_max_distance)
         {
           if(measurements[j].class_a_detection)
-            cost_matrix[i][j] = scaled_bhattacharyya_distance;
+            cost_matrix[i][j] = scaled_distance;
           else
             // if detection is here because of loosend thresholds, set highest valid distance to only assign if no other option available
-            cost_matrix[i][j] = m_max_bhattacharyya_distance - 1;
+            cost_matrix[i][j] = m_max_distance - 1;
         }
         else
         {
@@ -100,12 +108,12 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Measurement>& me
       else if(i < hyp_size && j >= meas_size)
       {
         // distance from a hypothesis to a dummy measurement
-        cost_matrix[i][j] = m_max_bhattacharyya_distance;
+        cost_matrix[i][j] = m_max_distance;
       }
       else if(i >= hyp_size && j < meas_size)
       {
         // distance from a measurement to a dummy hypothesis
-        cost_matrix[i][j] = m_max_bhattacharyya_distance;
+        cost_matrix[i][j] = m_max_distance;
       }
       else if(i >= hyp_size && j >= meas_size)
       {
@@ -135,7 +143,7 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
       if(i < hyp_size && j < meas_size)
       {
         // if hypothesis assigned to measurement and distance below threshold -> correct hypothesis
-        if(assignments[i][j] == HUNGARIAN_ASSIGNED && cost_matrix[i][j] < m_max_bhattacharyya_distance)
+        if(assignments[i][j] == HUNGARIAN_ASSIGNED && cost_matrix[i][j] < m_max_distance)
         {
           if(m_compute_likelihood)
             updateLikelihoodSum(m_hypotheses[i]->computeLikelihood(measurements[j]));
