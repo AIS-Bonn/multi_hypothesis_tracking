@@ -22,8 +22,8 @@ struct Measurement
 {
   Eigen::Vector3f pos;                  ///< position of detection.
   Eigen::Matrix3f cov;                  ///< covariance of detection.
-  std::vector <Eigen::Vector3f> points;  ///< point cloud corresponding to detection.
-  std::vector <uint32_t> point_ids;      ///< indices of points in original point cloud corresponding to detection.
+  std::vector<Eigen::Vector3f> points;  ///< point cloud corresponding to detection.
+  std::vector<uint32_t> point_ids;      ///< indices of points in original point cloud corresponding to detection.
 
   std::string frame;                    ///< frame_id of detection.
   double time;                          ///< time_stamp of the detection.
@@ -98,7 +98,7 @@ public:
    * @param[in,out] points      points that are transformed.
    * @param[in]     transform   translation that is applies to points.
    */
-  void transformPoints(std::vector <Eigen::Vector3f>& points,
+  void transformPoints(std::vector<Eigen::Vector3f>& points,
                        const Eigen::Vector3f& transform);
 
   /**
@@ -108,7 +108,7 @@ public:
    * @param[out]    min_bounding_box    min corner of bounding box.
    * @param[out]    max_bounding_box    max corner of bounding box.
    */
-  void computeBoundingBox(const std::vector <Eigen::Vector3f>& points,
+  void computeBoundingBox(const std::vector<Eigen::Vector3f>& points,
                           Eigen::Array3f& min_bounding_box,
                           Eigen::Array3f& max_bounding_box);
 
@@ -171,19 +171,19 @@ public:
   /** @brief Getter for #m_max_corner_hypothesis. */
   inline Eigen::Array3f& getMaxBoxHypothesis(){ return m_max_corner_hypothesis; }
   /** @brief Getter for #m_box_history. */
-  inline std::vector <StampedBox>& getBoxHistory(){ return m_box_history; }
+  inline std::vector<StampedBox>& getBoxHistory(){ return m_box_history; }
   /** @brief Clears #m_box_history. */
   inline void clearBoxHistory(){ m_box_history.clear(); }
   /** @brief Getter for #m_interpolated_boxes. */
-  inline std::vector <StampedBox>& getInterpolatedBoxes(){ return m_interpolated_boxes; }
+  inline std::vector<StampedBox>& getInterpolatedBoxes(){ return m_interpolated_boxes; }
   /** @brief Indicate whether this hypothesis lost track and recovered it in this time step. */
   inline bool recoveredTrack(){ return !m_interpolated_boxes.empty(); }
 
 
   /** @brief Getter for point cloud. */
-  inline std::vector <Eigen::Vector3f>& getPointCloud(){ return m_points; }
+  inline std::vector<Eigen::Vector3f>& getPointCloud(){ return m_points; }
   /** @brief Getter for point ids. */
-  inline std::vector <uint32_t>& getPointIds(){ return m_point_ids; }
+  inline std::vector<uint32_t>& getPointIds(){ return m_point_ids; }
 protected:
 
   /** @brief Check if hypothesis is still static. */
@@ -191,7 +191,7 @@ protected:
                     Eigen::Array3f& max_corner_detection);
 
   /** @brief Kalman filter for state estimation. */
-  std::shared_ptr <KalmanFilter> m_kalman;
+  std::shared_ptr<KalmanFilter> m_kalman;
 
   /** @brief Hypothesis ID. */
   unsigned int m_id;
@@ -232,18 +232,18 @@ protected:
   Eigen::Array3f m_max_corner_init_hypothesis;
 
   /** @brief Stamped bounding boxes of a static hypothesis. */
-  std::vector <StampedBox> m_box_history;
+  std::vector<StampedBox> m_box_history;
 
   /** @brief Bounding box of hypothesis during previous correction step. */
   Box m_previous_correction_box;
 
   /** @brief Stamped interpolated bounding boxes of a dynamic hypothesis between losing a track and recovering it. */
-  std::vector <StampedBox> m_interpolated_boxes;
+  std::vector<StampedBox> m_interpolated_boxes;
 
   /** @brief Points representing object. */
-  std::vector <Eigen::Vector3f> m_points;
+  std::vector<Eigen::Vector3f> m_points;
   /** @brief Indices of points within point cloud representing object. */
-  std::vector <uint32_t> m_point_ids;
+  std::vector<uint32_t> m_point_ids;
 
   /** @brief Time stamps of predictions since the previous correction step. */
   std::queue<double> m_prediction_times_since_previous_correction;
@@ -274,8 +274,8 @@ public:
    *
    * @return pointer to created hypothesis.
    */
-  std::shared_ptr <Hypothesis> createHypothesis(const Measurement& measurement,
-                                                unsigned int id);
+  std::shared_ptr<Hypothesis> createHypothesis(const Measurement& measurement,
+                                               unsigned int id);
 };
 
 };

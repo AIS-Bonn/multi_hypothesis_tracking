@@ -209,10 +209,8 @@ void MultiHypothesisTracker::mergeCloseHypotheses(double distance_threshold)
 }
 
 std::vector<std::shared_ptr < Hypothesis>>
-
 ::iterator MultiHypothesisTracker::erase(std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                          std::vector<std::shared_ptr < Hypothesis>>
-
 ::iterator& it
 )
 {

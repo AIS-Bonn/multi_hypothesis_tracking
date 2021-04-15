@@ -17,8 +17,7 @@ MOTPublisher::MOTPublisher()
   ros::NodeHandle pub_n;
 
   m_hypotheses_full_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::HypothesesFull>("hypotheses_full", 1);
-  m_hypotheses_predictions_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>(
-    "hypotheses_predictions", 1);
+  m_hypotheses_predictions_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>("hypotheses_predictions", 1);
 
   m_measurement_positions_publisher = n.advertise<visualization_msgs::Marker>(
     n.getNamespace() + "/measurements_positions", 1);

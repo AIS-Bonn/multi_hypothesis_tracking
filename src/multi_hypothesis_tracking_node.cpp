@@ -266,8 +266,7 @@ std::queue <Hypothesis>& Tracker::getDeletedHypotheses()
 }
 
 
-int main(int argc,
-         char** argv)
+int main(int argc, char** argv)
 {
   ros::init(argc, argv, "multi_hypothesis_tracking");
 
