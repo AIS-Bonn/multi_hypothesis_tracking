@@ -150,7 +150,8 @@ void Hypothesis::correct(const Measurement& measurement)
   // update point ids
   m_point_ids = measurement.point_ids;
 
-  verifyStatic(m_min_corner_detection, m_max_corner_detection);
+//	verifyStatic(m_min_corner_detection, m_max_corner_detection);
+  verifyStatic();
 
   m_interpolated_boxes.clear();
   // if this hypothesis wasn't assigned to a detection at least one time
@@ -296,6 +297,29 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
 //    // TODO: test if check for max velocity only is better. or dist fram origin with a larger distance + check for max velocity to account for registration mistakes that statistically should keep the object position in a range around the origin
 //    if(distance_from_origin > m_static_distance_threshold /*&& (m_max_velocity_in_track.norm() > 0.85)*/)
 //      m_is_static = false;
+  }
+}
+
+void Hypothesis::verifyStatic()
+{
+  // flag is turned to true just once when the hypothesis switches from being static to dynamic.
+  if(m_turned_dynamic_now)
+    m_box_history.clear();
+
+  m_turned_dynamic_now = false;
+  if(m_is_static)
+  {
+    // Compute just distance in xy direction and don't account for movement in z direction
+    Eigen::Vector3f xy_difference = getPosition() - m_first_position_in_track;
+    xy_difference.z() = 0.f;
+
+    double distance_from_origin = xy_difference.norm();
+    // TODO: test if check for max velocity only is better. or dist fram origin with a larger distance + check for max velocity to account for registration mistakes that statistically should keep the object position in a range around the origin
+    if(distance_from_origin > m_static_distance_threshold /*&& (m_max_velocity_in_track.norm() > 0.85)*/)
+    {
+      m_is_static = false;
+      m_turned_dynamic_now = true;
+    }
   }
 }
 

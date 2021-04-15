@@ -190,6 +190,9 @@ protected:
   void verifyStatic(Eigen::Array3f& min_corner_detection,
                     Eigen::Array3f& max_corner_detection);
 
+  /** @brief Check if hypothesis is still static. */
+  void verifyStatic();
+
   /** @brief Kalman filter for state estimation. */
   std::shared_ptr<KalmanFilter> m_kalman;
 
