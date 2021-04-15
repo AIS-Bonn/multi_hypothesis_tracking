@@ -7,17 +7,14 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DAPC_CAPTURE_DEBUG=1")
 
 find_package(Eigen3 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
-  visualization_msgs
+  geometry_msgs
   multi_hypothesis_tracking_msgs
-  message_filters
+  pcl_ros
+  sensor_msgs
+  std_msgs
   tf
   tf_conversions
-  message_generation
-  genmsg
-  std_msgs
-  geometry_msgs
-  sensor_msgs
-  pcl_ros
+  visualization_msgs
   )
 
 add_definitions(-std=gnu++11 -fext-numeric-literals)
