@@ -35,7 +35,7 @@ namespace MultiHypothesisTracker
 {
 
 /**
- * @brief Ros node to track multiple objects simultaneously.
+ * @brief Ros node to track multiple hypotheses simultaneously.
  */
 class Tracker
 {
