@@ -21,9 +21,6 @@ Tracker::Tracker()
 
   m_transform_listener = std::make_shared<tf::TransformListener>();
 
-  std::string input_topic;
-  private_node_handle.param<std::string>("input_topic", input_topic, "/object_poses");
-
   private_node_handle.param<std::string>("world_frame", m_world_frame, "world");
 
   private_node_handle.param<double>("merge_close_hypotheses_distance", m_merge_distance, 0.1);
@@ -40,9 +37,6 @@ Tracker::Tracker()
   private_node_handle.param<bool>("compute_likelihood", m_compute_likelihood, false);
   m_multi_hypothesis_tracker.setComputeLikelihood(m_compute_likelihood);
 
-  bool subscribe_to_poses_only;
-  private_node_handle.param<bool>("subscribe_to_poses_only", subscribe_to_poses_only, false);
-
   private_node_handle.getParam("measure_time", m_measure_time);
   if(m_measure_time)
   {
@@ -51,6 +45,10 @@ Tracker::Tracker()
   }
   m_summed_time_for_callbacks = std::chrono::microseconds::zero();
 
+  std::string input_topic;
+  private_node_handle.param<std::string>("input_topic", input_topic, "/object_poses");
+  bool subscribe_to_poses_only;
+  private_node_handle.param<bool>("subscribe_to_poses_only", subscribe_to_poses_only, false);
   if(subscribe_to_poses_only)
     m_laser_detection_subscriber = private_node_handle.subscribe<geometry_msgs::PoseArray>(input_topic, 1,
                                                                                            &Tracker::detectionPosesCallback, this);
