@@ -242,9 +242,13 @@ void Tracker::processMeasurements(const std::vector <Measurement>& measurements)
   if(measurements.empty())
     return;
 
+  double time_since_last_measurements = measurements.at(0).time - m_last_prediction_time;
+  if(time_since_last_measurements <= 0.0)
+    return;
+
   // Prediction step of kalman filter for all hypotheses
-  if(m_last_prediction_time > 0)
-    m_multi_hypothesis_tracker.predict(measurements.at(0).time - m_last_prediction_time);
+  if(m_last_prediction_time > 0.0)
+    m_multi_hypothesis_tracker.predict(time_since_last_measurements);
 
   m_last_prediction_time = measurements.at(0).time;
 
