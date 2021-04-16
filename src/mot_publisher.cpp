@@ -252,11 +252,6 @@ void MOTPublisher::publishHypothesesPoints(const Hypotheses& hypotheses,
     max_cloud_size = std::max(max_cloud_size, (int)hypotheses.at(i)->getPointCloud().size());
   }
 
-  std::cout << " number of hypotheses " << (int)hypotheses.size() << std::endl;
-  std::cout << " total points count " << total_points_count << std::endl;
-  std::cout << " min_cloud_size " << min_cloud_size << std::endl;
-  std::cout << " max_cloud_size " << max_cloud_size << std::endl;
-
   cloud->points.resize(total_points_count);
   int point_counter = 0;
   for(size_t i = 0; i < hypotheses.size(); i++)
