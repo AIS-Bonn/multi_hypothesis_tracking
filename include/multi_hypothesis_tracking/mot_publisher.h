@@ -47,6 +47,8 @@ namespace MultiHypothesisTracker
 typedef multi_hypothesis_tracking_msgs::HypothesesFull HypothesesFullMsg;
 typedef multi_hypothesis_tracking_msgs::ObjectDetections ObjectDetectionsMsg;
 
+typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
+
 typedef visualization_msgs::Marker MarkerMsg;
 
 class MOTPublisher

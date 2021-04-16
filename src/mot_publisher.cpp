@@ -20,12 +20,9 @@ MOTPublisher::MOTPublisher()
 
   m_detection_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/detections_positions", 1);
   m_detections_covariances_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/detections_covariances", 1);
-  m_detections_points_publisher =
-    n.advertise<pcl::PointCloud<pcl::PointXYZ >>(n.getNamespace() + "/detections_points", 1);
-  m_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_positions",
-                                                            1);
-  m_hypotheses_points_publisher =
-    n.advertise<pcl::PointCloud<pcl::PointXYZ >>(n.getNamespace() + "/hypotheses_points", 1);
+  m_detections_points_publisher = n.advertise<PointCloud>(n.getNamespace() + "/detections_points", 1);
+  m_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_positions", 1);
+  m_hypotheses_points_publisher = n.advertise<PointCloud>(n.getNamespace() + "/hypotheses_points", 1);
   m_hypotheses_paths_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_paths", 1);
   m_hypotheses_covariance_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_covariances", 1);
   m_static_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/static_hypotheses_positions",
@@ -148,7 +145,7 @@ void MOTPublisher::publishDetectionsPoints(const std::vector<Detection>& detecti
   if(m_detections_points_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
 
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+  PointCloud::Ptr cloud(new PointCloud);
   cloud->header.frame_id = detections.at(0).frame_id;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
@@ -229,7 +226,7 @@ void MOTPublisher::publishHypothesesPoints(const std::vector<std::shared_ptr<Hyp
   if(m_hypotheses_points_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+  PointCloud::Ptr cloud(new PointCloud);
   cloud->header.frame_id = m_world_frame;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
