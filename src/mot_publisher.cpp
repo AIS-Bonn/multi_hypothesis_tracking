@@ -63,7 +63,7 @@ void MOTPublisher::publishAll(const Hypotheses& hypotheses,
   publishStaticHypothesesPositions(hypotheses, stamp);
   publishDynamicHypothesesPositions(hypotheses, stamp);
 
-  publishFullTracks(hypotheses, stamp);
+  publishHypothesesPaths(hypotheses, stamp);
   publishHypothesesBoundingBoxes(hypotheses, stamp);
   publishHypothesesPredictedPositions(hypotheses, stamp);
 
@@ -352,8 +352,8 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
   m_dynamic_hypotheses_positions_publisher.publish(dynamic_objects_marker);
 }
 
-void MOTPublisher::publishFullTracks(const Hypotheses& hypotheses,
-                                     const ros::Time& stamp)
+void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
+                                          const ros::Time& stamp)
 {
   if(m_hypotheses_paths_publisher.getNumSubscribers() == 0)
     return;

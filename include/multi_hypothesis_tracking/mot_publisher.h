@@ -112,9 +112,9 @@ public:
   void publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
                                          const ros::Time& stamp);
 
-  /** @brief Publish full tracks of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishFullTracks(const Hypotheses& hypotheses,
-                         const ros::Time& stamp);
+  /** @brief Publish paths of hypotheses that are tracked longer than #m_born_time_threshold */
+  void publishHypothesesPaths(const Hypotheses& hypotheses,
+                              const ros::Time& stamp);
   /** @brief Publish bounding boxes of all hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
                                       const ros::Time& stamp);
