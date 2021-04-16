@@ -14,6 +14,9 @@ MOTPublisher::MOTPublisher()
 {
   ros::NodeHandle private_node_handle("~");
   initializePublishers(private_node_handle);
+  getRosParameters(private_node_handle);
+}
+
 void MOTPublisher::initializePublishers(ros::NodeHandle& node_handle)
 {
   m_hypotheses_full_publisher = node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
@@ -39,10 +42,12 @@ void MOTPublisher::initializePublishers(ros::NodeHandle& node_handle)
   m_likelihood_publisher = node_handle.advertise<std_msgs::Float32>("likelihood", 1);
 }
 
-  private_node_handle.param<std::string>("world_frame", m_world_frame, "world");
-  private_node_handle.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
-  private_node_handle.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
-  private_node_handle.param<double>("future_time", m_future_time, 0.0);
+void MOTPublisher::getRosParameters(ros::NodeHandle& node_handle)
+{
+  node_handle.param<std::string>("world_frame", m_world_frame, "world");
+  node_handle.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
+  node_handle.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
+  node_handle.param<double>("future_time", m_future_time, 0.0);
 }
 
 void MOTPublisher::publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,

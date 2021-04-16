@@ -62,6 +62,7 @@ public:
   ~MOTPublisher(){};
 
   void initializePublishers(ros::NodeHandle& node_handle);
+  void getRosParameters(ros::NodeHandle& node_handle);
 
   /** @brief Calls all publishers. */
   void publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
