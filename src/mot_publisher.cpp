@@ -33,7 +33,7 @@ MOTPublisher::MOTPublisher()
                                                                       1);
   m_hypotheses_predicted_positions_publisher = n.advertise<MarkerMsg>(
     n.getNamespace() + "/hypotheses_predicted_positions", 1);
-  m_hypotheses_box_evaluation_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(
+  m_hypotheses_box_evaluation_publisher = n.advertise<HypothesesEvaluationBoxesMsg>(
     n.getNamespace() + "/hypotheses_boxes_evaluation", 1, true);
   m_likelihood_publisher = n.advertise<std_msgs::Float32>(n.getNamespace() + "/likelihood", 1);
 
@@ -595,8 +595,7 @@ void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector<std::share
   if(m_hypotheses_box_evaluation_publisher.getNumSubscribers() == 0)
     return;
 
-  multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxesPtr hypotheses_msg(
-    new multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes());
+  HypothesesEvaluationBoxesMsg::Ptr hypotheses_msg(new HypothesesEvaluationBoxesMsg());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
