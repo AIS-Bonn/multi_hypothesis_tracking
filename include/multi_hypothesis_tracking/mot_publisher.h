@@ -111,7 +111,7 @@ public:
    * @param[in] detections   detections.
    */
   void publishDetectionPositions(const std::vector<Detection>& detections,
-                                   const ros::Time& stamp);
+                                 const ros::Time& stamp);
 
   /**
    * @brief Publishes detections covariances as markers.
@@ -119,7 +119,7 @@ public:
    * @param[in] detections   detections.
    */
   void publishDetectionsCovariances(const std::vector<Detection>& detections,
-                                      const ros::Time& stamp);
+                                    const ros::Time& stamp);
 
   /**
    * @brief Publishes point clouds corresponding to detections.
@@ -127,7 +127,7 @@ public:
    * @param[in] detections   detections.
    */
   void publishDetectionsPoints(const std::vector<Detection>& detections,
-                                 const ros::Time& stamp);
+                               const ros::Time& stamp);
 
   /** @brief Publish the likelihood. */
   void publishLikelihood(float likelihood);

@@ -55,11 +55,13 @@ Tracker::Tracker()
   private_node_handle.param<bool>("subscribe_to_poses_only", subscribe_to_poses_only, false);
   if(subscribe_to_poses_only)
     m_laser_detection_subscriber = private_node_handle.subscribe<geometry_msgs::PoseArray>(input_topic, 1,
-                                                                                           &Tracker::detectionPosesCallback, this);
+                                                                                           &Tracker::detectionPosesCallback,
+                                                                                           this);
   else
-    m_laser_detection_subscriber = private_node_handle.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(input_topic, 1,
-                                                                                                                   &Tracker::detectionCallback,
-                                                                                                                   this);
+    m_laser_detection_subscriber = private_node_handle.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(
+      input_topic, 1,
+      &Tracker::detectionCallback,
+      this);
 }
 
 void Tracker::publish(const ros::Time& stamp)
@@ -76,7 +78,7 @@ void Tracker::detectionPosesCallback(const geometry_msgs::PoseArray::ConstPtr& m
 
 //  double start = getTimeHighRes();
 
-  std::vector <Detection> detections;
+  std::vector<Detection> detections;
   convert(msg, detections);
 
   if(!transformToFrame(detections, msg->header, m_world_frame))
@@ -97,7 +99,7 @@ void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDete
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
-  std::vector <Detection> detections;
+  std::vector<Detection> detections;
   convert(msg, detections);
 
   if(!transformToFrame(detections, msg->header, m_world_frame))
@@ -129,7 +131,7 @@ void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDete
 }
 
 void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-                      std::vector <Detection>& detections)
+                      std::vector<Detection>& detections)
 {
   Detection detection;
   detection.frame_id = msg->header.frame_id;
@@ -154,7 +156,7 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
 }
 
 void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
-                      std::vector <Detection>& detections)
+                      std::vector<Detection>& detections)
 {
   Detection detection;
   detection.frame_id = msg->header.frame_id;
@@ -185,7 +187,7 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
   }
 }
 
-bool Tracker::transformToFrame(std::vector <Detection>& detections,
+bool Tracker::transformToFrame(std::vector<Detection>& detections,
                                const std_msgs::Header& header,
                                const std::string& target_frame)
 {
@@ -227,7 +229,7 @@ bool Tracker::transformToFrame(std::vector <Detection>& detections,
   return true;
 }
 
-void Tracker::processDetections(const std::vector <Detection>& detections)
+void Tracker::processDetections(const std::vector<Detection>& detections)
 {
   if(detections.empty())
     return;
@@ -250,7 +252,7 @@ void Tracker::processDetections(const std::vector <Detection>& detections)
   m_multi_hypothesis_tracker.mergeCloseHypotheses(m_merge_distance);
 }
 
-const std::vector <std::shared_ptr<Hypothesis>>& Tracker::getHypotheses()
+const std::vector<std::shared_ptr<Hypothesis>>& Tracker::getHypotheses()
 {
   return m_multi_hypothesis_tracker.getHypotheses();
 }

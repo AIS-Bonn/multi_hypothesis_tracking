@@ -71,7 +71,7 @@ public:
    *
    * @return false if at least one detection couldn't be transformed, true otherwise
    */
-  bool transformToFrame(std::vector <Detection>& detections,
+  bool transformToFrame(std::vector<Detection>& detections,
                         const std_msgs::Header& header,
                         const std::string& target_frame);
 
@@ -82,7 +82,7 @@ public:
    * @param[out]    detections    detections in tracker format.
    */
   void convert(const HumanMsg::ConstPtr& msg,
-               std::vector <Detection>& detections);
+               std::vector<Detection>& detections);
 
   /**
    * @brief Performs one prediction and correction step for every hypothesis.
@@ -93,13 +93,13 @@ public:
    *
    * @param detections    new detections.
    */
-  void processDetections(const std::vector <Detection>& detections);
+  void processDetections(const std::vector<Detection>& detections);
 
   /** @brief Getter for hypotheses vector. */
-  const std::vector <std::shared_ptr<Hypothesis>>& getHypotheses();
+  const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
 
   /** @brief Getter for hypotheses that are about to get deleted. */
-  std::queue <Hypothesis>& getDeletedHypotheses();
+  std::queue<Hypothesis>& getDeletedHypotheses();
 
 private:
   /** @brief Subscribes to detections. */
@@ -108,7 +108,7 @@ private:
   MOTPublisher m_mot_publisher;
 
   /** @brief Provides transforms to world frame. */
-  std::shared_ptr <tf::TransformListener> m_transform_listener;
+  std::shared_ptr<tf::TransformListener> m_transform_listener;
 
   /** @brief The functionality. */
   MultiHypothesisTracker m_multi_hypothesis_tracker;

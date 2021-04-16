@@ -10,7 +10,7 @@
 namespace MultiHypothesisTracker
 {
 
-MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr <HypothesisFactory> hypothesis_factory)
+MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr<HypothesisFactory> hypothesis_factory)
   : m_hypothesis_factory(hypothesis_factory)
     , m_current_hypothesis_id(0)
     , m_use_bhattacharyya_for_assignments(true)
@@ -35,7 +35,7 @@ void MultiHypothesisTracker::predict(double time_diff,
     hypothesis->predict(time_diff, control);
 }
 
-void MultiHypothesisTracker::correct(const std::vector <Detection>& detections)
+void MultiHypothesisTracker::correct(const std::vector<Detection>& detections)
 {
   if(detections.empty())
     return;
@@ -59,8 +59,8 @@ void MultiHypothesisTracker::correct(const std::vector <Detection>& detections)
   hungarian_free(&hung);
 }
 
-void MultiHypothesisTracker::setupCostMatrix(const std::vector <Detection>& detections,
-                                             std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
+void MultiHypothesisTracker::setupCostMatrix(const std::vector<Detection>& detections,
+                                             std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                                              int**& cost_matrix)
 {
   size_t hyp_size = hypotheses.size();
@@ -122,8 +122,8 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Detection>& dete
 
 void MultiHypothesisTracker::applyAssignments(int**& assignments,
                                               int**& cost_matrix,
-                                              const std::vector <Detection>& detections,
-                                              std::vector <std::shared_ptr<Hypothesis>>& hypotheses)
+                                              const std::vector<Detection>& detections,
+                                              std::vector<std::shared_ptr<Hypothesis>>& hypotheses)
 {
   if(m_compute_likelihood)
     resetAverageLikelihood();

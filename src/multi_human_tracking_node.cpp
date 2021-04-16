@@ -65,7 +65,7 @@ void Tracker::detectionCallback(const HumanMsg::ConstPtr& msg)
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
-  std::vector <Detection> detections;
+  std::vector<Detection> detections;
   convert(msg, detections);
 
   if(!transformToFrame(detections, msg->header, m_world_frame))
@@ -96,7 +96,7 @@ void Tracker::detectionCallback(const HumanMsg::ConstPtr& msg)
 }
 
 void Tracker::convert(const HumanMsg::ConstPtr& msg,
-                      std::vector <Detection>& detections)
+                      std::vector<Detection>& detections)
 {
   Detection detection;
   detection.frame_id = msg->header.frame_id;
@@ -106,18 +106,20 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
   for(const auto& person_detection : msg->persons)
   {
     if((int)person_detection.keypoints.size() != 21)
-      ROS_INFO_STREAM("Person detection has " << (int)person_detection.keypoints.size() << " keypoints, but should have 21.");
+      ROS_INFO_STREAM(
+        "Person detection has " << (int)person_detection.keypoints.size() << " keypoints, but should have 21.");
 
     if(person_detection.keypoints[8].score < score_threshold)
     {
-      ROS_INFO_STREAM("Mid hip score is " << person_detection.keypoints[8].score << ", which is below the threshold of 0.1");
+      ROS_INFO_STREAM(
+        "Mid hip score is " << person_detection.keypoints[8].score << ", which is below the threshold of 0.1");
       continue;
     }
-    
+
     detection.position(0) = static_cast<float>(person_detection.keypoints[8].joint.x);
     detection.position(1) = static_cast<float>(person_detection.keypoints[8].joint.y);
     detection.position(2) = static_cast<float>(person_detection.keypoints[8].joint.z);
-    
+
     float detection_std = 0.03f;
     detection.covariance.setIdentity();
     detection.covariance(0, 0) = detection_std * detection_std;
@@ -128,14 +130,14 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
     for(const auto& joint : person_detection.keypoints)
       if(joint.score > 0.0)
         detection.points.emplace_back(Eigen::Vector3f(joint.joint.x,
-                                                        joint.joint.y,
-                                                        joint.joint.z));
-    
+                                                      joint.joint.y,
+                                                      joint.joint.z));
+
     detections.push_back(detection);
   }
 }
 
-bool Tracker::transformToFrame(std::vector <Detection>& detections,
+bool Tracker::transformToFrame(std::vector<Detection>& detections,
                                const std_msgs::Header& header,
                                const std::string& target_frame)
 {
@@ -170,14 +172,14 @@ bool Tracker::transformToFrame(std::vector <Detection>& detections,
 
     for(auto& point : detection.points)
       point = transform_eigenf * point;
-    
+
     detection.frame_id = target_frame;
   }
 
   return true;
 }
 
-void Tracker::processDetections(const std::vector <Detection>& detections)
+void Tracker::processDetections(const std::vector<Detection>& detections)
 {
   if(detections.empty())
     return;
@@ -196,7 +198,7 @@ void Tracker::processDetections(const std::vector <Detection>& detections)
   m_multi_hypothesis_tracker.mergeCloseHypotheses(m_merge_distance);
 }
 
-const std::vector <std::shared_ptr<Hypothesis>>& Tracker::getHypotheses()
+const std::vector<std::shared_ptr<Hypothesis>>& Tracker::getHypotheses()
 {
   return m_multi_hypothesis_tracker.getHypotheses();
 }

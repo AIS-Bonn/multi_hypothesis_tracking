@@ -125,7 +125,7 @@ void Hypothesis::correct(const Detection& detection)
 
   // transform detection points to the current state's position and add them to the hypothesis' points
   auto transform_detection_to_corrected = (getPosition() - detection.position).eval();
-  std::vector <Eigen::Vector3f> corrected_detection_points;
+  std::vector<Eigen::Vector3f> corrected_detection_points;
   corrected_detection_points.reserve(detection.points.size());
   for(const auto& point : detection.points)
     corrected_detection_points.emplace_back(Eigen::Vector3f(point + transform_detection_to_corrected));
@@ -151,14 +151,14 @@ void Hypothesis::correct(const Detection& detection)
   verifyStatic();
 }
 
-void Hypothesis::transformPoints(std::vector <Eigen::Vector3f>& points,
+void Hypothesis::transformPoints(std::vector<Eigen::Vector3f>& points,
                                  const Eigen::Vector3f& transform)
 {
   for(auto& point : points)
     point += transform;
 }
 
-void Hypothesis::computeBoundingBox(const std::vector <Eigen::Vector3f>& points,
+void Hypothesis::computeBoundingBox(const std::vector<Eigen::Vector3f>& points,
                                     Eigen::Array3f& min_bounding_box,
                                     Eigen::Array3f& max_bounding_box)
 {
@@ -177,7 +177,7 @@ void Hypothesis::computeBoundingBox(const std::vector <Eigen::Vector3f>& points,
 bool Hypothesis::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
                                       float max_covariance)
 {
-  Eigen::EigenSolver <Eigen::Matrix3f> eigen_solver(covariance);
+  Eigen::EigenSolver<Eigen::Matrix3f> eigen_solver(covariance);
   auto eigen_values = eigen_solver.eigenvalues();
 
 //  std::cout << "eigen values of hyp with id = " << m_id << " are " << eigen_values.col(0)[0].real() << " "
@@ -255,8 +255,8 @@ float Hypothesis::computeLikelihood(const Detection& detection)
 }
 
 
-std::shared_ptr <Hypothesis> HypothesisFactory::createHypothesis(const Detection& detection,
-                                                                 unsigned int id)
+std::shared_ptr<Hypothesis> HypothesisFactory::createHypothesis(const Detection& detection,
+                                                                unsigned int id)
 {
   return std::make_shared<Hypothesis>(detection, id, m_covariance_per_second);
 }
