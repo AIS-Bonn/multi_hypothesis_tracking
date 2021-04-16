@@ -36,13 +36,6 @@ struct Box
   Eigen::Array3f max_corner;           ///< max corner of axis aligned bounding box.
 };
 
-struct StampedBox
-{
-  StampedBox(double time, const Eigen::Array3f& min, const Eigen::Array3f& max) : time(time), box(min, max){};
-  double time;                          ///< time_stamp of the detection.
-  Box box;                              ///< axis aligned bounding box.
-};
-
 namespace MultiHypothesisTracker
 {
 
@@ -151,13 +144,9 @@ public:
 
   /** @brief Getter for static property. */
   inline bool isStatic(){ return m_is_static; }
-  /** @brief Getter for m_turned_dynamic_now. */
-  inline bool turnedDynamicNow(){ return m_turned_dynamic_now; }
 
   /** @brief Getter time of hypothesis initialization. */
   inline double getBornTime(){ return m_born_time; }
-  /** @brief Getter time of hypothesis' last correction. */
-  inline double getLastCorrectionTime(){ return m_last_correction_time; }
 
   /** @brief Getter for #m_min_corner_detection. */
   inline Eigen::Array3f& getMinBoxDetection(){ return m_min_corner_detection; }
@@ -169,21 +158,12 @@ public:
   inline Eigen::Array3f& getMaxBoxHypothesis(){ return m_max_corner_hypothesis; }
   /** @brief Getter for size of hypothesis' bounding box. */
   inline Eigen::Array3f getHypothesisBoxSize(){ return (m_max_corner_hypothesis - m_min_corner_hypothesis).eval(); }
-  /** @brief Getter for #m_box_history. */
-  inline std::vector<StampedBox>& getBoxHistory(){ return m_box_history; }
-  /** @brief Clears #m_box_history. */
-  inline void clearBoxHistory(){ m_box_history.clear(); }
   /** @brief Getter for #m_position_history. */
   inline std::vector<Eigen::Vector3f>& getPositionHistory(){ return m_position_history; }
   /** @brief Getter for #m_was_assigned_history. */
   inline std::vector<bool>& getWasAssignedHistory(){ return m_was_assigned_history; }
   /** @brief Getter for #m_was_assigned_counter. */
   inline int getNumberOfAssignments(){ return m_was_assigned_counter; }
-  /** @brief Getter for #m_interpolated_boxes. */
-  inline std::vector<StampedBox>& getInterpolatedBoxes(){ return m_interpolated_boxes; }
-  /** @brief Indicate whether this hypothesis lost track and recovered it in this time step. */
-  inline bool recoveredTrack(){ return !m_interpolated_boxes.empty(); }
-
 
   /** @brief Getter for point cloud. */
   inline std::vector<Eigen::Vector3f>& getPointCloud(){ return m_points; }
@@ -207,13 +187,9 @@ protected:
 
   /** @brief Time of initialization. */
   double m_born_time;
-  /** @brief Time of last correction. */
-  double m_last_correction_time;
 
   /** @brief Flag for immobility of hypothesis. */
   bool m_is_static;
-  /** @brief If true hypothesis turned dynamic just now. */
-  bool m_turned_dynamic_now;
   /** @brief Distance a hypothesis is allowed to move to still be considered static. */
   double m_static_distance_threshold;
 
@@ -237,20 +213,8 @@ protected:
   /** @brief Maximum corner of the hypothesis' bounding box at its initialization. */
   Eigen::Array3f m_max_corner_init_hypothesis;
 
-  /** @brief Stamped bounding boxes of a static hypothesis. */
-  std::vector<StampedBox> m_box_history;
-
-  /** @brief Bounding box of hypothesis during previous correction step. */
-  Box m_previous_correction_box;
-
-  /** @brief Stamped interpolated bounding boxes of a dynamic hypothesis between losing a track and recovering it. */
-  std::vector<StampedBox> m_interpolated_boxes;
-
   /** @brief Points representing object. */
   std::vector<Eigen::Vector3f> m_points;
-
-  /** @brief Time stamps of predictions since the previous correction step. */
-  std::queue<double> m_prediction_times_since_previous_correction;
 
   /** @brief All positions of the hypothesis. */
   std::vector<Eigen::Vector3f> m_position_history;

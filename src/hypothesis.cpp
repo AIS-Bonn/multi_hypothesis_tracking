@@ -15,9 +15,7 @@ Hypothesis::Hypothesis(const Detection& detection,
                        double covariance_per_second)
   : m_id(id)
     , m_born_time(detection.time_stamp)
-    , m_last_correction_time(detection.time_stamp)
     , m_is_static(true)
-    , m_turned_dynamic_now(false)
     , m_static_distance_threshold(1.f)
     , m_cap_velocity(true)
     , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
@@ -44,11 +42,6 @@ Hypothesis::Hypothesis(const Detection& detection,
   m_max_corner_hypothesis = m_max_corner_detection;
   m_min_corner_init_hypothesis = m_min_corner_detection;
   m_max_corner_init_hypothesis = m_max_corner_detection;
-
-  m_previous_correction_box.min_corner = m_min_corner_detection;
-  m_previous_correction_box.max_corner = m_max_corner_detection;
-
-  m_box_history.emplace_back(StampedBox(detection.time_stamp, m_min_corner_detection, m_max_corner_detection));
 }
 
 void Hypothesis::predict(float dt)
@@ -74,9 +67,6 @@ void Hypothesis::predict(float dt,
 
   m_min_corner_hypothesis = (m_min_corner_hypothesis + transform_current_to_predicted.array()).eval();
   m_max_corner_hypothesis = (m_max_corner_hypothesis + transform_current_to_predicted.array()).eval();
-
-  // add entry to prediction times queue
-  m_prediction_times_since_previous_correction.push(dt);
 }
 
 void Hypothesis::correct(const Detection& detection)
@@ -159,52 +149,6 @@ void Hypothesis::correct(const Detection& detection)
 
 //	verifyStatic(m_min_corner_detection, m_max_corner_detection);
   verifyStatic();
-
-  m_interpolated_boxes.clear();
-  // if this hypothesis wasn't assigned to a detection at least one time
-  if(m_prediction_times_since_previous_correction.size() > 1)
-  {
-    // interpolate the previous bounding box at every prediction time to the current bounding box and save results for optional publishing
-    double interpolation_time = 0.0;
-    double time_diff_current_corrections = detection.time_stamp - m_last_correction_time;
-    Eigen::Array3f interpolation_vector_min_corners = m_min_corner_detection - m_previous_correction_box.min_corner;
-    Eigen::Array3f interpolation_vector_max_corners = m_max_corner_detection - m_previous_correction_box.max_corner;
-    while(!m_prediction_times_since_previous_correction.empty())
-    {
-      // compute interpolation factor using times
-      interpolation_time += m_prediction_times_since_previous_correction.front();
-      auto interpolation_factor = static_cast<float>(interpolation_time / time_diff_current_corrections);
-
-      // interpolate box and save
-      Eigen::Array3f interpolated_min_corner =
-        m_previous_correction_box.min_corner + interpolation_factor * interpolation_vector_min_corners;
-      Eigen::Array3f interpolated_max_corner =
-        m_previous_correction_box.max_corner + interpolation_factor * interpolation_vector_max_corners;
-
-      if(m_is_static)
-        m_box_history.emplace_back(
-          StampedBox(m_last_correction_time + interpolation_time, interpolated_min_corner, interpolated_max_corner));
-      else
-        m_interpolated_boxes.emplace_back(
-          StampedBox(m_last_correction_time + interpolation_time, interpolated_min_corner, interpolated_max_corner));
-
-      m_prediction_times_since_previous_correction.pop();
-    }
-  }
-  else
-  {
-    // clear queue
-    std::queue<double> empty;
-    std::swap(m_prediction_times_since_previous_correction, empty);
-  }
-
-  if(m_is_static)
-    m_box_history.emplace_back(StampedBox(detection.time_stamp, m_min_corner_detection, m_max_corner_detection));
-
-  m_previous_correction_box.min_corner = m_min_corner_detection;
-  m_previous_correction_box.max_corner = m_max_corner_detection;
-
-  m_last_correction_time = detection.time_stamp;
 }
 
 void Hypothesis::transformPoints(std::vector <Eigen::Vector3f>& points,
@@ -252,11 +196,6 @@ bool Hypothesis::isSpurious(float max_covariance)
 void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
                               Eigen::Array3f& max_corner_detection)
 {
-  // flag is turned to true just once when the hypothesis switches from being static to dynamic.
-  if(m_turned_dynamic_now)
-    m_box_history.clear();
-
-  m_turned_dynamic_now = false;
   if(m_is_static)
   {
     // TODO: make sure object is visible. If part of object is occluded the centroid moves -> object becomes mistakenly dynamic. see issues for more informations
@@ -280,7 +219,6 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
     if(intersection_volume < 0.1e-8)
     {
       m_is_static = false;
-      m_turned_dynamic_now = true;
     }
       // else assume it's static for now
     else
@@ -309,11 +247,6 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
 
 void Hypothesis::verifyStatic()
 {
-  // flag is turned to true just once when the hypothesis switches from being static to dynamic.
-  if(m_turned_dynamic_now)
-    m_box_history.clear();
-
-  m_turned_dynamic_now = false;
   if(m_is_static)
   {
     // Compute just distance in xy direction and don't account for movement in z direction
@@ -325,7 +258,6 @@ void Hypothesis::verifyStatic()
     if(distance_from_origin > m_static_distance_threshold /*&& (m_max_velocity_in_track.norm() > 0.85)*/)
     {
       m_is_static = false;
-      m_turned_dynamic_now = true;
     }
   }
 }

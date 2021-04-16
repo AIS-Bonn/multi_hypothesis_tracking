@@ -81,16 +81,6 @@ public:
   /** @brief Getter for #m_hypotheses. */
   inline std::vector<std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_hypotheses; }
 
-  /** @brief Getter for #m_heavens_gate. */
-  inline std::queue<Hypothesis>& getDeletedHypotheses(){ return m_heavens_gate; }
-
-  /** @brief Getter for #m_heavens_gate. */
-  void clearDeletedHypotheses()
-  {
-    std::queue<Hypothesis> empty;
-    std::swap(m_heavens_gate, empty);
-  }
-
   /** @brief Setter for #m_use_bhattacharyya_for_assignments. */
   inline void
   setUseBhattacharyyaDistance(bool use_bhattacharyya){ m_use_bhattacharyya_for_assignments = use_bhattacharyya; }
@@ -165,17 +155,6 @@ protected:
     m_assigned_hypotheses_counter++;
   };
 
-  /**
-   * @brief Copies hypothesis to heavens gate if conditions met and erases it from the vector.
-   *
-   * @param[in] hypotheses  vector of hypotheses.
-   * @param[in] it          iterator to hypothesis that should be erased.
-   *
-   * @returns iterator to entry after deleted entry.
-   */
-  std::vector<std::shared_ptr<Hypothesis>>::iterator erase(std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
-                                                           std::vector<std::shared_ptr<Hypothesis>>::iterator& it);
-
   /** @brief Hypothesis factory.*/
   std::shared_ptr<HypothesisFactory> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses.*/
@@ -196,9 +175,6 @@ protected:
   float m_likelihood_sum;
   /** @brief Number of hypotheses that were assigned to detections for the current time.*/
   int m_assigned_hypotheses_counter;
-
-  /** @brief Queue for hypotheses that were marked for deletion.*/
-  std::queue<Hypothesis> m_heavens_gate;
 };
 
 };

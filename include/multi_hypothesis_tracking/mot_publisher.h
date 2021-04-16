@@ -89,11 +89,6 @@ public:
   /** @brief Publish the bounding boxes of dynamic hypotheses that were assigned in the current step. */
   void publishHypothesesBoxesEvaluation(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                                         const ros::Time& stamp);
-  /** @brief Publish the bounding boxes history of hypotheses that turned from static to dynamic in the current step. */
-  void publishHypothesesBoxesHistory(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
-                                     const ros::Time& stamp);
-  /** @brief Publish the bounding boxes history of hypotheses that were marked for deletion. */
-  void publishDeletedHypotheses(std::queue<Hypothesis>& hypotheses);
 
   /**
    * @brief Return a rather specific marker.
@@ -167,7 +162,6 @@ private:
   ros::Publisher m_hypotheses_full_publisher;
   ros::Publisher m_hypotheses_predictions_publisher;
   ros::Publisher m_hypotheses_box_evaluation_publisher;
-  ros::Publisher m_hypotheses_boxes_history_publisher;
   ros::Publisher m_hypotheses_predicted_positions_publisher;
   ros::Publisher m_likelihood_publisher;
 

@@ -179,7 +179,7 @@ void MultiHypothesisTracker::deleteSpuriousHypotheses(float max_covariance)
   {
     if((*it)->isSpurious(max_covariance))
     {
-      it = erase(m_hypotheses, it);
+      it = m_hypotheses.erase(it);
       continue;
     }
     ++it;
@@ -205,19 +205,19 @@ void MultiHypothesisTracker::mergeCloseHypotheses(double distance_threshold)
         // TODO: decide which hypothesis to delete
         if(!(*it1)->isStatic())
         {
-          it2 = erase(m_hypotheses, it2);
+          it2 = m_hypotheses.erase(it2);
         }
         else
         {
           if(!(*it2)->isStatic())
           {
-            it1 = erase(m_hypotheses, it1);
+            it1 = m_hypotheses.erase(it1);
             erased_it1 = true;
             break;
           }
           else
           {
-            it2 = erase(m_hypotheses, it2);
+            it2 = m_hypotheses.erase(it2);
           }
         }
 
@@ -230,28 +230,6 @@ void MultiHypothesisTracker::mergeCloseHypotheses(double distance_threshold)
     else
       ++it1;
   }
-}
-
-std::vector<std::shared_ptr < Hypothesis>>
-::iterator MultiHypothesisTracker::erase(std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
-                                         std::vector<std::shared_ptr < Hypothesis>>
-::iterator& it
-)
-{
-// copy static objects with short life time to heavens gate
-if((*it)->
-isStatic()&&
-(*it)->
-getLastCorrectionTime()
-- (*it)->
-getBornTime()
-< 3.0)
-m_heavens_gate.
-push(* (* it));
-
-// delete iterator and return iterator to next object
-return hypotheses.
-erase(it);
 }
 
 };

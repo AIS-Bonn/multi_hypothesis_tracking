@@ -42,8 +42,6 @@ MOTPublisher::MOTPublisher()
     n.getNamespace() + "/hypotheses_predicted_positions", 1);
   m_hypotheses_box_evaluation_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(
     n.getNamespace() + "/hypotheses_boxes_evaluation", 1, true);
-  m_hypotheses_boxes_history_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesBoxesArray>(
-    n.getNamespace() + "/hypotheses_boxes_history", 1, true);
   m_likelihood_publisher = n.advertise<std_msgs::Float32>(n.getNamespace() + "/likelihood", 1);
 
   n.param<std::string>("world_frame", m_world_frame, "world");
@@ -68,7 +66,6 @@ void MOTPublisher::publishAll(const std::vector <std::shared_ptr<Hypothesis>>& h
   publishDynamicHypothesesPositions(hypotheses, stamp);
   publishHypothesesBoundingBoxes(hypotheses, stamp);
   publishHypothesesBoxesEvaluation(hypotheses, stamp);
-  publishHypothesesBoxesHistory(hypotheses, stamp);
 
   publishFullTracks(hypotheses, stamp);
 //  publishDebug(hypotheses);
@@ -638,141 +635,6 @@ void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector <std::shar
 //    }
   }
   m_hypotheses_box_evaluation_publisher.publish(hypotheses_msg);
-}
-
-void MOTPublisher::publishHypothesesBoxesHistory(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
-                                                 const ros::Time& stamp)
-{
-  if(m_hypotheses_boxes_history_publisher.getNumSubscribers() == 0)
-    return;
-
-  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
-
-  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxes());
-  hypotheses_msg->header.frame_id = m_world_frame;
-
-  multi_hypothesis_tracking_msgs::Box box;
-
-  for(size_t i = 0; i < hypotheses.size(); ++i)
-  {
-    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
-
-    if(hypothesis->turnedDynamicNow() || hypothesis->recoveredTrack())
-    {
-      std::vector <StampedBox> boxes;
-      if(hypothesis->turnedDynamicNow())
-        boxes = hypothesis->getBoxHistory();
-      else
-        boxes = hypothesis->getInterpolatedBoxes();
-
-      //std::cout << "publishDeletedHypotheses: number of boxes for this hypothesis " << (int)boxes.size() << " " << std::endl;
-
-      // for each box, test if hypothesis_array has already an entry with this stamp
-      for(int box_id = 0; box_id < (int)boxes.size(); box_id++)
-      {
-        box.id = hypothesis->getID();
-
-        box.min_corner.x = boxes[box_id].box.min_corner(0);
-        box.min_corner.y = boxes[box_id].box.min_corner(1);
-        box.min_corner.z = boxes[box_id].box.min_corner(2);
-
-        box.max_corner.x = boxes[box_id].box.max_corner(0);
-        box.max_corner.y = boxes[box_id].box.max_corner(1);
-        box.max_corner.z = boxes[box_id].box.max_corner(2);
-
-        bool stamp_already_exists = false;
-        for(auto& msg_boxes : hypotheses_array_msg->hypotheses)
-        {
-          // if for this stamp there are already boxes, add current box to them
-          if(fabs(msg_boxes.header.stamp.toSec() - boxes[box_id].time) < 0.01)
-          {
-            msg_boxes.boxes.push_back(box);
-
-            stamp_already_exists = true;
-            break;
-          }
-        }
-
-        // if for this stamp no boxes exist, add new entry with stamp and box
-        if(!stamp_already_exists)
-        {
-          hypotheses_msg->header.stamp = ros::Time(boxes[box_id].time);
-          hypotheses_msg->boxes.clear();
-          hypotheses_msg->boxes.push_back(box);
-          hypotheses_array_msg->hypotheses.push_back(*hypotheses_msg);
-        }
-      }
-    }
-  }
-
-  if(hypotheses_array_msg->hypotheses.size() > 0)
-    m_hypotheses_boxes_history_publisher.publish(hypotheses_array_msg);
-}
-
-void MOTPublisher::publishDeletedHypotheses(std::queue <Hypothesis>& hypotheses)
-{
-  if(hypotheses.empty())
-    return;
-
-  if(m_hypotheses_boxes_history_publisher.getNumSubscribers() == 0)
-    return;
-
-  multi_hypothesis_tracking_msgs::HypothesesBoxesArrayPtr hypotheses_array_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxesArray());
-
-  multi_hypothesis_tracking_msgs::HypothesesBoxesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesBoxes());
-  hypotheses_msg->header.frame_id = m_world_frame;
-
-  multi_hypothesis_tracking_msgs::Box box;
-
-  while(!hypotheses.empty())
-  {
-    Hypothesis& hypothesis = hypotheses.front();
-
-    const std::vector <StampedBox>& boxes = hypothesis.getBoxHistory();
-
-    //std::cout << "publishDeletedHypotheses: number of boxes for this hypothesis " << (int)boxes.size() << " " << std::endl;
-
-    // for each box, test if hypothesis_array has already an entry with this stamp
-    for(int box_id = 0; box_id < (int)boxes.size(); box_id++)
-    {
-      box.id = hypothesis.getID();
-
-      box.min_corner.x = boxes[box_id].box.min_corner(0);
-      box.min_corner.y = boxes[box_id].box.min_corner(1);
-      box.min_corner.z = boxes[box_id].box.min_corner(2);
-
-      box.max_corner.x = boxes[box_id].box.max_corner(0);
-      box.max_corner.y = boxes[box_id].box.max_corner(1);
-      box.max_corner.z = boxes[box_id].box.max_corner(2);
-
-      bool stamp_already_exists = false;
-      for(auto& msg_boxes : hypotheses_array_msg->hypotheses)
-      {
-        // if for this stamp there are already boxes, add current box to them
-        if(fabs(msg_boxes.header.stamp.toSec() - boxes[box_id].time) < 0.01)
-        {
-          msg_boxes.boxes.push_back(box);
-
-          stamp_already_exists = true;
-          break;
-        }
-      }
-
-      // if for this stamp no boxes exist, add new entry with stamp and box
-      if(!stamp_already_exists)
-      {
-        hypotheses_msg->header.stamp = ros::Time(boxes[box_id].time);
-        hypotheses_msg->boxes.clear();
-        hypotheses_msg->boxes.push_back(box);
-        hypotheses_array_msg->hypotheses.push_back(*hypotheses_msg);
-      }
-    }
-
-    hypotheses.pop();
-  }
-
-  if(hypotheses_array_msg->hypotheses.size() > 0)
-    m_hypotheses_boxes_history_publisher.publish(hypotheses_array_msg);
 }
 
 void MOTPublisher::publishLikelihood(float likelihood)

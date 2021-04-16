@@ -55,7 +55,6 @@ Tracker::Tracker()
 void Tracker::publish(const ros::Time& stamp)
 {
   m_mot_publisher.publishAll(getHypotheses(), stamp);
-  m_mot_publisher.publishDeletedHypotheses(getDeletedHypotheses());
   if(m_compute_likelihood)
     m_mot_publisher.publishLikelihood(m_multi_hypothesis_tracker.getAverageLikelihood());
 }
@@ -193,7 +192,6 @@ void Tracker::processDetections(const std::vector <Detection>& detections)
   m_multi_hypothesis_tracker.correct(detections);
 
   // Filter out weak hypotheses
-  m_multi_hypothesis_tracker.clearDeletedHypotheses();
   m_multi_hypothesis_tracker.deleteSpuriousHypotheses(m_max_covariance);
   m_multi_hypothesis_tracker.mergeCloseHypotheses(m_merge_distance);
 }
@@ -201,11 +199,6 @@ void Tracker::processDetections(const std::vector <Detection>& detections)
 const std::vector <std::shared_ptr<Hypothesis>>& Tracker::getHypotheses()
 {
   return m_multi_hypothesis_tracker.getHypotheses();
-}
-
-std::queue <Hypothesis>& Tracker::getDeletedHypotheses()
-{
-  return m_multi_hypothesis_tracker.getDeletedHypotheses();
 }
 
 }
