@@ -76,7 +76,7 @@ void MOTPublisher::publishAll(const Hypotheses& hypotheses,
 MarkerMsg MOTPublisher::createMarker(float r, 
                                      float g, 
                                      float b, 
-                                     std::string name_space)
+                                     const std::string& name_space)
 {
   MarkerMsg marker;
   marker.header.frame_id = m_world_frame;

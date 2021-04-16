@@ -117,7 +117,7 @@ public:
   MarkerMsg createMarker(float r = 0.0,
                          float g = 1.0,
                          float b = 0.0,
-                         std::string ns = "multi_object_tracker");
+                         const std::string& name_space = "multi_object_tracker");
 
   /**
    * @brief Publishes detections as markers.
