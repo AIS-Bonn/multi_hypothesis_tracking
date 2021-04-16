@@ -16,8 +16,7 @@ MOTPublisher::MOTPublisher()
   ros::NodeHandle public_node_handle;
 
   m_hypotheses_full_publisher = public_node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
-  m_hypotheses_predictions_publisher = public_node_handle.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>(
-    "hypotheses_predictions", 1);
+  m_hypotheses_predictions_publisher = public_node_handle.advertise<ObjectDetectionsMsg>("hypotheses_predictions", 1);
 
   m_detection_positions_publisher = n.advertise<visualization_msgs::Marker>(
     n.getNamespace() + "/detections_positions", 1);
@@ -320,7 +319,7 @@ void MOTPublisher::publishHypothesesPredictions(const std::vector<std::shared_pt
     return;
 
   double current_time = getTimeHighRes();
-  multi_hypothesis_tracking_msgs::ObjectDetections object_detecions;
+  ObjectDetectionsMsg object_detecions;
   multi_hypothesis_tracking_msgs::ObjectDetection object;
   object_detecions.header.stamp = stamp;
   object_detecions.header.frame_id = m_world_frame;
