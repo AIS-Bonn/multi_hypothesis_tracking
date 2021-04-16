@@ -12,35 +12,33 @@ namespace MultiHypothesisTracker
 
 MOTPublisher::MOTPublisher()
 {
-  ros::NodeHandle n("~");
-  ros::NodeHandle public_node_handle;
+  ros::NodeHandle private_node_handle("~");
 
-  m_hypotheses_full_publisher = public_node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
-  m_hypotheses_predictions_publisher = public_node_handle.advertise<ObjectDetectionsMsg>("hypotheses_predictions", 1);
+  m_hypotheses_full_publisher = private_node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
+  m_hypotheses_predictions_publisher = private_node_handle.advertise<ObjectDetectionsMsg>("hypotheses_predictions", 1);
 
-  m_detection_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/detections_positions", 1);
-  m_detections_covariances_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/detections_covariances", 1);
-  m_detections_points_publisher = n.advertise<PointCloud>(n.getNamespace() + "/detections_points", 1);
-  m_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_positions", 1);
-  m_hypotheses_points_publisher = n.advertise<PointCloud>(n.getNamespace() + "/hypotheses_points", 1);
-  m_hypotheses_paths_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_paths", 1);
-  m_hypotheses_covariance_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_covariances", 1);
-  m_static_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/static_hypotheses_positions",
-                                                                   1);
-  m_dynamic_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/dynamic_hypotheses_positions",
-                                                                    1);
-  m_hypotheses_bounding_boxes_publisher = n.advertise<MarkerArrayMsg>(n.getNamespace() + "/hypotheses_bounding_boxes",
-                                                                      1);
-  m_hypotheses_predicted_positions_publisher = n.advertise<MarkerMsg>(
-    n.getNamespace() + "/hypotheses_predicted_positions", 1);
-  m_hypotheses_box_evaluation_publisher = n.advertise<HypothesesEvaluationBoxesMsg>(
-    n.getNamespace() + "/hypotheses_boxes_evaluation", 1, true);
-  m_likelihood_publisher = n.advertise<std_msgs::Float32>(n.getNamespace() + "/likelihood", 1);
+  m_detection_positions_publisher = private_node_handle.advertise<MarkerMsg>("detections_positions", 1);
+  m_detections_covariances_publisher = private_node_handle.advertise<MarkerMsg>("detections_covariances", 1);
+  m_detections_points_publisher = private_node_handle.advertise<PointCloud>("detections_points",
+                                                                            1);
+  m_hypotheses_positions_publisher = private_node_handle.advertise<MarkerMsg>("hypotheses_positions", 1);
+  m_hypotheses_points_publisher = private_node_handle.advertise<PointCloud>("hypotheses_points", 1);
+  m_hypotheses_paths_publisher = private_node_handle.advertise<MarkerMsg>("hypotheses_paths", 1);
+  m_hypotheses_covariance_publisher = private_node_handle.advertise<MarkerMsg>("hypotheses_covariances", 1);
+  m_static_hypotheses_positions_publisher = private_node_handle.advertise<MarkerMsg>("static_hypotheses_positions", 1);
+  m_dynamic_hypotheses_positions_publisher = private_node_handle.advertise<MarkerMsg>("dynamic_hypotheses_positions",
+                                                                                      1);
+  m_hypotheses_bounding_boxes_publisher = private_node_handle.advertise<MarkerArrayMsg>("hypotheses_bounding_boxes", 1);
+  m_hypotheses_predicted_positions_publisher = private_node_handle.advertise<MarkerMsg>(
+    "hypotheses_predicted_positions", 1);
+  m_hypotheses_box_evaluation_publisher = private_node_handle.advertise<HypothesesEvaluationBoxesMsg>(
+    "hypotheses_boxes_evaluation", 1, true);
+  m_likelihood_publisher = private_node_handle.advertise<std_msgs::Float32>("likelihood", 1);
 
-  n.param<std::string>("world_frame", m_world_frame, "world");
-  n.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
-  n.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
-  n.param<double>("future_time", m_future_time, 0.0);
+  private_node_handle.param<std::string>("world_frame", m_world_frame, "world");
+  private_node_handle.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
+  private_node_handle.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
+  private_node_handle.param<double>("future_time", m_future_time, 0.0);
 }
 
 void MOTPublisher::publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
