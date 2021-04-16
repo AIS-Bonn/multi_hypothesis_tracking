@@ -134,7 +134,7 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
 {
   Detection detection;
   detection.frame_id = msg->header.frame_id;
-  detection.time = msg->header.stamp.toSec();
+  detection.time_stamp = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->poses.size(); i++)
   {
@@ -161,7 +161,7 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
 {
   Detection detection;
   detection.frame_id = msg->header.frame_id;
-  detection.time = msg->header.stamp.toSec();
+  detection.time_stamp = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->object_detections.size(); i++)
   {
@@ -242,7 +242,7 @@ void Tracker::processDetections(const std::vector <Detection>& detections)
   if(detections.empty())
     return;
 
-  double time_since_last_detections = detections.at(0).time - m_last_prediction_time;
+  double time_since_last_detections = detections.at(0).time_stamp - m_last_prediction_time;
   if(time_since_last_detections <= 0.0)
     return;
 
@@ -250,7 +250,7 @@ void Tracker::processDetections(const std::vector <Detection>& detections)
   if(m_last_prediction_time > 0.0)
     m_multi_hypothesis_tracker.predict(time_since_last_detections);
 
-  m_last_prediction_time = detections.at(0).time;
+  m_last_prediction_time = detections.at(0).time_stamp;
 
   // Correction step of kalman filter for all hypotheses
   m_multi_hypothesis_tracker.correct(detections);

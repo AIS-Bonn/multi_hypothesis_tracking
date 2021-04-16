@@ -14,8 +14,8 @@ Hypothesis::Hypothesis(const Detection& detection,
                        unsigned int id,
                        double covariance_per_second)
   : m_id(id)
-    , m_born_time(detection.time)
-    , m_last_correction_time(detection.time)
+    , m_born_time(detection.time_stamp)
+    , m_last_correction_time(detection.time_stamp)
     , m_is_static(true)
     , m_turned_dynamic_now(false)
     , m_static_distance_threshold(1.f)
@@ -50,7 +50,7 @@ Hypothesis::Hypothesis(const Detection& detection,
   m_previous_correction_box.min_corner = m_min_corner_detection;
   m_previous_correction_box.max_corner = m_max_corner_detection;
 
-  m_box_history.emplace_back(StampedBox(detection.time, m_min_corner_detection, m_max_corner_detection));
+  m_box_history.emplace_back(StampedBox(detection.time_stamp, m_min_corner_detection, m_max_corner_detection));
 }
 
 void Hypothesis::predict(float dt)
@@ -171,7 +171,7 @@ void Hypothesis::correct(const Detection& detection)
   {
     // interpolate the previous bounding box at every prediction time to the current bounding box and save results for optional publishing
     double interpolation_time = 0.0;
-    double time_diff_current_corrections = detection.time - m_last_correction_time;
+    double time_diff_current_corrections = detection.time_stamp - m_last_correction_time;
     Eigen::Array3f interpolation_vector_min_corners = m_min_corner_detection - m_previous_correction_box.min_corner;
     Eigen::Array3f interpolation_vector_max_corners = m_max_corner_detection - m_previous_correction_box.max_corner;
     while(!m_prediction_times_since_previous_correction.empty())
@@ -204,12 +204,12 @@ void Hypothesis::correct(const Detection& detection)
   }
 
   if(m_is_static)
-    m_box_history.emplace_back(StampedBox(detection.time, m_min_corner_detection, m_max_corner_detection));
+    m_box_history.emplace_back(StampedBox(detection.time_stamp, m_min_corner_detection, m_max_corner_detection));
 
   m_previous_correction_box.min_corner = m_min_corner_detection;
   m_previous_correction_box.max_corner = m_max_corner_detection;
 
-  m_last_correction_time = detection.time;
+  m_last_correction_time = detection.time_stamp;
 }
 
 void Hypothesis::transformPoints(std::vector <Eigen::Vector3f>& points,

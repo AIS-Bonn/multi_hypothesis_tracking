@@ -101,7 +101,7 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
 {
   Detection detection;
   detection.frame_id = msg->header.frame_id;
-  detection.time = msg->header.stamp.toSec();
+  detection.time_stamp = msg->header.stamp.toSec();
 
   float score_threshold = 0.1f;
   for(const auto& person_detection : msg->persons)
@@ -187,9 +187,9 @@ void Tracker::processDetections(const std::vector <Detection>& detections)
 
   // Prediction step of kalman filter for all hypotheses
   if(m_last_prediction_time > 0)
-    m_multi_hypothesis_tracker.predict(detections.at(0).time - m_last_prediction_time);
+    m_multi_hypothesis_tracker.predict(detections.at(0).time_stamp - m_last_prediction_time);
 
-  m_last_prediction_time = detections.at(0).time;
+  m_last_prediction_time = detections.at(0).time_stamp;
 
   // Correction step of kalman filter for all hypotheses
   m_multi_hypothesis_tracker.correct(detections);
