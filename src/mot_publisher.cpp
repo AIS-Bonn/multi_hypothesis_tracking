@@ -13,10 +13,10 @@ namespace MultiHypothesisTracker
 MOTPublisher::MOTPublisher()
 {
   ros::NodeHandle n("~");
-  ros::NodeHandle pub_n;
+  ros::NodeHandle public_node_handle;
 
-  m_hypotheses_full_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::HypothesesFull>("hypotheses_full", 1);
-  m_hypotheses_predictions_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>(
+  m_hypotheses_full_publisher = public_node_handle.advertise<multi_hypothesis_tracking_msgs::HypothesesFull>("hypotheses_full", 1);
+  m_hypotheses_predictions_publisher = public_node_handle.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>(
     "hypotheses_predictions", 1);
 
   m_detection_positions_publisher = n.advertise<visualization_msgs::Marker>(
