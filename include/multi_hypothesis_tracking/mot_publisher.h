@@ -50,6 +50,8 @@ typedef multi_hypothesis_tracking_msgs::ObjectDetections ObjectDetectionsMsg;
 
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
+typedef std::vector<std::shared_ptr<Hypothesis>> Hypotheses;
+
 typedef visualization_msgs::Marker MarkerMsg;
 typedef visualization_msgs::MarkerArray MarkerArrayMsg;
 
@@ -65,41 +67,41 @@ public:
   void getRosParameters(ros::NodeHandle& node_handle);
 
   /** @brief Calls all publishers. */
-  void publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishAll(const Hypotheses& hypotheses,
                   const ros::Time& stamp);
 
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesPositions(const Hypotheses& hypotheses,
                                   const ros::Time& stamp);
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPoints(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesPoints(const Hypotheses& hypotheses,
                                const ros::Time& stamp);
   /** @brief Publish hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesFull(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesFull(const Hypotheses& hypotheses,
                              const ros::Time& stamp);
   /** @brief Publish hypotheses' predictions that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPredictions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesPredictions(const Hypotheses& hypotheses,
                                     const ros::Time& stamp);
   /** @brief Publish predicted positions of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPredictedPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
                                            const ros::Time& stamp);
   /** @brief Publish covariances of hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesCovariances(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesCovariances(const Hypotheses& hypotheses,
                                     const ros::Time& stamp);
   /** @brief Publish positions of static hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishStaticHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);  //publishes a vertical line indicating which hypothesis are static (non-moveable)
   /** @brief Publish positions of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishDynamicHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
                                          const ros::Time& stamp);
   /** @brief Publish bounding boxes of all hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesBoundingBoxes(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
                                       const ros::Time& stamp);
   /** @brief Publish full tracks of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
-  void publishFullTracks(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishFullTracks(const Hypotheses& hypotheses,
                          const ros::Time& stamp);
   /** @brief Publish the bounding boxes of dynamic hypotheses that were assigned in the current step. */
-  void publishHypothesesBoxesEvaluation(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+  void publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
 
   /**

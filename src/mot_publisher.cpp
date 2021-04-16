@@ -50,7 +50,7 @@ void MOTPublisher::getRosParameters(ros::NodeHandle& node_handle)
   node_handle.param<double>("future_time", m_future_time, 0.0);
 }
 
-void MOTPublisher::publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishAll(const Hypotheses& hypotheses,
                               const ros::Time& stamp)
 {
   if(hypotheses.empty())
@@ -169,7 +169,7 @@ void MOTPublisher::publishDetectionsPoints(const std::vector<Detection>& detecti
   m_detections_points_publisher.publish(cloud);
 }
 
-void MOTPublisher::publishHypothesesCovariances(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
                                                 const ros::Time& stamp)
 {
   if(m_hypotheses_covariance_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -200,7 +200,7 @@ void MOTPublisher::publishHypothesesCovariances(const std::vector<std::shared_pt
 }
 
 
-void MOTPublisher::publishHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
                                               const ros::Time& stamp)
 {
   if(m_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -227,7 +227,7 @@ void MOTPublisher::publishHypothesesPositions(const std::vector<std::shared_ptr<
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
 }
 
-void MOTPublisher::publishHypothesesPoints(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPoints(const Hypotheses& hypotheses,
                                            const ros::Time& stamp)
 {
   if(m_hypotheses_points_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -261,7 +261,7 @@ void MOTPublisher::publishHypothesesPoints(const std::vector<std::shared_ptr<Hyp
   m_hypotheses_points_publisher.publish(cloud);
 }
 
-void MOTPublisher::publishHypothesesFull(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesFull(const Hypotheses& hypotheses,
                                          const ros::Time& stamp)
 {
   if(m_hypotheses_full_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -313,7 +313,7 @@ void MOTPublisher::publishHypothesesFull(const std::vector<std::shared_ptr<Hypot
   m_hypotheses_full_publisher.publish(hypotheses_msg);
 }
 
-void MOTPublisher::publishHypothesesPredictions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPredictions(const Hypotheses& hypotheses,
                                                 const ros::Time& stamp)
 {
   if(m_hypotheses_predictions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -345,7 +345,7 @@ void MOTPublisher::publishHypothesesPredictions(const std::vector<std::shared_pt
   m_hypotheses_predictions_publisher.publish(object_detecions);
 }
 
-void MOTPublisher::publishHypothesesPredictedPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
                                                        const ros::Time& stamp)
 {
   if(m_hypotheses_predicted_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -376,7 +376,7 @@ void MOTPublisher::publishHypothesesPredictedPositions(const std::vector<std::sh
   m_hypotheses_predicted_positions_publisher.publish(hypothesis_marker);
 }
 
-void MOTPublisher::publishStaticHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                                     const ros::Time& stamp)
 {
   if(m_static_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -422,7 +422,7 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector<std::share
   m_static_hypotheses_positions_publisher.publish(static_objects_marker);
 }
 
-void MOTPublisher::publishDynamicHypothesesPositions(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
                                                      const ros::Time& stamp)
 {
   if(m_dynamic_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -469,7 +469,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector<std::shar
   m_dynamic_hypotheses_positions_publisher.publish(dynamic_objects_marker);
 }
 
-void MOTPublisher::publishHypothesesBoundingBoxes(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
                                                   const ros::Time& stamp)
 {
   if(m_hypotheses_bounding_boxes_publisher.getNumSubscribers() == 0 || hypotheses.empty())
@@ -525,7 +525,7 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const std::vector<std::shared_
   m_hypotheses_bounding_boxes_publisher.publish(bounding_boxes_markers);
 }
 
-void MOTPublisher::publishFullTracks(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishFullTracks(const Hypotheses& hypotheses,
                                      const ros::Time& stamp)
 {
   if(m_hypotheses_paths_publisher.getNumSubscribers() == 0)
@@ -596,7 +596,7 @@ void MOTPublisher::publishFullTracks(const std::vector<std::shared_ptr<Hypothesi
   m_hypotheses_paths_publisher.publish(hypotheses_paths_marker);
 }
 
-void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+void MOTPublisher::publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,
                                                     const ros::Time& stamp)
 {
   if(m_hypotheses_box_evaluation_publisher.getNumSubscribers() == 0)
