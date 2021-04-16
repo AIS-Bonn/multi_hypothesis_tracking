@@ -29,8 +29,8 @@ MOTPublisher::MOTPublisher()
                                                                    1);
   m_dynamic_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/dynamic_hypotheses_positions",
                                                                     1);
-  m_hypotheses_bounding_boxes_publisher = n.advertise<visualization_msgs::MarkerArray>(
-    n.getNamespace() + "/hypotheses_bounding_boxes", 1);
+  m_hypotheses_bounding_boxes_publisher = n.advertise<MarkerArrayMsg>(n.getNamespace() + "/hypotheses_bounding_boxes",
+                                                                      1);
   m_hypotheses_predicted_positions_publisher = n.advertise<MarkerMsg>(
     n.getNamespace() + "/hypotheses_predicted_positions", 1);
   m_hypotheses_box_evaluation_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(
@@ -468,7 +468,7 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const std::vector<std::shared_
   if(m_hypotheses_bounding_boxes_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  visualization_msgs::MarkerArray bounding_boxes_markers;
+  MarkerArrayMsg bounding_boxes_markers;
 
   double color_alpha = 0.5;
   MarkerMsg hypotheses_boxes_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_bounding_boxes");

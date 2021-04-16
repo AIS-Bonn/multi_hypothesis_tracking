@@ -50,6 +50,7 @@ typedef multi_hypothesis_tracking_msgs::ObjectDetections ObjectDetectionsMsg;
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
 typedef visualization_msgs::Marker MarkerMsg;
+typedef visualization_msgs::MarkerArray MarkerArrayMsg;
 
 class MOTPublisher
 {
