@@ -107,10 +107,10 @@ public:
   /**
    * @brief Return a rather specific marker.
    *
-   * @param[in] r   red color value.
-   * @param[in] g   green color value.
-   * @param[in] b   blue color value.
-   * @param[in] ns  namespace of marker.
+   * @param[in] r           red color value.
+   * @param[in] g           green color value.
+   * @param[in] b           blue color value.
+   * @param[in] name_space  namespace of marker.
    *
    * @return marker.
    */
