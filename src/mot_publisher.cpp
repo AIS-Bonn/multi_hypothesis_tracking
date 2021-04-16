@@ -18,26 +18,23 @@ MOTPublisher::MOTPublisher()
   m_hypotheses_full_publisher = public_node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
   m_hypotheses_predictions_publisher = public_node_handle.advertise<ObjectDetectionsMsg>("hypotheses_predictions", 1);
 
-  m_detection_positions_publisher = n.advertise<visualization_msgs::Marker>(
-    n.getNamespace() + "/detections_positions", 1);
-  m_detections_covariances_publisher = n.advertise<visualization_msgs::Marker>(
-    n.getNamespace() + "/detections_covariances", 1);
+  m_detection_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/detections_positions", 1);
+  m_detections_covariances_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/detections_covariances", 1);
   m_detections_points_publisher =
     n.advertise<pcl::PointCloud<pcl::PointXYZ >>(n.getNamespace() + "/detections_points", 1);
-  m_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(n.getNamespace() + "/hypotheses_positions",
-                                                                             1);
+  m_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_positions",
+                                                            1);
   m_hypotheses_points_publisher =
     n.advertise<pcl::PointCloud<pcl::PointXYZ >>(n.getNamespace() + "/hypotheses_points", 1);
-  m_hypotheses_paths_publisher = n.advertise<visualization_msgs::Marker>(n.getNamespace() + "/hypotheses_paths", 1);
-  m_hypotheses_covariance_publisher = n.advertise<visualization_msgs::Marker>(
-    n.getNamespace() + "/hypotheses_covariances", 1);
-  m_static_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(
-    n.getNamespace() + "/static_hypotheses_positions", 1);
-  m_dynamic_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(
-    n.getNamespace() + "/dynamic_hypotheses_positions", 1);
+  m_hypotheses_paths_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_paths", 1);
+  m_hypotheses_covariance_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/hypotheses_covariances", 1);
+  m_static_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/static_hypotheses_positions",
+                                                                   1);
+  m_dynamic_hypotheses_positions_publisher = n.advertise<MarkerMsg>(n.getNamespace() + "/dynamic_hypotheses_positions",
+                                                                    1);
   m_hypotheses_bounding_boxes_publisher = n.advertise<visualization_msgs::MarkerArray>(
     n.getNamespace() + "/hypotheses_bounding_boxes", 1);
-  m_hypotheses_predicted_positions_publisher = n.advertise<visualization_msgs::Marker>(
+  m_hypotheses_predicted_positions_publisher = n.advertise<MarkerMsg>(
     n.getNamespace() + "/hypotheses_predicted_positions", 1);
   m_hypotheses_box_evaluation_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(
     n.getNamespace() + "/hypotheses_boxes_evaluation", 1, true);
@@ -70,15 +67,15 @@ void MOTPublisher::publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hy
 //  publishDebug(hypotheses);
 }
 
-visualization_msgs::Marker MOTPublisher::createMarker(float r, float g, float b, std::string ns)
+MarkerMsg MOTPublisher::createMarker(float r, float g, float b, std::string ns)
 {
-  visualization_msgs::Marker marker;
+  MarkerMsg marker;
   marker.header.frame_id = m_world_frame;
   marker.header.stamp = ros::Time::now();
   marker.ns = ns;
   marker.id = 0;
-  marker.type = visualization_msgs::Marker::POINTS;
-  marker.action = visualization_msgs::Marker::ADD;
+  marker.type = MarkerMsg::POINTS;
+  marker.action = MarkerMsg::ADD;
   marker.pose.position.x = 0.0;
   marker.pose.position.y = 0.0;
   marker.pose.position.z = 0.0;
@@ -103,8 +100,8 @@ void MOTPublisher::publishDetectionPositions(const std::vector<Detection>& detec
   if(m_detection_positions_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
 
-  visualization_msgs::Marker detection_positions_marker = createMarker(1.0, 0.0, 0.0,
-                                                                       "mot_detections_markers"); //red marker
+  MarkerMsg detection_positions_marker = createMarker(1.0, 0.0, 0.0,
+                                                      "mot_detections_markers"); //red marker
   detection_positions_marker.header.frame_id = detections.at(0).frame_id;
   detection_positions_marker.header.stamp = stamp;
 
@@ -124,8 +121,8 @@ void MOTPublisher::publishDetectionsCovariances(const std::vector<Detection>& de
   if(m_detections_covariances_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
 
-  visualization_msgs::Marker detection_cov_marker = createMarker(1.0, 0.0, 0.0, "mot_detection_covariance_marker");;
-  detection_cov_marker.type = visualization_msgs::Marker::SPHERE;
+  MarkerMsg detection_cov_marker = createMarker(1.0, 0.0, 0.0, "mot_detection_covariance_marker");;
+  detection_cov_marker.type = MarkerMsg::SPHERE;
   detection_cov_marker.color.a = 0.5f;
   detection_cov_marker.header.stamp = stamp;
 
@@ -176,8 +173,8 @@ void MOTPublisher::publishHypothesesCovariances(const std::vector<std::shared_pt
 
   double current_time = getTimeHighRes();
 
-  visualization_msgs::Marker hyp_covariance_marker = createMarker(1.0, 0.0, 0.0, "mot_hypotheses_covariance_marker");;
-  hyp_covariance_marker.type = visualization_msgs::Marker::SPHERE;
+  MarkerMsg hyp_covariance_marker = createMarker(1.0, 0.0, 0.0, "mot_hypotheses_covariance_marker");;
+  hyp_covariance_marker.type = MarkerMsg::SPHERE;
   hyp_covariance_marker.color.a = 0.5f;
   hyp_covariance_marker.header.stamp = stamp;
 
@@ -205,7 +202,7 @@ void MOTPublisher::publishHypothesesPositions(const std::vector<std::shared_ptr<
   if(m_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  visualization_msgs::Marker hypothesis_marker = createMarker(0.0, 1.0, 0.0, "mot_hypotheses_positions_markers");
+  MarkerMsg hypothesis_marker = createMarker(0.0, 1.0, 0.0, "mot_hypotheses_positions_markers");
   hypothesis_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
 
@@ -350,8 +347,8 @@ void MOTPublisher::publishHypothesesPredictedPositions(const std::vector<std::sh
   if(m_hypotheses_predicted_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  visualization_msgs::Marker hypothesis_marker = createMarker(0.0, 0.0, 1.0,
-                                                              "mot_hypotheses_predicted_positions_markers");
+  MarkerMsg hypothesis_marker = createMarker(0.0, 0.0, 1.0,
+                                             "mot_hypotheses_predicted_positions_markers");
   hypothesis_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
 
@@ -382,8 +379,8 @@ void MOTPublisher::publishStaticHypothesesPositions(const std::vector<std::share
     return;
 
   double color_alpha = 0.5;
-  visualization_msgs::Marker static_objects_marker = createMarker(0.0, 1.0, 0.0, "mot_static_hypotheses_positions");
-  static_objects_marker.type = visualization_msgs::Marker::LINE_LIST;
+  MarkerMsg static_objects_marker = createMarker(0.0, 1.0, 0.0, "mot_static_hypotheses_positions");
+  static_objects_marker.type = MarkerMsg::LINE_LIST;
   static_objects_marker.color.a = color_alpha;
   static_objects_marker.scale.x = 0.4;
   static_objects_marker.header.stamp = stamp;
@@ -428,8 +425,8 @@ void MOTPublisher::publishDynamicHypothesesPositions(const std::vector<std::shar
     return;
 
   double color_alpha = 0.5;
-  visualization_msgs::Marker dynamic_objects_marker = createMarker(0.0, 0.5, 0.5, "mot_dynamic_hypotheses_positions");
-  dynamic_objects_marker.type = visualization_msgs::Marker::LINE_LIST;
+  MarkerMsg dynamic_objects_marker = createMarker(0.0, 0.5, 0.5, "mot_dynamic_hypotheses_positions");
+  dynamic_objects_marker.type = MarkerMsg::LINE_LIST;
   dynamic_objects_marker.color.a = color_alpha;
   dynamic_objects_marker.scale.x = 0.2;
   dynamic_objects_marker.header.stamp = stamp;
@@ -477,9 +474,9 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const std::vector<std::shared_
   visualization_msgs::MarkerArray bounding_boxes_markers;
 
   double color_alpha = 0.5;
-  visualization_msgs::Marker hypotheses_boxes_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_bounding_boxes");
-  hypotheses_boxes_marker.type = visualization_msgs::Marker::CUBE;
-  hypotheses_boxes_marker.action = visualization_msgs::Marker::ADD;
+  MarkerMsg hypotheses_boxes_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_bounding_boxes");
+  hypotheses_boxes_marker.type = MarkerMsg::CUBE;
+  hypotheses_boxes_marker.action = MarkerMsg::ADD;
   hypotheses_boxes_marker.color.a = color_alpha;
   hypotheses_boxes_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
@@ -531,8 +528,8 @@ void MOTPublisher::publishFullTracks(const std::vector<std::shared_ptr<Hypothesi
     return;
 
   double color_alpha = 1.0;
-  visualization_msgs::Marker hypotheses_paths_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_paths");
-  hypotheses_paths_marker.type = visualization_msgs::Marker::LINE_LIST;
+  MarkerMsg hypotheses_paths_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_paths");
+  hypotheses_paths_marker.type = MarkerMsg::LINE_LIST;
   hypotheses_paths_marker.color.a = color_alpha;
   hypotheses_paths_marker.scale.x = 0.325;
   hypotheses_paths_marker.header.stamp = stamp;

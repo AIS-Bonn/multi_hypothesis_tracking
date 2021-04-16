@@ -47,6 +47,8 @@ namespace MultiHypothesisTracker
 typedef multi_hypothesis_tracking_msgs::HypothesesFull HypothesesFullMsg;
 typedef multi_hypothesis_tracking_msgs::ObjectDetections ObjectDetectionsMsg;
 
+typedef visualization_msgs::Marker MarkerMsg;
+
 class MOTPublisher
 {
 public:
@@ -103,10 +105,10 @@ public:
    *
    * @return marker.
    */
-  visualization_msgs::Marker createMarker(float r = 0.0,
-                                          float g = 1.0,
-                                          float b = 0.0,
-                                          std::string ns = "multi_object_tracker");
+  markerMsg createMarker(float r = 0.0,
+                         float g = 1.0,
+                         float b = 0.0,
+                         std::string ns = "multi_object_tracker");
 
   /**
    * @brief Publishes detections as markers.
