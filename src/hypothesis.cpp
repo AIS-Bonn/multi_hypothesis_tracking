@@ -85,7 +85,7 @@ void Hypothesis::correct(const Detection& detection)
 {
   auto current_position = getPosition();
 
-  m_kalman->correct(detection.position, detection.cov);
+  m_kalman->correct(detection.position, detection.covariance);
 
   // if hypothesis' position was corrected, replace the latest predicted position by the corrected
   m_position_history.back() = getPosition();

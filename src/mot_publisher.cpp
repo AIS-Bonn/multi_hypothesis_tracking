@@ -145,9 +145,9 @@ void MOTPublisher::publishDetectionsCovariances(const std::vector <Detection>& d
     detection_cov_marker.pose.position.y = detections[i].position(1);
     detection_cov_marker.pose.position.z = detections[i].position(2);
 
-    detection_cov_marker.scale.x = sqrt(4.204) * sqrt(detections[i].cov(0, 0));
-    detection_cov_marker.scale.y = sqrt(4.204) * sqrt(detections[i].cov(1, 1));
-    detection_cov_marker.scale.z = sqrt(4.204) * sqrt(detections[i].cov(2, 2));
+    detection_cov_marker.scale.x = sqrt(4.204) * sqrt(detections[i].covariance(0, 0));
+    detection_cov_marker.scale.y = sqrt(4.204) * sqrt(detections[i].covariance(1, 1));
+    detection_cov_marker.scale.z = sqrt(4.204) * sqrt(detections[i].covariance(2, 2));
 
     m_detections_covariances_publisher.publish(detection_cov_marker);
   }

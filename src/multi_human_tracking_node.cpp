@@ -120,10 +120,10 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
     detection.position(2) = static_cast<float>(person_detection.keypoints[8].joint.z);
     
     float detection_std = 0.03f;
-    detection.cov.setIdentity();
-    detection.cov(0, 0) = detection_std * detection_std;
-    detection.cov(1, 1) = detection_std * detection_std;
-    detection.cov(2, 2) = detection_std * detection_std;
+    detection.covariance.setIdentity();
+    detection.covariance(0, 0) = detection_std * detection_std;
+    detection.covariance(1, 1) = detection_std * detection_std;
+    detection.covariance(2, 2) = detection_std * detection_std;
 
     detection.points.clear();
     for(const auto& joint : person_detection.keypoints)

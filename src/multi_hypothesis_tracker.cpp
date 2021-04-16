@@ -84,7 +84,7 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Detection>& dete
           distance = bhattacharyya(m_hypotheses[i]->getPosition(),
                                    detections[j].position.block<3, 1>(0, 0),
                                    m_hypotheses[i]->getCovariance(),
-                                   detections[j].cov.block<3, 3>(0, 0));
+                                   detections[j].covariance.block<3, 3>(0, 0));
         }
         else
         {

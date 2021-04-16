@@ -143,10 +143,10 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
     detection.position(2) = static_cast<float>(msg->poses[i].position.z);
 
     float detection_std = 0.03f;
-    detection.cov.setIdentity();
-    detection.cov(0, 0) = detection_std * detection_std;
-    detection.cov(1, 1) = detection_std * detection_std;
-    detection.cov(2, 2) = detection_std * detection_std;
+    detection.covariance.setIdentity();
+    detection.covariance(0, 0) = detection_std * detection_std;
+    detection.covariance(1, 1) = detection_std * detection_std;
+    detection.covariance(2, 2) = detection_std * detection_std;
 
     detection.points.clear();
     detection.point_ids.clear();
@@ -169,15 +169,15 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
     detection.position(1) = static_cast<float>(msg->object_detections[i].centroid.y);
     detection.position(2) = static_cast<float>(msg->object_detections[i].centroid.z);
 
-    detection.cov(0, 0) = msg->object_detections[i].position_covariance_xx;
-    detection.cov(0, 1) = msg->object_detections[i].position_covariance_xy;
-    detection.cov(0, 2) = msg->object_detections[i].position_covariance_xz;
-    detection.cov(1, 0) = msg->object_detections[i].position_covariance_xy;
-    detection.cov(1, 1) = msg->object_detections[i].position_covariance_yy;
-    detection.cov(1, 2) = msg->object_detections[i].position_covariance_yz;
-    detection.cov(2, 0) = msg->object_detections[i].position_covariance_xz;
-    detection.cov(2, 1) = msg->object_detections[i].position_covariance_yz;
-    detection.cov(2, 2) = msg->object_detections[i].position_covariance_zz;
+    detection.covariance(0, 0) = msg->object_detections[i].position_covariance_xx;
+    detection.covariance(0, 1) = msg->object_detections[i].position_covariance_xy;
+    detection.covariance(0, 2) = msg->object_detections[i].position_covariance_xz;
+    detection.covariance(1, 0) = msg->object_detections[i].position_covariance_xy;
+    detection.covariance(1, 1) = msg->object_detections[i].position_covariance_yy;
+    detection.covariance(1, 2) = msg->object_detections[i].position_covariance_yz;
+    detection.covariance(2, 0) = msg->object_detections[i].position_covariance_xz;
+    detection.covariance(2, 1) = msg->object_detections[i].position_covariance_yz;
+    detection.covariance(2, 2) = msg->object_detections[i].position_covariance_zz;
 
     detection.points.clear();
     detection.points.reserve(msg->object_detections[i].cloud.height * msg->object_detections[i].cloud.width);

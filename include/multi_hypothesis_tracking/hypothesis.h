@@ -21,7 +21,7 @@
 struct Detection
 {
   Eigen::Vector3f position;             ///< Position of detection - e.g. center point.
-  Eigen::Matrix3f cov;                  ///< covariance of detection.
+  Eigen::Matrix3f covariance;           ///< Covariance of detection.
   std::vector<Eigen::Vector3f> points;  ///< point cloud corresponding to detection.
   std::vector<uint32_t> point_ids;      ///< indices of points in original point cloud corresponding to detection.
 
