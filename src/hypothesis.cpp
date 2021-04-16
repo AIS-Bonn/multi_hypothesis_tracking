@@ -37,8 +37,6 @@ Hypothesis::Hypothesis(const Detection& detection,
   m_position_history.push_back(m_first_position_in_track);
   m_was_assigned_history.push_back(true);
 
-  m_point_ids = detection.point_ids;
-
   m_points = detection.points;
 
   computeBoundingBox(m_points, m_min_corner_detection, m_max_corner_detection); // length width height
@@ -158,9 +156,6 @@ void Hypothesis::correct(const Detection& detection)
 
   m_max_corner_hypothesis = detection_centroid_position + (box_mean_size) / 2.f;
   m_min_corner_hypothesis = detection_centroid_position - (box_mean_size) / 2.f;
-
-  // update point ids
-  m_point_ids = detection.point_ids;
 
 //	verifyStatic(m_min_corner_detection, m_max_corner_detection);
   verifyStatic();

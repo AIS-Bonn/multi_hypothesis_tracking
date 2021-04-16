@@ -149,7 +149,6 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
     detection.covariance(2, 2) = detection_std * detection_std;
 
     detection.points.clear();
-    detection.point_ids.clear();
 
     detections.push_back(detection);
   }
@@ -182,11 +181,6 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
     detection.points.reserve(msg->object_detections[i].cloud.height * msg->object_detections[i].cloud.width);
     for(sensor_msgs::PointCloud2ConstIterator<float> it(msg->object_detections[i].cloud, "x"); it != it.end(); ++it)
       detection.points.push_back(Eigen::Vector3f(it[0], it[1], it[2]));
-
-    detection.point_ids.clear();
-    detection.point_ids.reserve(msg->object_detections[i].point_ids.size());
-    for(const auto& idx : msg->object_detections[i].point_ids)
-      detection.point_ids.push_back(idx);
 
     detections.push_back(detection);
   }

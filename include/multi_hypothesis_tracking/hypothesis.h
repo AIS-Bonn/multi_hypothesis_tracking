@@ -23,7 +23,6 @@ struct Detection
   Eigen::Vector3f position;             ///< Position of detection - e.g. center point.
   Eigen::Matrix3f covariance;           ///< Covariance of detection.
   std::vector<Eigen::Vector3f> points;  ///< point cloud corresponding to detection.
-  std::vector<uint32_t> point_ids;      ///< indices of points in original point cloud corresponding to detection.
 
   std::string frame_id;                 ///< Frame ID of detection - e.g. world or sensor frame.
   double time_stamp;                    ///< Time stamp when the detection was created.
@@ -188,8 +187,6 @@ public:
 
   /** @brief Getter for point cloud. */
   inline std::vector<Eigen::Vector3f>& getPointCloud(){ return m_points; }
-  /** @brief Getter for point ids. */
-  inline std::vector<uint32_t>& getPointIds(){ return m_point_ids; }
 protected:
 
   /** @brief Check if hypothesis is still static. */
@@ -251,8 +248,6 @@ protected:
 
   /** @brief Points representing object. */
   std::vector<Eigen::Vector3f> m_points;
-  /** @brief Indices of points within point cloud representing object. */
-  std::vector<uint32_t> m_point_ids;
 
   /** @brief Time stamps of predictions since the previous correction step. */
   std::queue<double> m_prediction_times_since_previous_correction;

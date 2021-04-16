@@ -36,7 +36,6 @@
 #include <multi_hypothesis_tracking_msgs/HypothesesEvaluationBoxes.h>
 #include <multi_hypothesis_tracking_msgs/HypothesesBoxesArray.h>
 #include <multi_hypothesis_tracking_msgs/HypothesesFull.h>
-#include <multi_hypothesis_tracking_msgs/HypothesesPointIndices.h>
 
 #include <multi_hypothesis_tracking/hypothesis.h>
 #include <multi_hypothesis_tracking/utils.h>
@@ -87,9 +86,6 @@ public:
   /** @brief Publish full tracks of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
   void publishFullTracks(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                          const ros::Time& stamp);
-  /** @brief Publish the bounding boxes of dynamic hypotheses. */
-  void publishHypothesesPointIndices(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
-                                     const ros::Time& stamp);
   /** @brief Publish the bounding boxes of dynamic hypotheses that were assigned in the current step. */
   void publishHypothesesBoxesEvaluation(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                                         const ros::Time& stamp);
@@ -170,7 +166,6 @@ private:
   ros::Publisher m_hypotheses_bounding_boxes_publisher;
   ros::Publisher m_hypotheses_full_publisher;
   ros::Publisher m_hypotheses_predictions_publisher;
-  ros::Publisher m_hypotheses_point_indices_publisher;
   ros::Publisher m_hypotheses_box_evaluation_publisher;
   ros::Publisher m_hypotheses_boxes_history_publisher;
   ros::Publisher m_hypotheses_predicted_positions_publisher;

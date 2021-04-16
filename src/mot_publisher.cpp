@@ -40,8 +40,6 @@ MOTPublisher::MOTPublisher()
     n.getNamespace() + "/hypotheses_bounding_boxes", 1);
   m_hypotheses_predicted_positions_publisher = n.advertise<visualization_msgs::Marker>(
     n.getNamespace() + "/hypotheses_predicted_positions", 1);
-  m_hypotheses_point_indices_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesPointIndices>(
-    n.getNamespace() + "/hypotheses_point_indices", 1, true);
   m_hypotheses_box_evaluation_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesEvaluationBoxes>(
     n.getNamespace() + "/hypotheses_boxes_evaluation", 1, true);
   m_hypotheses_boxes_history_publisher = n.advertise<multi_hypothesis_tracking_msgs::HypothesesBoxesArray>(
@@ -70,8 +68,6 @@ void MOTPublisher::publishAll(const std::vector <std::shared_ptr<Hypothesis>>& h
   publishDynamicHypothesesPositions(hypotheses, stamp);
   publishHypothesesBoundingBoxes(hypotheses, stamp);
   publishHypothesesBoxesEvaluation(hypotheses, stamp);
-  publishHypothesesPointIndices(hypotheses, stamp);
-
   publishHypothesesBoxesHistory(hypotheses, stamp);
 
   publishFullTracks(hypotheses, stamp);
@@ -601,30 +597,6 @@ void MOTPublisher::publishFullTracks(const std::vector <std::shared_ptr<Hypothes
     }
   }
   m_hypotheses_paths_publisher.publish(hypotheses_paths_marker);
-}
-
-void MOTPublisher::publishHypothesesPointIndices(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
-                                                 const ros::Time& stamp)
-{
-  if(m_hypotheses_point_indices_publisher.getNumSubscribers() == 0)
-    return;
-
-  multi_hypothesis_tracking_msgs::HypothesesPointIndicesPtr hypotheses_msg(new multi_hypothesis_tracking_msgs::HypothesesPointIndices());
-  hypotheses_msg->header.frame_id = m_world_frame;
-  hypotheses_msg->header.stamp = stamp;
-
-  for(size_t i = 0; i < hypotheses.size(); ++i)
-  {
-    std::shared_ptr <Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
-
-    if(!hypothesis->isStatic() && stamp.toSec() == hypothesis->getLastCorrectionTime())
-    {
-      hypotheses_msg->point_ids.reserve(hypotheses_msg->point_ids.size() + hypothesis->getPointIds().size());
-      hypotheses_msg->point_ids.insert(hypotheses_msg->point_ids.end(), hypothesis->getPointIds().begin(),
-                                       hypothesis->getPointIds().end());
-    }
-  }
-  m_hypotheses_point_indices_publisher.publish(hypotheses_msg);
 }
 
 void MOTPublisher::publishHypothesesBoxesEvaluation(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
