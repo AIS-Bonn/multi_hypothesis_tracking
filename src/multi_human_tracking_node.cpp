@@ -115,9 +115,9 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
       continue;
     }
     
-    detection.pos(0) = static_cast<float>(person_detection.keypoints[8].joint.x);
-    detection.pos(1) = static_cast<float>(person_detection.keypoints[8].joint.y);
-    detection.pos(2) = static_cast<float>(person_detection.keypoints[8].joint.z);
+    detection.position(0) = static_cast<float>(person_detection.keypoints[8].joint.x);
+    detection.position(1) = static_cast<float>(person_detection.keypoints[8].joint.y);
+    detection.position(2) = static_cast<float>(person_detection.keypoints[8].joint.z);
     
     float detection_std = 0.03f;
     detection.cov.setIdentity();
@@ -169,7 +169,7 @@ bool Tracker::transformToFrame(std::vector <Detection>& detections,
     tf::transformTFToEigen(transform, transform_eigen);
     Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
 
-    detection.pos = transform_eigenf * detection.pos;
+    detection.position = transform_eigenf * detection.position;
 
     for(auto& point : detection.points)
       point = transform_eigenf * point;

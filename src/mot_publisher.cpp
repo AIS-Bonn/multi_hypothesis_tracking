@@ -119,9 +119,9 @@ void MOTPublisher::publishDetectionPositions(const std::vector <Detection>& dete
   detection_positions_marker.points.resize(detections.size());
   for(size_t i = 0; i < detections.size(); i++)
   {
-    detection_positions_marker.points[i].x = detections[i].pos(0);
-    detection_positions_marker.points[i].y = detections[i].pos(1);
-    detection_positions_marker.points[i].z = detections[i].pos(2);
+    detection_positions_marker.points[i].x = detections[i].position(0);
+    detection_positions_marker.points[i].y = detections[i].position(1);
+    detection_positions_marker.points[i].z = detections[i].position(2);
   }
   m_detection_positions_publisher.publish(detection_positions_marker);
 }
@@ -141,9 +141,9 @@ void MOTPublisher::publishDetectionsCovariances(const std::vector <Detection>& d
   {
     detection_cov_marker.header.frame_id = detections.at(i).frame;
     detection_cov_marker.id = (int)i;
-    detection_cov_marker.pose.position.x = detections[i].pos(0);
-    detection_cov_marker.pose.position.y = detections[i].pos(1);
-    detection_cov_marker.pose.position.z = detections[i].pos(2);
+    detection_cov_marker.pose.position.x = detections[i].position(0);
+    detection_cov_marker.pose.position.y = detections[i].position(1);
+    detection_cov_marker.pose.position.z = detections[i].position(2);
 
     detection_cov_marker.scale.x = sqrt(4.204) * sqrt(detections[i].cov(0, 0));
     detection_cov_marker.scale.y = sqrt(4.204) * sqrt(detections[i].cov(1, 1));

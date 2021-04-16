@@ -138,9 +138,9 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
 
   for(size_t i = 0; i < msg->poses.size(); i++)
   {
-    detection.pos(0) = static_cast<float>(msg->poses[i].position.x);
-    detection.pos(1) = static_cast<float>(msg->poses[i].position.y);
-    detection.pos(2) = static_cast<float>(msg->poses[i].position.z);
+    detection.position(0) = static_cast<float>(msg->poses[i].position.x);
+    detection.position(1) = static_cast<float>(msg->poses[i].position.y);
+    detection.position(2) = static_cast<float>(msg->poses[i].position.z);
 
     float detection_std = 0.03f;
     detection.cov.setIdentity();
@@ -165,9 +165,9 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
 
   for(size_t i = 0; i < msg->object_detections.size(); i++)
   {
-    detection.pos(0) = static_cast<float>(msg->object_detections[i].centroid.x);
-    detection.pos(1) = static_cast<float>(msg->object_detections[i].centroid.y);
-    detection.pos(2) = static_cast<float>(msg->object_detections[i].centroid.z);
+    detection.position(0) = static_cast<float>(msg->object_detections[i].centroid.x);
+    detection.position(1) = static_cast<float>(msg->object_detections[i].centroid.y);
+    detection.position(2) = static_cast<float>(msg->object_detections[i].centroid.z);
 
     detection.cov(0, 0) = msg->object_detections[i].position_covariance_xx;
     detection.cov(0, 1) = msg->object_detections[i].position_covariance_xy;
@@ -226,7 +226,7 @@ bool Tracker::transformToFrame(std::vector <Detection>& detections,
     tf::transformTFToEigen(transform, transform_eigen);
     Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
 
-    detection.pos = transform_eigenf * detection.pos;
+    detection.position = transform_eigenf * detection.position;
 
     for(auto& point : detection.points)
       point = transform_eigenf * point;

@@ -82,13 +82,13 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Detection>& dete
         if(m_use_bhattacharyya_for_assignments)
         {
           distance = bhattacharyya(m_hypotheses[i]->getPosition(),
-                                   detections[j].pos.block<3, 1>(0, 0),
+                                   detections[j].position.block<3, 1>(0, 0),
                                    m_hypotheses[i]->getCovariance(),
                                    detections[j].cov.block<3, 3>(0, 0));
         }
         else
         {
-          distance = (m_hypotheses[i]->getPosition() - detections[j].pos.block<3, 1>(0, 0)).norm();
+          distance = (m_hypotheses[i]->getPosition() - detections[j].position.block<3, 1>(0, 0)).norm();
         }
         int scaled_distance = (int)(m_dist_scale * distance);
         if(scaled_distance < m_max_distance)

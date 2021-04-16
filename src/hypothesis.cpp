@@ -28,7 +28,7 @@ Hypothesis::Hypothesis(const Detection& detection,
   Eigen::VectorXf initial_hypothesis_state(number_of_state_dimensions);
   initial_hypothesis_state.setZero();
   for(int i = 0; i < 3; i++)
-    initial_hypothesis_state(i) = detection.pos(i);
+    initial_hypothesis_state(i) = detection.position(i);
 
   m_kalman = std::make_shared<KalmanFilter>(initial_hypothesis_state);
   m_kalman->setCovariancePerSecond(covariance_per_second);
@@ -85,7 +85,7 @@ void Hypothesis::correct(const Detection& detection)
 {
   auto current_position = getPosition();
 
-  m_kalman->correct(detection.pos, detection.cov);
+  m_kalman->correct(detection.position, detection.cov);
 
   // if hypothesis' position was corrected, replace the latest predicted position by the corrected
   m_position_history.back() = getPosition();
@@ -136,7 +136,7 @@ void Hypothesis::correct(const Detection& detection)
   }
 
   // transform detection points to the current state's position and add them to the hypothesis' points
-  auto transform_detection_to_corrected = (getPosition() - detection.pos).eval();
+  auto transform_detection_to_corrected = (getPosition() - detection.position).eval();
   std::vector <Eigen::Vector3f> corrected_detection_points;
   corrected_detection_points.reserve(detection.points.size());
   for(const auto& point : detection.points)
@@ -337,7 +337,7 @@ void Hypothesis::verifyStatic()
 
 float Hypothesis::computeLikelihood(const Detection& detection)
 {
-  return m_kalman->computeLikelihood(detection.pos);
+  return m_kalman->computeLikelihood(detection.position);
 }
 
 
