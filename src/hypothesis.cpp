@@ -22,7 +22,7 @@ Hypothesis::Hypothesis(const Detection& detection,
     , m_max_tracked_velocity(0.0)
     , m_was_assigned_counter(0)
 {
-  int number_of_state_dimensions = 6;   // position x,y,z + velocity x,y,z
+  int number_of_state_dimensions = (int)detection.position.size() * 2;   // position dimensions + velocity dimensions
   Eigen::VectorXf initial_hypothesis_state(number_of_state_dimensions);
   initial_hypothesis_state.setZero();
   for(int i = 0; i < 3; i++)
