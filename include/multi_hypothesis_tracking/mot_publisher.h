@@ -61,6 +61,8 @@ public:
   /** @brief Destructor */
   ~MOTPublisher(){};
 
+  void initializePublishers(ros::NodeHandle& node_handle);
+
   /** @brief Calls all publishers. */
   void publishAll(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                   const ros::Time& stamp);
