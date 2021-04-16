@@ -230,18 +230,6 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
         m_max_corner_init_hypothesis = max_corner_detection.max(m_max_corner_init_hypothesis);
       }
     }
-
-
-
-
-//    // TODO: compute distance in xy direction and account less for movement in z direction
-//    Eigen::Vector3f xy_difference = getPosition() - m_first_position_in_track;
-//    xy_difference.z() = 0.f;
-//
-//    double distance_from_origin = xy_difference.norm();
-//    // TODO: test if check for max velocity only is better. or dist fram origin with a larger distance + check for max velocity to account for registration mistakes that statistically should keep the object position in a range around the origin
-//    if(distance_from_origin > m_static_distance_threshold /*&& (m_max_velocity_in_track.norm() > 0.85)*/)
-//      m_is_static = false;
   }
 }
 
@@ -254,8 +242,7 @@ void Hypothesis::verifyStatic()
     xy_difference.z() = 0.f;
 
     double distance_from_origin = xy_difference.norm();
-    // TODO: test if check for max velocity only is better. or dist fram origin with a larger distance + check for max velocity to account for registration mistakes that statistically should keep the object position in a range around the origin
-    if(distance_from_origin > m_static_distance_threshold /*&& (m_max_velocity_in_track.norm() > 0.85)*/)
+    if(distance_from_origin > m_static_distance_threshold)
     {
       m_is_static = false;
     }
