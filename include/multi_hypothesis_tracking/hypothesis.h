@@ -25,7 +25,7 @@ struct Detection
   std::vector<Eigen::Vector3f> points;  ///< point cloud corresponding to detection.
   std::vector<uint32_t> point_ids;      ///< indices of points in original point cloud corresponding to detection.
 
-  std::string frame;                    ///< frame_id of detection.
+  std::string frame_id;                 ///< Frame ID of detection - e.g. world or sensor frame.
   double time;                          ///< time_stamp of the detection.
 
   bool class_a_detection;

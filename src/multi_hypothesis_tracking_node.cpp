@@ -133,7 +133,7 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
                       std::vector <Detection>& detections)
 {
   Detection detection;
-  detection.frame = msg->header.frame_id;
+  detection.frame_id = msg->header.frame_id;
   detection.time = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->poses.size(); i++)
@@ -160,7 +160,7 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
                       std::vector <Detection>& detections)
 {
   Detection detection;
-  detection.frame = msg->header.frame_id;
+  detection.frame_id = msg->header.frame_id;
   detection.time = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->object_detections.size(); i++)
@@ -231,7 +231,7 @@ bool Tracker::transformToFrame(std::vector <Detection>& detections,
     for(auto& point : detection.points)
       point = transform_eigenf * point;
 
-    detection.frame = target_frame;
+    detection.frame_id = target_frame;
   }
 
   return true;

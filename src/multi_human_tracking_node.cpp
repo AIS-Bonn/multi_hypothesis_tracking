@@ -100,7 +100,7 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
                       std::vector <Detection>& detections)
 {
   Detection detection;
-  detection.frame = msg->header.frame_id;
+  detection.frame_id = msg->header.frame_id;
   detection.time = msg->header.stamp.toSec();
 
   float score_threshold = 0.1f;
@@ -174,7 +174,7 @@ bool Tracker::transformToFrame(std::vector <Detection>& detections,
     for(auto& point : detection.points)
       point = transform_eigenf * point;
     
-    detection.frame = target_frame;
+    detection.frame_id = target_frame;
   }
 
   return true;

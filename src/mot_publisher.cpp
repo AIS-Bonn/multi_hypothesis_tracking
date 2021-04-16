@@ -113,7 +113,7 @@ void MOTPublisher::publishDetectionPositions(const std::vector <Detection>& dete
 
   visualization_msgs::Marker detection_positions_marker = createMarker(1.0, 0.0, 0.0,
                                                                          "mot_detections_markers"); //red marker
-  detection_positions_marker.header.frame_id = detections.at(0).frame;
+  detection_positions_marker.header.frame_id = detections.at(0).frame_id;
   detection_positions_marker.header.stamp = stamp;
 
   detection_positions_marker.points.resize(detections.size());
@@ -139,7 +139,7 @@ void MOTPublisher::publishDetectionsCovariances(const std::vector <Detection>& d
 
   for(size_t i = 0; i < detections.size(); i++)
   {
-    detection_cov_marker.header.frame_id = detections.at(i).frame;
+    detection_cov_marker.header.frame_id = detections.at(i).frame_id;
     detection_cov_marker.id = (int)i;
     detection_cov_marker.pose.position.x = detections[i].position(0);
     detection_cov_marker.pose.position.y = detections[i].position(1);
@@ -160,7 +160,7 @@ void MOTPublisher::publishDetectionsPoints(const std::vector <Detection>& detect
     return;
 
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud <pcl::PointXYZ>);
-  cloud->header.frame_id = detections.at(0).frame;
+  cloud->header.frame_id = detections.at(0).frame_id;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
   int total_points_count = 0;
