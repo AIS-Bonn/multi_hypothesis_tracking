@@ -27,8 +27,6 @@ struct Detection
 
   std::string frame_id;                 ///< Frame ID of detection - e.g. world or sensor frame.
   double time_stamp;                    ///< Time stamp when the detection was created.
-
-  bool class_a_detection;
 };
 
 struct Box

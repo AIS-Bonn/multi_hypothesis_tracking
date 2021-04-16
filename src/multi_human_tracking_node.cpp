@@ -132,8 +132,6 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
                                                         joint.joint.y,
                                                         joint.joint.z));
     
-    detection.class_a_detection = true;
-
     detections.push_back(detection);
   }
 }

@@ -150,7 +150,6 @@ void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
 
     detection.points.clear();
     detection.point_ids.clear();
-    detection.class_a_detection = true;
 
     detections.push_back(detection);
   }
@@ -188,8 +187,6 @@ void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::Co
     detection.point_ids.reserve(msg->object_detections[i].point_ids.size());
     for(const auto& idx : msg->object_detections[i].point_ids)
       detection.point_ids.push_back(idx);
-
-    detection.class_a_detection = msg->object_detections[i].class_a_detection;
 
     detections.push_back(detection);
   }

@@ -93,11 +93,7 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Detection>& dete
         int scaled_distance = (int)(m_dist_scale * distance);
         if(scaled_distance < m_max_distance)
         {
-          if(detections[j].class_a_detection)
-            cost_matrix[i][j] = scaled_distance;
-          else
-            // if detection is here because of loosend thresholds, set highest valid distance to only assign if no other option available
-            cost_matrix[i][j] = m_max_distance - 1;
+          cost_matrix[i][j] = scaled_distance;
         }
         else
         {
@@ -164,8 +160,8 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
       }
       else if(i >= hyp_size && j < meas_size)
       {
-        // if detection assigned to dummy hypothesis AND is class_a_detection -> create new hypothesis
-        if(assignments[i][j] == HUNGARIAN_ASSIGNED && detections[j].class_a_detection)
+        // if detection assigned to dummy hypothesis -> create new hypothesis
+        if(assignments[i][j] == HUNGARIAN_ASSIGNED)
           m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections[j], m_current_hypothesis_id++));
       }
       else if(i >= hyp_size && j >= meas_size)
