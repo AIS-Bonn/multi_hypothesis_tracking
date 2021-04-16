@@ -147,8 +147,6 @@ private:
   /** @brief Time offset for predictions. */
   double m_future_time;
 
-  int m_debug_counter;
-
   ros::Publisher m_hypotheses_positions_publisher;
   ros::Publisher m_hypotheses_points_publisher;
   ros::Publisher m_detection_positions_publisher;
