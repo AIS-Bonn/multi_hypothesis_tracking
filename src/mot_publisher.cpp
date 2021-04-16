@@ -56,18 +56,21 @@ void MOTPublisher::publishAll(const Hypotheses& hypotheses,
   if(hypotheses.empty())
     ROS_DEBUG_STREAM("Publishing empty hypotheses.");
 
-  publishHypothesesPositions(hypotheses, stamp);
-  publishHypothesesPoints(hypotheses, stamp);
   publishHypothesesFull(hypotheses, stamp);
   publishHypothesesPredictions(hypotheses, stamp);
-  publishHypothesesPredictedPositions(hypotheses, stamp);
+  
+  publishHypothesesPositions(hypotheses, stamp);
   publishHypothesesCovariances(hypotheses, stamp);
+  publishHypothesesPoints(hypotheses, stamp);
+
   publishStaticHypothesesPositions(hypotheses, stamp);
   publishDynamicHypothesesPositions(hypotheses, stamp);
-  publishHypothesesBoundingBoxes(hypotheses, stamp);
-  publishHypothesesBoxesEvaluation(hypotheses, stamp);
 
   publishFullTracks(hypotheses, stamp);
+  publishHypothesesBoundingBoxes(hypotheses, stamp);
+  publishHypothesesPredictedPositions(hypotheses, stamp);
+  
+  publishHypothesesBoxesEvaluation(hypotheses, stamp);
 }
 
 MarkerMsg MOTPublisher::createMarker(float r, 
