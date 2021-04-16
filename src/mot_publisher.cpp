@@ -70,12 +70,15 @@ void MOTPublisher::publishAll(const Hypotheses& hypotheses,
   publishFullTracks(hypotheses, stamp);
 }
 
-MarkerMsg MOTPublisher::createMarker(float r, float g, float b, std::string ns)
+MarkerMsg MOTPublisher::createMarker(float r, 
+                                     float g, 
+                                     float b, 
+                                     std::string name_space)
 {
   MarkerMsg marker;
   marker.header.frame_id = m_world_frame;
   marker.header.stamp = ros::Time::now();
-  marker.ns = ns;
+  marker.ns = name_space;
   marker.id = 0;
   marker.type = MarkerMsg::POINTS;
   marker.action = MarkerMsg::ADD;
