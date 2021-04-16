@@ -167,8 +167,6 @@ private:
   ros::Publisher m_hypotheses_box_evaluation_publisher;
   ros::Publisher m_hypotheses_predicted_positions_publisher;
   ros::Publisher m_likelihood_publisher;
-
-  visualization_msgs::Marker full_track;
 };
 
 }
