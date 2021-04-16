@@ -44,6 +44,8 @@
 namespace MultiHypothesisTracker
 {
 
+typedef multi_hypothesis_tracking_msgs::HypothesesFull HypothesesFullMsg;
+
 class MOTPublisher
 {
 public:

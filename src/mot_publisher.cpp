@@ -15,7 +15,7 @@ MOTPublisher::MOTPublisher()
   ros::NodeHandle n("~");
   ros::NodeHandle public_node_handle;
 
-  m_hypotheses_full_publisher = public_node_handle.advertise<multi_hypothesis_tracking_msgs::HypothesesFull>("hypotheses_full", 1);
+  m_hypotheses_full_publisher = public_node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
   m_hypotheses_predictions_publisher = public_node_handle.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>(
     "hypotheses_predictions", 1);
 
@@ -267,8 +267,7 @@ void MOTPublisher::publishHypothesesFull(const std::vector<std::shared_ptr<Hypot
   if(m_hypotheses_full_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  multi_hypothesis_tracking_msgs::HypothesesFullPtr hypotheses_msg(
-    new multi_hypothesis_tracking_msgs::HypothesesFull());
+  HypothesesFullMsg::Ptr hypotheses_msg(new HypothesesFullMsg());
   hypotheses_msg->header.frame_id = m_world_frame;
   hypotheses_msg->header.stamp = stamp;
 
