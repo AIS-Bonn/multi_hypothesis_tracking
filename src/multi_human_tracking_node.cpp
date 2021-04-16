@@ -66,16 +66,16 @@ void Tracker::detectionCallback(const HumanMsg::ConstPtr& msg)
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
-  std::vector <Measurement> measurements;
-  convert(msg, measurements);
+  std::vector <Detection> detections;
+  convert(msg, detections);
 
-  if(!transformToFrame(measurements, msg->header, m_world_frame))
+  if(!transformToFrame(detections, msg->header, m_world_frame))
     return;
 
-  m_mot_publisher.publishMeasurementPositions(measurements, msg->header.stamp);
-  m_mot_publisher.publishMeasurementsCovariances(measurements, msg->header.stamp);
+  m_mot_publisher.publishDetectionPositions(detections, msg->header.stamp);
+  m_mot_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
 
-  processMeasurements(measurements);
+  processDetections(detections);
 
   if(!m_got_first_detections && !msg->persons.empty())
     m_got_first_detections = true;
@@ -97,11 +97,11 @@ void Tracker::detectionCallback(const HumanMsg::ConstPtr& msg)
 }
 
 void Tracker::convert(const HumanMsg::ConstPtr& msg,
-                      std::vector <Measurement>& measurements)
+                      std::vector <Detection>& detections)
 {
-  Measurement measurement;
-  measurement.frame = msg->header.frame_id;
-  measurement.time = msg->header.stamp.toSec();
+  Detection detection;
+  detection.frame = msg->header.frame_id;
+  detection.time = msg->header.stamp.toSec();
 
   float score_threshold = 0.1f;
   for(const auto& person_detection : msg->persons)
@@ -115,30 +115,30 @@ void Tracker::convert(const HumanMsg::ConstPtr& msg,
       continue;
     }
     
-    measurement.pos(0) = static_cast<float>(person_detection.keypoints[8].joint.x);
-    measurement.pos(1) = static_cast<float>(person_detection.keypoints[8].joint.y);
-    measurement.pos(2) = static_cast<float>(person_detection.keypoints[8].joint.z);
+    detection.pos(0) = static_cast<float>(person_detection.keypoints[8].joint.x);
+    detection.pos(1) = static_cast<float>(person_detection.keypoints[8].joint.y);
+    detection.pos(2) = static_cast<float>(person_detection.keypoints[8].joint.z);
     
-    float measurement_std = 0.03f;
-    measurement.cov.setIdentity();
-    measurement.cov(0, 0) = measurement_std * measurement_std;
-    measurement.cov(1, 1) = measurement_std * measurement_std;
-    measurement.cov(2, 2) = measurement_std * measurement_std;
+    float detection_std = 0.03f;
+    detection.cov.setIdentity();
+    detection.cov(0, 0) = detection_std * detection_std;
+    detection.cov(1, 1) = detection_std * detection_std;
+    detection.cov(2, 2) = detection_std * detection_std;
 
-    measurement.points.clear();
+    detection.points.clear();
     for(const auto& joint : person_detection.keypoints)
       if(joint.score > 0.0)
-        measurement.points.emplace_back(Eigen::Vector3f(joint.joint.x,
+        detection.points.emplace_back(Eigen::Vector3f(joint.joint.x,
                                                         joint.joint.y,
                                                         joint.joint.z));
     
-    measurement.class_a_detection = true;
+    detection.class_a_detection = true;
 
-    measurements.push_back(measurement);
+    detections.push_back(detection);
   }
 }
 
-bool Tracker::transformToFrame(std::vector <Measurement>& measurements,
+bool Tracker::transformToFrame(std::vector <Detection>& detections,
                                const std_msgs::Header& header,
                                const std::string& target_frame)
 {
@@ -163,36 +163,36 @@ bool Tracker::transformToFrame(std::vector <Measurement>& measurements,
     return false;
   }
 
-  for(auto& measurement : measurements)
+  for(auto& detection : detections)
   {
     Eigen::Affine3d transform_eigen;
     tf::transformTFToEigen(transform, transform_eigen);
     Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
 
-    measurement.pos = transform_eigenf * measurement.pos;
+    detection.pos = transform_eigenf * detection.pos;
 
-    for(auto& point : measurement.points)
+    for(auto& point : detection.points)
       point = transform_eigenf * point;
     
-    measurement.frame = target_frame;
+    detection.frame = target_frame;
   }
 
   return true;
 }
 
-void Tracker::processMeasurements(const std::vector <Measurement>& measurements)
+void Tracker::processDetections(const std::vector <Detection>& detections)
 {
-  if(measurements.empty())
+  if(detections.empty())
     return;
 
   // Prediction step of kalman filter for all hypotheses
   if(m_last_prediction_time > 0)
-    m_multi_hypothesis_tracker.predict(measurements.at(0).time - m_last_prediction_time);
+    m_multi_hypothesis_tracker.predict(detections.at(0).time - m_last_prediction_time);
 
-  m_last_prediction_time = measurements.at(0).time;
+  m_last_prediction_time = detections.at(0).time;
 
   // Correction step of kalman filter for all hypotheses
-  m_multi_hypothesis_tracker.correct(measurements);
+  m_multi_hypothesis_tracker.correct(detections);
 
   // Filter out weak hypotheses
   m_multi_hypothesis_tracker.clearDeletedHypotheses();

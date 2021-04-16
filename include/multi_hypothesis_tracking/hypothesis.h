@@ -18,7 +18,7 @@
 /**
  * @brief Description of detection.
  */
-struct Measurement
+struct Detection
 {
   Eigen::Vector3f pos;                  ///< position of detection.
   Eigen::Matrix3f cov;                  ///< covariance of detection.
@@ -58,11 +58,11 @@ public:
   /**
    * @brief Constructor.
    *
-   * @param[in] measurement             initial state.
+   * @param[in] detection             initial state.
    * @param[in] id                      id of hypothesis.
    * @param[in] covariance_per_second   parameter for kalman filter.
    */
-  Hypothesis(const Measurement& measurement,
+  Hypothesis(const Detection& detection,
              unsigned int id,
              double covariance_per_second = 0.5);
   /** @brief Destructor. */
@@ -86,11 +86,11 @@ public:
                Eigen::Vector3f& control);
 
   /**
-   * @brief Corrects the state using the measurement.
+   * @brief Corrects the hypothesis' state using the detection.
    *
-   * @param measurement measurement used for correction.
+   * @param detection   detection used for correction.
    */
-  void correct(const Measurement& measurement);
+  void correct(const Detection& detection);
 
   /**
    * @brief Transforms the #m_points using transform.
@@ -135,12 +135,12 @@ public:
   bool isSpurious(float max_covariance = 5.f);
 
   /**
-   * @brief Computes the likelihood of the measurement given the state.
+   * @brief Computes the likelihood of the detection given the state.
    *
-   * @param[in] measurement measurement.
+   * @param[in] detection   detection.
    * @return likelihood.
    */
-  float computeLikelihood(const Measurement& measurement);
+  float computeLikelihood(const Detection& detection);
 
   /** @brief Getter for hypothesis ID. */
   inline unsigned int getID(){ return m_id; }
@@ -288,12 +288,12 @@ public:
 
   /** @brief Creates hypothesis.
    *
-   * @param[in] measurement     initial state.
+   * @param[in] detection     initial state.
    * @param[in] id              ID of created hypothesis.
    *
    * @return pointer to created hypothesis.
    */
-  std::shared_ptr<Hypothesis> createHypothesis(const Measurement& measurement,
+  std::shared_ptr<Hypothesis> createHypothesis(const Detection& detection,
                                                unsigned int id);
 };
 

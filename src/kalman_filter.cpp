@@ -11,7 +11,7 @@ namespace MultiHypothesisTracker
 {
 
 KalmanFilter::KalmanFilter(const Eigen::VectorXf& state)
-  : m_measurement_dimensions(3)
+  : m_detection_dimensions(3)
     , m_control_dimensions(1)
     , m_covariance_per_second(0.5)
 {
@@ -30,11 +30,11 @@ KalmanFilter::KalmanFilter(const Eigen::VectorXf& state)
   m_process_noise_covariance.setIdentity();
 
 
-  // measurement = m_observation_model * current_state + observation_noise  with observation_noise ~ N(0,m_observation_noise_covariance)
-  m_observation_model = Eigen::MatrixXf(m_measurement_dimensions, m_state_dimensions);
+  // detection = m_observation_model * current_state + observation_noise  with observation_noise ~ N(0,m_observation_noise_covariance)
+  m_observation_model = Eigen::MatrixXf(m_detection_dimensions, m_state_dimensions);
   m_observation_model.setZero();
 
-  m_observation_noise_covariance = Eigen::MatrixXf(m_measurement_dimensions, m_measurement_dimensions);
+  m_observation_noise_covariance = Eigen::MatrixXf(m_detection_dimensions, m_detection_dimensions);
   m_observation_noise_covariance.setIdentity();
 
 
@@ -79,29 +79,29 @@ void KalmanFilter::predict(float dt,
   // TODO: check if matrix is positive definite ?!?
 }
 
-void KalmanFilter::correct(const Eigen::VectorXf& measurement,
-                           const Eigen::MatrixXf& measurement_covariance)
+void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
+                           const Eigen::MatrixXf& detection_covariance)
 {
-  assert(measurement.size() == m_measurement_dimensions);
+  assert(detection_position.size() == m_detection_dimensions);
 
-  // set up measurement model
+  // set up observation model
   m_observation_model.setZero();
-  for(size_t i = 0; i < m_measurement_dimensions; i++)
+  for(size_t i = 0; i < m_detection_dimensions; i++)
     m_observation_model(i, i) = 1.f;
 
   // set up observation noise covariance
-  m_observation_noise_covariance = measurement_covariance;
+  m_observation_noise_covariance = detection_covariance;
 
   // compute kalman gain
   Eigen::MatrixXf temp = m_error_covariance * m_observation_model.transpose();
   Eigen::MatrixXf kalman_gain = temp * (m_observation_model * temp + m_observation_noise_covariance).inverse();
 
 
-  // compute the expected measurement
-  Eigen::VectorXf expected_measurement = m_observation_model * m_state;
+  // compute the expected position
+  Eigen::VectorXf expected_position = m_observation_model * m_state;
 
   // correct state
-  m_state = m_state + kalman_gain * (measurement - expected_measurement);
+  m_state = m_state + kalman_gain * (detection_position - expected_position);
 
 
   // update error covariance
@@ -127,9 +127,9 @@ bool KalmanFilter::isAlmostSymmetric(const Eigen::MatrixXf& matrix,
   return true;
 }
 
-float KalmanFilter::computeLikelihood(const Eigen::VectorXf& measurement)
+float KalmanFilter::computeLikelihood(const Eigen::VectorXf& detection_position)
 {
-  Eigen::VectorXf y = measurement - m_observation_model * m_state;
+  Eigen::VectorXf y = detection_position - m_observation_model * m_state;
   Eigen::MatrixXf S =
     m_observation_model * m_error_covariance * m_observation_model.transpose() + m_observation_noise_covariance;
 

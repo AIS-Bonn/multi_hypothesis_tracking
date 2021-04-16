@@ -19,12 +19,12 @@ MOTPublisher::MOTPublisher()
   m_hypotheses_full_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::HypothesesFull>("hypotheses_full", 1);
   m_hypotheses_predictions_publisher = pub_n.advertise<multi_hypothesis_tracking_msgs::ObjectDetections>("hypotheses_predictions", 1);
 
-  m_measurement_positions_publisher = n.advertise<visualization_msgs::Marker>(
-    n.getNamespace() + "/measurements_positions", 1);
-  m_measurements_covariances_publisher = n.advertise<visualization_msgs::Marker>(
-    n.getNamespace() + "/measurements_covariances", 1);
-  m_measurements_points_publisher =
-    n.advertise < pcl::PointCloud < pcl::PointXYZ >> (n.getNamespace() + "/measurements_points", 1);
+  m_detection_positions_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/detections_positions", 1);
+  m_detections_covariances_publisher = n.advertise<visualization_msgs::Marker>(
+    n.getNamespace() + "/detections_covariances", 1);
+  m_detections_points_publisher =
+    n.advertise < pcl::PointCloud < pcl::PointXYZ >> (n.getNamespace() + "/detections_points", 1);
   m_hypotheses_positions_publisher = n.advertise<visualization_msgs::Marker>(n.getNamespace() + "/hypotheses_positions",
                                                                              1);
   m_hypotheses_points_publisher =
@@ -105,75 +105,75 @@ visualization_msgs::Marker MOTPublisher::createMarker(float r, float g, float b,
   return marker;
 }
 
-void MOTPublisher::publishMeasurementPositions(const std::vector <Measurement>& measurements,
+void MOTPublisher::publishDetectionPositions(const std::vector <Detection>& detections,
                                                const ros::Time& stamp)
 {
-  if(m_measurement_positions_publisher.getNumSubscribers() == 0 || measurements.empty())
+  if(m_detection_positions_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
 
-  visualization_msgs::Marker measurement_positions_marker = createMarker(1.0, 0.0, 0.0,
-                                                                         "mot_measurements_markers"); //red marker
-  measurement_positions_marker.header.frame_id = measurements.at(0).frame;
-  measurement_positions_marker.header.stamp = stamp;
+  visualization_msgs::Marker detection_positions_marker = createMarker(1.0, 0.0, 0.0,
+                                                                         "mot_detections_markers"); //red marker
+  detection_positions_marker.header.frame_id = detections.at(0).frame;
+  detection_positions_marker.header.stamp = stamp;
 
-  measurement_positions_marker.points.resize(measurements.size());
-  for(size_t i = 0; i < measurements.size(); i++)
+  detection_positions_marker.points.resize(detections.size());
+  for(size_t i = 0; i < detections.size(); i++)
   {
-    measurement_positions_marker.points[i].x = measurements[i].pos(0);
-    measurement_positions_marker.points[i].y = measurements[i].pos(1);
-    measurement_positions_marker.points[i].z = measurements[i].pos(2);
+    detection_positions_marker.points[i].x = detections[i].pos(0);
+    detection_positions_marker.points[i].y = detections[i].pos(1);
+    detection_positions_marker.points[i].z = detections[i].pos(2);
   }
-  m_measurement_positions_publisher.publish(measurement_positions_marker);
+  m_detection_positions_publisher.publish(detection_positions_marker);
 }
 
-void MOTPublisher::publishMeasurementsCovariances(const std::vector <Measurement>& measurements,
+void MOTPublisher::publishDetectionsCovariances(const std::vector <Detection>& detections,
                                                   const ros::Time& stamp)
 {
-  if(m_measurements_covariances_publisher.getNumSubscribers() == 0 || measurements.empty())
+  if(m_detections_covariances_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
 
-  visualization_msgs::Marker measurement_cov_marker = createMarker(1.0, 0.0, 0.0, "mot_measurement_covariance_marker");;
-  measurement_cov_marker.type = visualization_msgs::Marker::SPHERE;
-  measurement_cov_marker.color.a = 0.5f;
-  measurement_cov_marker.header.stamp = stamp;
+  visualization_msgs::Marker detection_cov_marker = createMarker(1.0, 0.0, 0.0, "mot_detection_covariance_marker");;
+  detection_cov_marker.type = visualization_msgs::Marker::SPHERE;
+  detection_cov_marker.color.a = 0.5f;
+  detection_cov_marker.header.stamp = stamp;
 
-  for(size_t i = 0; i < measurements.size(); i++)
+  for(size_t i = 0; i < detections.size(); i++)
   {
-    measurement_cov_marker.header.frame_id = measurements.at(i).frame;
-    measurement_cov_marker.id = (int)i;
-    measurement_cov_marker.pose.position.x = measurements[i].pos(0);
-    measurement_cov_marker.pose.position.y = measurements[i].pos(1);
-    measurement_cov_marker.pose.position.z = measurements[i].pos(2);
+    detection_cov_marker.header.frame_id = detections.at(i).frame;
+    detection_cov_marker.id = (int)i;
+    detection_cov_marker.pose.position.x = detections[i].pos(0);
+    detection_cov_marker.pose.position.y = detections[i].pos(1);
+    detection_cov_marker.pose.position.z = detections[i].pos(2);
 
-    measurement_cov_marker.scale.x = sqrt(4.204) * sqrt(measurements[i].cov(0, 0));
-    measurement_cov_marker.scale.y = sqrt(4.204) * sqrt(measurements[i].cov(1, 1));
-    measurement_cov_marker.scale.z = sqrt(4.204) * sqrt(measurements[i].cov(2, 2));
+    detection_cov_marker.scale.x = sqrt(4.204) * sqrt(detections[i].cov(0, 0));
+    detection_cov_marker.scale.y = sqrt(4.204) * sqrt(detections[i].cov(1, 1));
+    detection_cov_marker.scale.z = sqrt(4.204) * sqrt(detections[i].cov(2, 2));
 
-    m_measurements_covariances_publisher.publish(measurement_cov_marker);
+    m_detections_covariances_publisher.publish(detection_cov_marker);
   }
 }
 
-void MOTPublisher::publishMeasurementsPoints(const std::vector <Measurement>& measurements,
+void MOTPublisher::publishDetectionsPoints(const std::vector <Detection>& detections,
                                              const ros::Time& stamp)
 {
-  if(m_measurements_points_publisher.getNumSubscribers() == 0 || measurements.empty())
+  if(m_detections_points_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
 
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud <pcl::PointXYZ>);
-  cloud->header.frame_id = measurements.at(0).frame;
+  cloud->header.frame_id = detections.at(0).frame;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
   int total_points_count = 0;
-  for(size_t i = 0; i < measurements.size(); i++)
-    total_points_count += measurements.at(i).points.size();
+  for(size_t i = 0; i < detections.size(); i++)
+    total_points_count += detections.at(i).points.size();
 
   cloud->points.resize(total_points_count);
   int point_counter = 0;
-  for(size_t i = 0; i < measurements.size(); i++)
-    for(size_t point_id = 0; point_id < measurements.at(i).points.size(); point_id++, point_counter++)
-      cloud->points[point_counter].getVector3fMap() = measurements.at(i).points.at(point_id);
+  for(size_t i = 0; i < detections.size(); i++)
+    for(size_t point_id = 0; point_id < detections.at(i).points.size(); point_id++, point_counter++)
+      cloud->points[point_counter].getVector3fMap() = detections.at(i).points.at(point_id);
 
-  m_measurements_points_publisher.publish(cloud);
+  m_detections_points_publisher.publish(cloud);
 }
 
 void MOTPublisher::publishHypothesesCovariances(const std::vector <std::shared_ptr<Hypothesis>>& hypotheses,

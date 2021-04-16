@@ -55,13 +55,13 @@ public:
                const Eigen::VectorXf& control);
 
   /**
-   * @brief Corrects the position using the measurement.
+   * @brief Corrects the position using the position of current detection.
    *
-   * @param[in] measurement             current measurement.
-   * @param[in] measurement_covariance  covariance of measurement.
+   * @param[in] detection_position    position of current detection.
+   * @param[in] detection_covariance  covariance of current detection.
    */
-  void correct(const Eigen::VectorXf& measurement,
-               const Eigen::MatrixXf& measurement_covariance);
+  void correct(const Eigen::VectorXf& detection_position,
+               const Eigen::MatrixXf& detection_covariance);
 
   /**
    * @brief Getter for m_state.
@@ -82,14 +82,14 @@ public:
   void setCovariancePerSecond(double covariance_per_second){ m_covariance_per_second = covariance_per_second; };
 
   /**
-   * @brief Compute log likelihood of measurements given the state.
+   * @brief Compute log likelihood of detection position given the state.
    *
    * See "Likelihood Function" in https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python/blob/master/08-Designing-Kalman-Filters.ipynb
    *
-   * @param[in] measurement measurement.
+   * @param[in] detection_position      position of the current detection.
    * @return likelihood.
    */
-  float computeLikelihood(const Eigen::VectorXf& measurement);
+  float computeLikelihood(const Eigen::VectorXf& detection_position);
 
 protected:
 
@@ -123,8 +123,8 @@ protected:
 
   /** @brief Number of state dimensions. */
   size_t m_state_dimensions;
-  /** @brief Number of measurement dimensions. */
-  size_t m_measurement_dimensions;
+  /** @brief Number of dimensions of the detections position or state. */
+  size_t m_detection_dimensions;
   /** @brief Number of conrol dimensions. */
   size_t m_control_dimensions;
 

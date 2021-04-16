@@ -10,12 +10,12 @@
 namespace MultiHypothesisTracker
 {
 
-Hypothesis::Hypothesis(const Measurement& measurement,
+Hypothesis::Hypothesis(const Detection& detection,
                        unsigned int id,
                        double covariance_per_second)
   : m_id(id)
-    , m_born_time(measurement.time)
-    , m_last_correction_time(measurement.time)
+    , m_born_time(detection.time)
+    , m_last_correction_time(detection.time)
     , m_is_static(true)
     , m_turned_dynamic_now(false)
     , m_static_distance_threshold(1.f)
@@ -25,21 +25,21 @@ Hypothesis::Hypothesis(const Measurement& measurement,
     , m_was_assigned_counter(0)
 {
   int number_of_state_dimensions = 6;   // position x,y,z + velocity x,y,z
-  Eigen::VectorXf meas(number_of_state_dimensions);
-  meas.setZero();
+  Eigen::VectorXf initial_hypothesis_state(number_of_state_dimensions);
+  initial_hypothesis_state.setZero();
   for(int i = 0; i < 3; i++)
-    meas(i) = measurement.pos(i);
+    initial_hypothesis_state(i) = detection.pos(i);
 
-  m_kalman = std::make_shared<KalmanFilter>(meas);
+  m_kalman = std::make_shared<KalmanFilter>(initial_hypothesis_state);
   m_kalman->setCovariancePerSecond(covariance_per_second);
 
   m_first_position_in_track = getPosition();
   m_position_history.push_back(m_first_position_in_track);
   m_was_assigned_history.push_back(true);
 
-  m_point_ids = measurement.point_ids;
+  m_point_ids = detection.point_ids;
 
-  m_points = measurement.points;
+  m_points = detection.points;
 
   computeBoundingBox(m_points, m_min_corner_detection, m_max_corner_detection); // length width height
   m_min_corner_hypothesis = m_min_corner_detection;
@@ -50,7 +50,7 @@ Hypothesis::Hypothesis(const Measurement& measurement,
   m_previous_correction_box.min_corner = m_min_corner_detection;
   m_previous_correction_box.max_corner = m_max_corner_detection;
 
-  m_box_history.emplace_back(StampedBox(measurement.time, m_min_corner_detection, m_max_corner_detection));
+  m_box_history.emplace_back(StampedBox(detection.time, m_min_corner_detection, m_max_corner_detection));
 }
 
 void Hypothesis::predict(float dt)
@@ -81,11 +81,11 @@ void Hypothesis::predict(float dt,
   m_prediction_times_since_previous_correction.push(dt);
 }
 
-void Hypothesis::correct(const Measurement& measurement)
+void Hypothesis::correct(const Detection& detection)
 {
   auto current_position = getPosition();
 
-  m_kalman->correct(measurement.pos, measurement.cov);
+  m_kalman->correct(detection.pos, detection.cov);
 
   // if hypothesis' position was corrected, replace the latest predicted position by the corrected
   m_position_history.back() = getPosition();
@@ -135,21 +135,21 @@ void Hypothesis::correct(const Measurement& measurement)
       m_kalman->getState()(3 + i) = current_velocity(i);
   }
 
-  // transform measurement points to the current state's position and add them to the hypothesis' points
-  auto transform_measurement_to_corrected = (getPosition() - measurement.pos).eval();
-  std::vector <Eigen::Vector3f> corrected_measurement_points;
-  corrected_measurement_points.reserve(measurement.points.size());
-  for(const auto& point : measurement.points)
-    corrected_measurement_points.emplace_back(Eigen::Vector3f(point + transform_measurement_to_corrected));
+  // transform detection points to the current state's position and add them to the hypothesis' points
+  auto transform_detection_to_corrected = (getPosition() - detection.pos).eval();
+  std::vector <Eigen::Vector3f> corrected_detection_points;
+  corrected_detection_points.reserve(detection.points.size());
+  for(const auto& point : detection.points)
+    corrected_detection_points.emplace_back(Eigen::Vector3f(point + transform_detection_to_corrected));
 
   //TODO: filter if too many points in hypothesis
-  m_points.reserve(m_points.size() + corrected_measurement_points.size());
-  m_points.insert(m_points.end(), corrected_measurement_points.begin(), corrected_measurement_points.end());
+  m_points.reserve(m_points.size() + corrected_detection_points.size());
+  m_points.insert(m_points.end(), corrected_detection_points.begin(), corrected_detection_points.end());
 
   // update hypothesis' bounding box using corrected detection points
-//  computeBoundingBox(corrected_measurement_points, m_min_corner_hypothesis, m_max_corner_hypothesis);
+//  computeBoundingBox(corrected_detection_points, m_min_corner_hypothesis, m_max_corner_hypothesis);
   // update bounding box of assigned detection
-  computeBoundingBox(measurement.points, m_min_corner_detection, m_max_corner_detection);
+  computeBoundingBox(detection.points, m_min_corner_detection, m_max_corner_detection);
 
   auto detection_centroid_position = (m_max_corner_detection + m_min_corner_detection) / 2.f;
   auto detection_box_size = (m_max_corner_detection - m_min_corner_detection).eval();
@@ -160,7 +160,7 @@ void Hypothesis::correct(const Measurement& measurement)
   m_min_corner_hypothesis = detection_centroid_position - (box_mean_size) / 2.f;
 
   // update point ids
-  m_point_ids = measurement.point_ids;
+  m_point_ids = detection.point_ids;
 
 //	verifyStatic(m_min_corner_detection, m_max_corner_detection);
   verifyStatic();
@@ -171,7 +171,7 @@ void Hypothesis::correct(const Measurement& measurement)
   {
     // interpolate the previous bounding box at every prediction time to the current bounding box and save results for optional publishing
     double interpolation_time = 0.0;
-    double time_diff_current_corrections = measurement.time - m_last_correction_time;
+    double time_diff_current_corrections = detection.time - m_last_correction_time;
     Eigen::Array3f interpolation_vector_min_corners = m_min_corner_detection - m_previous_correction_box.min_corner;
     Eigen::Array3f interpolation_vector_max_corners = m_max_corner_detection - m_previous_correction_box.max_corner;
     while(!m_prediction_times_since_previous_correction.empty())
@@ -204,12 +204,12 @@ void Hypothesis::correct(const Measurement& measurement)
   }
 
   if(m_is_static)
-    m_box_history.emplace_back(StampedBox(measurement.time, m_min_corner_detection, m_max_corner_detection));
+    m_box_history.emplace_back(StampedBox(detection.time, m_min_corner_detection, m_max_corner_detection));
 
   m_previous_correction_box.min_corner = m_min_corner_detection;
   m_previous_correction_box.max_corner = m_max_corner_detection;
 
-  m_last_correction_time = measurement.time;
+  m_last_correction_time = detection.time;
 }
 
 void Hypothesis::transformPoints(std::vector <Eigen::Vector3f>& points,
@@ -335,16 +335,16 @@ void Hypothesis::verifyStatic()
   }
 }
 
-float Hypothesis::computeLikelihood(const Measurement& measurement)
+float Hypothesis::computeLikelihood(const Detection& detection)
 {
-  return m_kalman->computeLikelihood(measurement.pos);
+  return m_kalman->computeLikelihood(detection.pos);
 }
 
 
-std::shared_ptr <Hypothesis> HypothesisFactory::createHypothesis(const Measurement& measurement,
+std::shared_ptr <Hypothesis> HypothesisFactory::createHypothesis(const Detection& detection,
                                                                  unsigned int id)
 {
-  return std::make_shared<Hypothesis>(measurement, id, m_covariance_per_second);
+  return std::make_shared<Hypothesis>(detection, id, m_covariance_per_second);
 }
 
 };

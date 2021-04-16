@@ -70,23 +70,23 @@ void Tracker::publish(const ros::Time& stamp)
     m_mot_publisher.publishLikelihood(m_multi_hypothesis_tracker.getAverageLikelihood());
 }
 
-// TODO: merge with other callback after converting to measurements
+// TODO: merge with other callback after converting to detections
 void Tracker::detectionPosesCallback(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
   ROS_DEBUG_STREAM("Laser detection callback.");
 
 //  double start = getTimeHighRes();
 
-  std::vector <Measurement> measurements;
-  convert(msg, measurements);
+  std::vector <Detection> detections;
+  convert(msg, detections);
 
-  if(!transformToFrame(measurements, msg->header, m_world_frame))
+  if(!transformToFrame(detections, msg->header, m_world_frame))
     return;
 
-  m_mot_publisher.publishMeasurementPositions(measurements, msg->header.stamp);
-  m_mot_publisher.publishMeasurementsCovariances(measurements, msg->header.stamp);
+  m_mot_publisher.publishDetectionPositions(detections, msg->header.stamp);
+  m_mot_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
 
-  processMeasurements(measurements);
+  processDetections(detections);
 
 //  std::cout << std::setprecision(10) << "\n####time for one callback " << (getTimeHighRes() - start) << " " << std::endl;
   publish(msg->header.stamp);
@@ -98,17 +98,17 @@ void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDete
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
-  std::vector <Measurement> measurements;
-  convert(msg, measurements);
+  std::vector <Detection> detections;
+  convert(msg, detections);
 
-  if(!transformToFrame(measurements, msg->header, m_world_frame))
+  if(!transformToFrame(detections, msg->header, m_world_frame))
     return;
 
-  m_mot_publisher.publishMeasurementPositions(measurements, msg->header.stamp);
-  m_mot_publisher.publishMeasurementsCovariances(measurements, msg->header.stamp);
-  m_mot_publisher.publishMeasurementsPoints(measurements, msg->header.stamp);
+  m_mot_publisher.publishDetectionPositions(detections, msg->header.stamp);
+  m_mot_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
+  m_mot_publisher.publishDetectionsPoints(detections, msg->header.stamp);
 
-  processMeasurements(measurements);
+  processDetections(detections);
 
   if(!m_got_first_detections && !msg->object_detections.empty())
     m_got_first_detections = true;
@@ -130,72 +130,72 @@ void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDete
 }
 
 void Tracker::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-                      std::vector <Measurement>& measurements)
+                      std::vector <Detection>& detections)
 {
-  Measurement measurement;
-  measurement.frame = msg->header.frame_id;
-  measurement.time = msg->header.stamp.toSec();
+  Detection detection;
+  detection.frame = msg->header.frame_id;
+  detection.time = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->poses.size(); i++)
   {
-    measurement.pos(0) = static_cast<float>(msg->poses[i].position.x);
-    measurement.pos(1) = static_cast<float>(msg->poses[i].position.y);
-    measurement.pos(2) = static_cast<float>(msg->poses[i].position.z);
+    detection.pos(0) = static_cast<float>(msg->poses[i].position.x);
+    detection.pos(1) = static_cast<float>(msg->poses[i].position.y);
+    detection.pos(2) = static_cast<float>(msg->poses[i].position.z);
 
-    float measurement_std = 0.03f;
-    measurement.cov.setIdentity();
-    measurement.cov(0, 0) = measurement_std * measurement_std;
-    measurement.cov(1, 1) = measurement_std * measurement_std;
-    measurement.cov(2, 2) = measurement_std * measurement_std;
+    float detection_std = 0.03f;
+    detection.cov.setIdentity();
+    detection.cov(0, 0) = detection_std * detection_std;
+    detection.cov(1, 1) = detection_std * detection_std;
+    detection.cov(2, 2) = detection_std * detection_std;
 
-    measurement.points.clear();
-    measurement.point_ids.clear();
-    measurement.class_a_detection = true;
+    detection.points.clear();
+    detection.point_ids.clear();
+    detection.class_a_detection = true;
 
-    measurements.push_back(measurement);
+    detections.push_back(detection);
   }
 }
 
 void Tracker::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
-                      std::vector <Measurement>& measurements)
+                      std::vector <Detection>& detections)
 {
-  Measurement measurement;
-  measurement.frame = msg->header.frame_id;
-  measurement.time = msg->header.stamp.toSec();
+  Detection detection;
+  detection.frame = msg->header.frame_id;
+  detection.time = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->object_detections.size(); i++)
   {
-    measurement.pos(0) = static_cast<float>(msg->object_detections[i].centroid.x);
-    measurement.pos(1) = static_cast<float>(msg->object_detections[i].centroid.y);
-    measurement.pos(2) = static_cast<float>(msg->object_detections[i].centroid.z);
+    detection.pos(0) = static_cast<float>(msg->object_detections[i].centroid.x);
+    detection.pos(1) = static_cast<float>(msg->object_detections[i].centroid.y);
+    detection.pos(2) = static_cast<float>(msg->object_detections[i].centroid.z);
 
-    measurement.cov(0, 0) = msg->object_detections[i].position_covariance_xx;
-    measurement.cov(0, 1) = msg->object_detections[i].position_covariance_xy;
-    measurement.cov(0, 2) = msg->object_detections[i].position_covariance_xz;
-    measurement.cov(1, 0) = msg->object_detections[i].position_covariance_xy;
-    measurement.cov(1, 1) = msg->object_detections[i].position_covariance_yy;
-    measurement.cov(1, 2) = msg->object_detections[i].position_covariance_yz;
-    measurement.cov(2, 0) = msg->object_detections[i].position_covariance_xz;
-    measurement.cov(2, 1) = msg->object_detections[i].position_covariance_yz;
-    measurement.cov(2, 2) = msg->object_detections[i].position_covariance_zz;
+    detection.cov(0, 0) = msg->object_detections[i].position_covariance_xx;
+    detection.cov(0, 1) = msg->object_detections[i].position_covariance_xy;
+    detection.cov(0, 2) = msg->object_detections[i].position_covariance_xz;
+    detection.cov(1, 0) = msg->object_detections[i].position_covariance_xy;
+    detection.cov(1, 1) = msg->object_detections[i].position_covariance_yy;
+    detection.cov(1, 2) = msg->object_detections[i].position_covariance_yz;
+    detection.cov(2, 0) = msg->object_detections[i].position_covariance_xz;
+    detection.cov(2, 1) = msg->object_detections[i].position_covariance_yz;
+    detection.cov(2, 2) = msg->object_detections[i].position_covariance_zz;
 
-    measurement.points.clear();
-    measurement.points.reserve(msg->object_detections[i].cloud.height * msg->object_detections[i].cloud.width);
+    detection.points.clear();
+    detection.points.reserve(msg->object_detections[i].cloud.height * msg->object_detections[i].cloud.width);
     for(sensor_msgs::PointCloud2ConstIterator<float> it(msg->object_detections[i].cloud, "x"); it != it.end(); ++it)
-      measurement.points.push_back(Eigen::Vector3f(it[0], it[1], it[2]));
+      detection.points.push_back(Eigen::Vector3f(it[0], it[1], it[2]));
 
-    measurement.point_ids.clear();
-    measurement.point_ids.reserve(msg->object_detections[i].point_ids.size());
+    detection.point_ids.clear();
+    detection.point_ids.reserve(msg->object_detections[i].point_ids.size());
     for(const auto& idx : msg->object_detections[i].point_ids)
-      measurement.point_ids.push_back(idx);
+      detection.point_ids.push_back(idx);
 
-    measurement.class_a_detection = msg->object_detections[i].class_a_detection;
+    detection.class_a_detection = msg->object_detections[i].class_a_detection;
 
-    measurements.push_back(measurement);
+    detections.push_back(detection);
   }
 }
 
-bool Tracker::transformToFrame(std::vector <Measurement>& measurements,
+bool Tracker::transformToFrame(std::vector <Detection>& detections,
                                const std_msgs::Header& header,
                                const std::string& target_frame)
 {
@@ -220,40 +220,40 @@ bool Tracker::transformToFrame(std::vector <Measurement>& measurements,
     return false;
   }
 
-  for(auto& measurement : measurements)
+  for(auto& detection : detections)
   {
     Eigen::Affine3d transform_eigen;
     tf::transformTFToEigen(transform, transform_eigen);
     Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
 
-    measurement.pos = transform_eigenf * measurement.pos;
+    detection.pos = transform_eigenf * detection.pos;
 
-    for(auto& point : measurement.points)
+    for(auto& point : detection.points)
       point = transform_eigenf * point;
 
-    measurement.frame = target_frame;
+    detection.frame = target_frame;
   }
 
   return true;
 }
 
-void Tracker::processMeasurements(const std::vector <Measurement>& measurements)
+void Tracker::processDetections(const std::vector <Detection>& detections)
 {
-  if(measurements.empty())
+  if(detections.empty())
     return;
 
-  double time_since_last_measurements = measurements.at(0).time - m_last_prediction_time;
-  if(time_since_last_measurements <= 0.0)
+  double time_since_last_detections = detections.at(0).time - m_last_prediction_time;
+  if(time_since_last_detections <= 0.0)
     return;
 
   // Prediction step of kalman filter for all hypotheses
   if(m_last_prediction_time > 0.0)
-    m_multi_hypothesis_tracker.predict(time_since_last_measurements);
+    m_multi_hypothesis_tracker.predict(time_since_last_detections);
 
-  m_last_prediction_time = measurements.at(0).time;
+  m_last_prediction_time = detections.at(0).time;
 
   // Correction step of kalman filter for all hypotheses
-  m_multi_hypothesis_tracker.correct(measurements);
+  m_multi_hypothesis_tracker.correct(detections);
 
   // Filter out weak hypotheses
   m_multi_hypothesis_tracker.clearDeletedHypotheses();

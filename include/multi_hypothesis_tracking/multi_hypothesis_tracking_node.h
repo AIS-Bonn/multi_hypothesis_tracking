@@ -53,8 +53,8 @@ public:
   /**
    * @brief Callback function for PoseArray messages.
    *
-   * Converts messages to measurements.
-   * Transforms measurements to #m_world_frame and passes those to the tracking algorithm.
+   * Converts messages to detections.
+   * Transforms detections to #m_world_frame and passes those to the tracking algorithm.
    *
    * @param [in] msg    poses of the detections.
    */
@@ -63,23 +63,23 @@ public:
   /**
    * @brief Callback function for ObjectDetection messages.
    *
-   * Converts messages to measurements.
-   * Transforms measurements to #m_world_frame and passes those to the tracking algorithm.
+   * Converts messages to detections.
+   * Transforms detections to #m_world_frame and passes those to the tracking algorithm.
    *
    * @param [in] msg    detections.
    */
   void detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg);
 
   /**
-   * @brief Transforms measurements to the target_frame.
+   * @brief Transforms detections to the target_frame.
    *
-   * @param[in,out] measurements   measurements.
-   * @param[in]     header         header - in case there are no measurements we still want to continue to tell the tracker exactly that.
-   * @param[in]     target_frame   frame the measurements are transformed to.
+   * @param[in,out] detections   detections.
+   * @param[in]     header         header - in case there are no detections we still want to continue to tell the tracker exactly that.
+   * @param[in]     target_frame   frame the detections are transformed to.
    *
-   * @return false if at least one measurement couldn't be transformed, true otherwise
+   * @return false if at least one detection couldn't be transformed, true otherwise
    */
-  bool transformToFrame(std::vector<Measurement>& measurements,
+  bool transformToFrame(std::vector<Detection>& detections,
                         const std_msgs::Header& header,
                         const std::string& target_frame);
 
@@ -87,30 +87,30 @@ public:
    * @brief Converts the detection's poses from the laser into the internal format
    *
    * @param[in]     msg             poses of the detections.
-   * @param[out]    measurements    detections in tracker format.
+   * @param[out]    detections    detections in tracker format.
    */
   void convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-               std::vector<Measurement>& measurements);
+               std::vector<Detection>& detections);
 
   /**
    * @brief Converts the detections from the laser into the internal format
    *
    * @param[in]     msg             detections.
-   * @param[out]    measurements    detections in tracker format.
+   * @param[out]    detections    detections in tracker format.
    */
   void convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
-               std::vector<Measurement>& measurements);
+               std::vector<Detection>& detections);
 
   /**
    * @brief Performs one prediction and correction step for every hypothesis.
    *
    * Invokes prediction step for every hypothesis.
-   * Passes measurements to multi hypothesis tracker for correction step.
+   * Passes detections to multi hypothesis tracker for correction step.
    * Filters out weak hypotheses.
    *
-   * @param measurements    new detections.
+   * @param detections    new detections.
    */
-  void processMeasurements(const std::vector<Measurement>& measurements);
+  void processDetections(const std::vector<Detection>& detections);
 
   /** @brief Getter for hypotheses vector. */
   const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
@@ -138,7 +138,7 @@ private:
   double m_merge_distance;
   /** @brief Hypotheses are deleted if their covariance is above this parameter. */
   float m_max_covariance;
-  /** @brief If true, the likelihood of the measurements given the hypotheses' states is computed. */
+  /** @brief If true, the likelihood of the detections given the hypotheses' states is computed. */
   bool m_compute_likelihood;
 
   /** @brief Time when the last prediction was performed. */

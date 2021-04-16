@@ -35,23 +35,23 @@ void MultiHypothesisTracker::predict(double time_diff,
     hypothesis->predict(time_diff, control);
 }
 
-void MultiHypothesisTracker::correct(const std::vector <Measurement>& measurements)
+void MultiHypothesisTracker::correct(const std::vector <Detection>& detections)
 {
-  if(measurements.empty())
+  if(detections.empty())
     return;
 
   int** cost_matrix;
-  setupCostMatrix(measurements, m_hypotheses, cost_matrix);
+  setupCostMatrix(detections, m_hypotheses, cost_matrix);
 
   hungarian_problem_t hung;
-  size_t dim = measurements.size() + m_hypotheses.size();
+  size_t dim = detections.size() + m_hypotheses.size();
   hungarian_init(&hung, cost_matrix, dim, dim, HUNGARIAN_MODE_MINIMIZE_COST);
 
 // 		hungarian_print_costmatrix(&hung);
   hungarian_solve(&hung);
 // 		hungarian_print_assignment(&hung);
 
-  applyAssignments(hung.assignment, cost_matrix, measurements, m_hypotheses);
+  applyAssignments(hung.assignment, cost_matrix, detections, m_hypotheses);
 
   for(size_t i = 0; i < dim; i++)
     delete[] cost_matrix[i];
@@ -59,12 +59,12 @@ void MultiHypothesisTracker::correct(const std::vector <Measurement>& measuremen
   hungarian_free(&hung);
 }
 
-void MultiHypothesisTracker::setupCostMatrix(const std::vector <Measurement>& measurements,
+void MultiHypothesisTracker::setupCostMatrix(const std::vector <Detection>& detections,
                                              std::vector <std::shared_ptr<Hypothesis>>& hypotheses,
                                              int**& cost_matrix)
 {
   size_t hyp_size = hypotheses.size();
-  size_t meas_size = measurements.size();
+  size_t meas_size = detections.size();
   size_t dim = hyp_size + meas_size;
 
   cost_matrix = new int* [dim];
@@ -77,23 +77,23 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Measurement>& me
     {
       if(i < hyp_size && j < meas_size)
       {
-        // Calculate distance between hypothesis and measurement
+        // Calculate distance between hypothesis and detection
         double distance = -1.0;
         if(m_use_bhattacharyya_for_assignments)
         {
           distance = bhattacharyya(m_hypotheses[i]->getPosition(),
-                                   measurements[j].pos.block<3, 1>(0, 0),
+                                   detections[j].pos.block<3, 1>(0, 0),
                                    m_hypotheses[i]->getCovariance(),
-                                   measurements[j].cov.block<3, 3>(0, 0));
+                                   detections[j].cov.block<3, 3>(0, 0));
         }
         else
         {
-          distance = (m_hypotheses[i]->getPosition() - measurements[j].pos.block<3, 1>(0, 0)).norm();
+          distance = (m_hypotheses[i]->getPosition() - detections[j].pos.block<3, 1>(0, 0)).norm();
         }
         int scaled_distance = (int)(m_dist_scale * distance);
         if(scaled_distance < m_max_distance)
         {
-          if(measurements[j].class_a_detection)
+          if(detections[j].class_a_detection)
             cost_matrix[i][j] = scaled_distance;
           else
             // if detection is here because of loosend thresholds, set highest valid distance to only assign if no other option available
@@ -107,17 +107,17 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Measurement>& me
       }
       else if(i < hyp_size && j >= meas_size)
       {
-        // distance from a hypothesis to a dummy measurement
+        // distance from a hypothesis to a dummy detection
         cost_matrix[i][j] = m_max_distance;
       }
       else if(i >= hyp_size && j < meas_size)
       {
-        // distance from a measurement to a dummy hypothesis
+        // distance from a detection to a dummy hypothesis
         cost_matrix[i][j] = m_max_distance;
       }
       else if(i >= hyp_size && j >= meas_size)
       {
-        // distance from a dummy hypothesis to a dummy measurement
+        // distance from a dummy hypothesis to a dummy detection
         cost_matrix[i][j] = 0;
       }
     }
@@ -126,14 +126,14 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector <Measurement>& me
 
 void MultiHypothesisTracker::applyAssignments(int**& assignments,
                                               int**& cost_matrix,
-                                              const std::vector <Measurement>& measurements,
+                                              const std::vector <Detection>& detections,
                                               std::vector <std::shared_ptr<Hypothesis>>& hypotheses)
 {
   if(m_compute_likelihood)
     resetAverageLikelihood();
 
   size_t hyp_size = hypotheses.size();
-  size_t meas_size = measurements.size();
+  size_t meas_size = detections.size();
   size_t dim = hyp_size + meas_size;
 
   for(size_t i = 0; i < dim; i++)
@@ -142,35 +142,35 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
     {
       if(i < hyp_size && j < meas_size)
       {
-        // if hypothesis assigned to measurement and distance below threshold -> correct hypothesis
+        // if hypothesis assigned to detection and distance below threshold -> correct hypothesis
         if(assignments[i][j] == HUNGARIAN_ASSIGNED && cost_matrix[i][j] < m_max_distance)
         {
           if(m_compute_likelihood)
-            updateLikelihoodSum(m_hypotheses[i]->computeLikelihood(measurements[j]));
+            updateLikelihoodSum(m_hypotheses[i]->computeLikelihood(detections[j]));
 
-          m_hypotheses[i]->correct(measurements[j]);
+          m_hypotheses[i]->correct(detections[j]);
         }
         else if(assignments[i][j] == HUNGARIAN_ASSIGNED)
         {
           // if assigned but distance too high -> prohibited assignment -> hypothesis unassignment
 
-          // create new hypothesis from measurement
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(measurements[j], m_current_hypothesis_id++));
+          // create new hypothesis from detection
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections[j], m_current_hypothesis_id++));
         }
       }
       else if(i < hyp_size && j >= meas_size)
       {
-        // if hypothesis assigned to dummy measurement -> failed to detect hypothesis
+        // if hypothesis assigned to dummy detection -> failed to detect hypothesis
       }
       else if(i >= hyp_size && j < meas_size)
       {
-        // if measurement assigned to dummy hypothesis AND is class_a_detection -> create new hypothesis
-        if(assignments[i][j] == HUNGARIAN_ASSIGNED && measurements[j].class_a_detection)
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(measurements[j], m_current_hypothesis_id++));
+        // if detection assigned to dummy hypothesis AND is class_a_detection -> create new hypothesis
+        if(assignments[i][j] == HUNGARIAN_ASSIGNED && detections[j].class_a_detection)
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections[j], m_current_hypothesis_id++));
       }
       else if(i >= hyp_size && j >= meas_size)
       {
-        // dummy hypothesis to dummy measurement
+        // dummy hypothesis to dummy detection
       }
     }
   }

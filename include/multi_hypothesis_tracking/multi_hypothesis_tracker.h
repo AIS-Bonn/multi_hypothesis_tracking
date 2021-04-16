@@ -51,11 +51,11 @@ public:
                        Eigen::Vector3f& control);
 
   /**
-   * @brief Uses Hungarian method to assign measurements to hypotheses and corrects the latter.
+   * @brief Uses Hungarian method to assign detections to hypotheses and corrects the latter.
    *
-   * @param[in] measurements    measurements
+   * @param[in] detections    detections
    */
-  void correct(const std::vector<Measurement>& measurements);
+  void correct(const std::vector<Detection>& detections);
 
   /**
    * @brief Deletes hypotheses that are spurious
@@ -115,37 +115,37 @@ protected:
    * @brief Set up cost matrix for hungarian method.
    *
    * Top left block: Pairwise thresholded distance between each
-   * measurement and each hypothesis.
-   * Top right block: Fake distance of hypotheses to dummy measurements
+   * detection and each hypothesis.
+   * Top right block: Fake distance of hypotheses to dummy detections
    *    -> #m_max_distance
-   * Bottom left block: Fake distance of measurements to dummy hypotheses
+   * Bottom left block: Fake distance of detections to dummy hypotheses
    *    -> #m_max_distance
-   * Bottom right block: Fake distance between dummy measurements and dummy
+   * Bottom right block: Fake distance between dummy detections and dummy
    * hypotheses -> Zeroes.
    *
-   * @param[in]     measurements    detections.
+   * @param[in]     detections    detections.
    * @param[in]     hypotheses      already existing hypotheses.
    * @param[out]    cost_matrix     cost matrix.
    */
-  void setupCostMatrix(const std::vector<Measurement>& measurements,
+  void setupCostMatrix(const std::vector<Detection>& detections,
                        std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                        int**& cost_matrix);
 
   /**
    * @brief Use assignments for correction and initialization.
    *
-   * If measurement assigned to hypothesis -> correct latter.
-   * If measurement not assigned -> new hypothesis.
+   * If detection assigned to hypothesis -> correct latter.
+   * If detection not assigned -> new hypothesis.
    * If hypothesis not assigned -> failed to detect.
    *
    * @param[in]     assignments     assignments from hungarian method.
    * @param[in]     cost_matrix     original cost_matrix hungarian method was initialized with.
-   * @param[in]     measurements    detections.
+   * @param[in]     detections    detections.
    * @param[in,out] hypotheses      in current hypotheses, out corrected and new hypotheses.
    */
   void applyAssignments(int**& assignments,
                         int**& cost_matrix,
-                        const std::vector<Measurement>& measurements,
+                        const std::vector<Detection>& detections,
                         std::vector<std::shared_ptr<Hypothesis>>& hypotheses);
 
   /** @brief Sets members used to compute the average likelihood to zero. */
@@ -157,7 +157,7 @@ protected:
 
   /**
    * @brief Updates the #m_likelihood_sum and #m_assigned_hypotheses_counter.
-   * @param[in] likelihood  the likelihood of the current measurement given its hypothesis' state.
+   * @param[in] likelihood  the likelihood of the current detection given its hypothesis' state.
    */
   void updateLikelihoodSum(float likelihood)
   {
@@ -192,9 +192,9 @@ protected:
   int m_max_distance;
   /** @brief If true, computes m_average_likelihood.*/
   bool m_compute_likelihood;
-  /** @brief Sum of likelihoods of measurements given the states.*/
+  /** @brief Sum of likelihoods of detections given the states.*/
   float m_likelihood_sum;
-  /** @brief Number of hypotheses that were assigned to measurements for the current time.*/
+  /** @brief Number of hypotheses that were assigned to detections for the current time.*/
   int m_assigned_hypotheses_counter;
 
   /** @brief Queue for hypotheses that were marked for deletion.*/

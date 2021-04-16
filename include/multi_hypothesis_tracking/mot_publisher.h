@@ -115,27 +115,27 @@ public:
                                           std::string ns = "multi_object_tracker");
 
   /**
-   * @brief Publishes measurements as markers.
+   * @brief Publishes detections as markers.
    *
-   * @param[in] measurements   detections.
+   * @param[in] detections   detections.
    */
-  void publishMeasurementPositions(const std::vector<Measurement>& measurements,
+  void publishDetectionPositions(const std::vector<Detection>& detections,
                                    const ros::Time& stamp);
 
   /**
-   * @brief Publishes measurements covariances as markers.
+   * @brief Publishes detections covariances as markers.
    *
-   * @param[in] measurements   detections.
+   * @param[in] detections   detections.
    */
-  void publishMeasurementsCovariances(const std::vector<Measurement>& measurements,
+  void publishDetectionsCovariances(const std::vector<Detection>& detections,
                                       const ros::Time& stamp);
 
   /**
-   * @brief Publishes point clouds corresponding to measurements.
+   * @brief Publishes point clouds corresponding to detections.
    *
-   * @param[in] measurements   detections.
+   * @param[in] detections   detections.
    */
-  void publishMeasurementsPoints(const std::vector<Measurement>& measurements,
+  void publishDetectionsPoints(const std::vector<Detection>& detections,
                                  const ros::Time& stamp);
 
   /** @brief Publish the likelihood. */
@@ -160,9 +160,9 @@ private:
 
   ros::Publisher m_hypotheses_positions_publisher;
   ros::Publisher m_hypotheses_points_publisher;
-  ros::Publisher m_measurement_positions_publisher;
-  ros::Publisher m_measurements_covariances_publisher;
-  ros::Publisher m_measurements_points_publisher;
+  ros::Publisher m_detection_positions_publisher;
+  ros::Publisher m_detections_covariances_publisher;
+  ros::Publisher m_detections_points_publisher;
   ros::Publisher m_hypotheses_covariance_publisher;
   ros::Publisher m_hypotheses_paths_publisher;
   ros::Publisher m_static_hypotheses_positions_publisher;
