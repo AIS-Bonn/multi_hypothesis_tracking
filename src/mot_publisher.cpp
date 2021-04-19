@@ -292,7 +292,7 @@ void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses
   if(m_static_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  double color_alpha = 0.5;
+  float color_alpha = 0.5f;
   MarkerMsg static_objects_marker = createMarker(0.0, 1.0, 0.0, "mot_static_hypotheses_positions");
   static_objects_marker.type = MarkerMsg::LINE_LIST;
   static_objects_marker.color.a = color_alpha;
@@ -335,7 +335,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
   if(m_dynamic_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
 
-  double color_alpha = 0.5;
+  float color_alpha = 0.5;
   MarkerMsg dynamic_objects_marker = createMarker(0.0, 0.5, 0.5, "mot_dynamic_hypotheses_positions");
   dynamic_objects_marker.type = MarkerMsg::LINE_LIST;
   dynamic_objects_marker.color.a = color_alpha;
@@ -379,7 +379,7 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
   if(m_hypotheses_paths_publisher.getNumSubscribers() == 0)
     return;
 
-  double color_alpha = 1.0;
+  float color_alpha = 1.0;
   MarkerMsg hypotheses_paths_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_paths");
   hypotheses_paths_marker.type = MarkerMsg::LINE_LIST;
   hypotheses_paths_marker.color.a = color_alpha;
@@ -448,7 +448,7 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
 
   MarkerArrayMsg bounding_boxes_markers;
 
-  double color_alpha = 0.5;
+  float color_alpha = 0.5;
   MarkerMsg hypotheses_boxes_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_bounding_boxes");
   hypotheses_boxes_marker.type = MarkerMsg::CUBE;
   hypotheses_boxes_marker.action = MarkerMsg::ADD;
