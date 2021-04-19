@@ -87,7 +87,7 @@ public:
 
   void eigenToGeometryMsgs(const Eigen::Vector3f& eigen_vector,
                            geometry_msgs::Point& point) const;
-  
+
   /** @brief Publishes detections' positions as markers. */
   void publishDetectionPositions(const std::vector<Detection>& detections,
                                  const ros::Time& stamp);
@@ -97,14 +97,14 @@ public:
   /** @brief Publishes point clouds corresponding to detections. */
   void publishDetectionsPoints(const std::vector<Detection>& detections,
                                const ros::Time& stamp);
-  void convertDetectionsPointsToCloud(const std::vector<Detection>& detections, 
+  void convertDetectionsPointsToCloud(const std::vector<Detection>& detections,
                                       PointCloud::Ptr& cloud);
   int computeTotalNumberOfPoints(const std::vector<Detection>& detections);
 
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesPositions(const Hypotheses& hypotheses,
                                   const ros::Time& stamp);
-  bool isOldEnough(std::shared_ptr<Hypothesis>& hypothesis, 
+  bool isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
                    double current_time) const;
   bool wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const;
 
@@ -117,7 +117,7 @@ public:
   void convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
                                       PointCloud::Ptr& cloud);
   int computeTotalNumberOfPoints(const Hypotheses& hypotheses);
-  
+
   /** @brief Publish positions of static hypotheses that are tracked longer than #m_born_time_threshold */
   void publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
@@ -136,7 +136,7 @@ public:
   /** @brief Publish predicted positions of hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
                                            const ros::Time& stamp);
-  
+
   /** @brief Publish hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesFull(const Hypotheses& hypotheses,
                              const ros::Time& stamp);
@@ -165,7 +165,7 @@ private:
   ros::Publisher m_detection_positions_publisher;
   ros::Publisher m_detections_covariances_publisher;
   ros::Publisher m_detections_points_publisher;
-  
+
   ros::Publisher m_hypotheses_positions_publisher;
   ros::Publisher m_hypotheses_covariance_publisher;
   ros::Publisher m_hypotheses_points_publisher;

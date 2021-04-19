@@ -37,7 +37,7 @@ void MOTPublisher::initializePublishers(ros::NodeHandle& node_handle)
   m_hypotheses_full_publisher = node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
   m_hypotheses_box_evaluation_publisher = node_handle.advertise<HypothesesEvaluationBoxesMsg>(
     "hypotheses_boxes_evaluation", 1, true);
-  
+
   m_likelihood_publisher = node_handle.advertise<std_msgs::Float32>("likelihood", 1);
 }
 
@@ -70,9 +70,9 @@ void MOTPublisher::publishAll(const Hypotheses& hypotheses,
   publishHypothesesBoxesEvaluation(hypotheses, stamp);
 }
 
-MarkerMsg MOTPublisher::createMarker(float r, 
-                                     float g, 
-                                     float b, 
+MarkerMsg MOTPublisher::createMarker(float r,
+                                     float g,
+                                     float b,
                                      const std::string& name_space)
 {
   MarkerMsg marker;
@@ -106,15 +106,14 @@ void MOTPublisher::publishDetectionPositions(const std::vector<Detection>& detec
   if(m_detection_positions_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
 
-  MarkerMsg detection_positions_marker = createMarker(1.0, 0.0, 0.0,
-                                                      "mot_detections_markers"); //red marker
+  MarkerMsg detection_positions_marker = createMarker(1.0, 0.0, 0.0, "mot_detections_markers");
   detection_positions_marker.header.frame_id = detections.at(0).frame_id;
   detection_positions_marker.header.stamp = stamp;
 
   detection_positions_marker.points.resize(detections.size());
   for(size_t i = 0; i < detections.size(); i++)
     eigenToGeometryMsgs(detections[i].position, detection_positions_marker.points[i]);
-  
+
   m_detection_positions_publisher.publish(detection_positions_marker);
 }
 
@@ -210,17 +209,17 @@ void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
 }
 
-bool MOTPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis, 
+bool MOTPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
                                double current_time) const
-{ 
-  return current_time - hypothesis->getBornTime() >= m_born_time_threshold; 
+{
+  return current_time - hypothesis->getBornTime() >= m_born_time_threshold;
 }
 
 bool MOTPublisher::wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const
-{ 
+{
   return hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold;
 }
-                                                         
+
 void MOTPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
                                                 const ros::Time& stamp)
 {
@@ -363,7 +362,7 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
 
       geometry_msgs::Point position;
       eigenToGeometryMsgs(hypothesis->getPosition(), position);
-      
+
       dynamic_objects_marker.points.push_back(position);
       dynamic_objects_marker.colors.push_back(color);
 
@@ -421,7 +420,7 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
       {
         geometry_msgs::Point position;
         eigenToGeometryMsgs(positions[j], position);
-        
+
         hypotheses_paths_marker.points.push_back(position);
         if(was_assigned[j])
           hypotheses_paths_marker.colors.push_back(assigned_color);
@@ -471,7 +470,7 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
       hypotheses_boxes_marker.color.a = color_alpha;
 
       eigenToGeometryMsgs(hypothesis->getPosition(), hypotheses_boxes_marker.pose.position);
-      
+
       hypotheses_boxes_marker.pose.orientation.x = 0.0;
       hypotheses_boxes_marker.pose.orientation.y = 0.0;
       hypotheses_boxes_marker.pose.orientation.z = 0.0;
@@ -582,7 +581,7 @@ void MOTPublisher::publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses
 
     box.id = hypothesis->getID();
     box.dynamic = !hypothesis->isStatic();
-    
+
     const Eigen::Array3f& min_box = hypothesis->getMinBoxHypothesis();
     box.min_corner.x = min_box(0);
     box.min_corner.y = min_box(1);
