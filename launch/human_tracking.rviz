@@ -126,7 +126,7 @@ Visualization Manager:
       Marker Topic: /multi_human_tracking_node/hypotheses_positions
       Name: Hypotheses Positions
       Namespaces:
-        {}
+        mot_hypotheses_positions_markers: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -134,7 +134,7 @@ Visualization Manager:
       Marker Topic: /multi_human_tracking_node/static_hypotheses_positions
       Name: Static Hypotheses Positions
       Namespaces:
-        {}
+        mot_static_hypotheses_positions: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -142,15 +142,15 @@ Visualization Manager:
       Marker Topic: /multi_human_tracking_node/dynamic_hypotheses_positions
       Name: Dynamic Hypotheses Positions
       Namespaces:
-        {}
+        mot_dynamic_hypotheses_positions: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_human_tracking_node/track_line
-      Name: Track Lines
+      Marker Topic: /multi_human_tracking_node/hypotheses_paths
+      Name: Paths
       Namespaces:
-        {}
+        mot_hypotheses_paths: true
       Queue Size: 100
       Value: true
   Enabled: true
