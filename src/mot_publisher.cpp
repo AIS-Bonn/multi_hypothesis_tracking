@@ -239,14 +239,8 @@ void MOTPublisher::publishHypothesesPoints(const Hypotheses& hypotheses,
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
   int total_points_count = 0;
-  int min_cloud_size = std::numeric_limits<int>::max();
-  int max_cloud_size = 0;
   for(size_t i = 0; i < hypotheses.size(); i++)
-  {
     total_points_count += hypotheses.at(i)->getPointCloud().size();
-    min_cloud_size = std::min(min_cloud_size, (int)hypotheses.at(i)->getPointCloud().size());
-    max_cloud_size = std::max(max_cloud_size, (int)hypotheses.at(i)->getPointCloud().size());
-  }
 
   cloud->points.resize(total_points_count);
   int point_counter = 0;
