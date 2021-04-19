@@ -383,7 +383,7 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
   MarkerMsg hypotheses_paths_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_paths");
   hypotheses_paths_marker.type = MarkerMsg::LINE_LIST;
   hypotheses_paths_marker.color.a = color_alpha;
-  hypotheses_paths_marker.scale.x = 0.325;
+  hypotheses_paths_marker.scale.x = 0.075;
   hypotheses_paths_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
 
