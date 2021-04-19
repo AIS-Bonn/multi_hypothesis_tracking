@@ -580,27 +580,20 @@ void MOTPublisher::publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    // TODO: dont check for last correction time and use box hypothesis below
-    // publish if hypothesis was assigned to a detection in the current step
-//    if(stamp.toSec() == hypothesis->getLastCorrectionTime())
-//    {
     box.id = hypothesis->getID();
-
     box.dynamic = !hypothesis->isStatic();
+    
     const Eigen::Array3f& min_box = hypothesis->getMinBoxHypothesis();
-//      const Eigen::Array3f& min_box = hypothesis->getMinBoxDetection();
     box.min_corner.x = min_box(0);
     box.min_corner.y = min_box(1);
     box.min_corner.z = min_box(2);
 
     const Eigen::Array3f& max_box = hypothesis->getMaxBoxHypothesis();
-//      const Eigen::Array3f& max_box = hypothesis->getMaxBoxDetection();
     box.max_corner.x = max_box(0);
     box.max_corner.y = max_box(1);
     box.max_corner.z = max_box(2);
 
     hypotheses_msg->boxes.push_back(box);
-//    }
   }
   m_hypotheses_box_evaluation_publisher.publish(hypotheses_msg);
 }
