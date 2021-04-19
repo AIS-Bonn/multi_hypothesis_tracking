@@ -121,6 +121,8 @@ public:
   /** @brief Publish positions of static hypotheses that are tracked longer than #m_born_time_threshold */
   void publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
+  void getColorByID(const unsigned int id,
+                    std_msgs::ColorRGBA& color);
   /** @brief Publish positions of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
   void publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
                                          const ros::Time& stamp);

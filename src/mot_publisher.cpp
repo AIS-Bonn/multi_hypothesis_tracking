@@ -307,12 +307,9 @@ void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses
     if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis)
        && hypothesis->isStatic())
     {
-      srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
+      getColorByID(hypothesis->getID(), color);
       color.a = color_alpha;
-      color.r = (rand() % 1000) / 1000.f;
-      color.g = (rand() % 1000) / 1000.f;
-      color.b = (rand() % 1000) / 1000.f;
 
       geometry_msgs::Point position;
       eigenToGeometryMsgs(hypothesis->getPosition(), position);
@@ -327,6 +324,15 @@ void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses
     }
   }
   m_static_hypotheses_positions_publisher.publish(static_objects_marker);
+}
+
+void MOTPublisher::getColorByID(const unsigned int id,
+                                std_msgs::ColorRGBA& color)
+{
+  srand(id);
+  color.r = (rand() % 1000) / 1000.f;
+  color.g = (rand() % 1000) / 1000.f;
+  color.b = (rand() % 1000) / 1000.f;
 }
 
 void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
@@ -351,12 +357,9 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
     if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis)
        && !hypothesis->isStatic())
     {
-      srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
+      getColorByID(hypothesis->getID(), color);
       color.a = color_alpha;
-      color.r = (rand() % 1000) / 1000.f;
-      color.g = (rand() % 1000) / 1000.f;
-      color.b = (rand() % 1000) / 1000.f;
 
       geometry_msgs::Point position;
       eigenToGeometryMsgs(hypothesis->getPosition(), position);
@@ -464,11 +467,8 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
     if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
     {
       hypotheses_boxes_marker.id = hypothesis->getID();
-      srand(hypothesis->getID());
+      getColorByID(hypothesis->getID(), hypotheses_boxes_marker.color);
       hypotheses_boxes_marker.color.a = color_alpha;
-      hypotheses_boxes_marker.color.r = (rand() % 1000) / 1000.f;
-      hypotheses_boxes_marker.color.g = (rand() % 1000) / 1000.f;
-      hypotheses_boxes_marker.color.b = (rand() % 1000) / 1000.f;
 
       eigenToGeometryMsgs(hypothesis->getPosition(), hypotheses_boxes_marker.pose.position);
       
