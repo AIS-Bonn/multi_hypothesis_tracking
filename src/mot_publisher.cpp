@@ -261,17 +261,29 @@ void MOTPublisher::publishHypothesesPoints(const Hypotheses& hypotheses,
   cloud->header.frame_id = m_world_frame;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
-  int total_points_count = 0;
-  for(size_t i = 0; i < hypotheses.size(); i++)
-    total_points_count += hypotheses.at(i)->getPointCloud().size();
-
-  cloud->points.resize(total_points_count);
-  int point_counter = 0;
-  for(size_t i = 0; i < hypotheses.size(); i++)
-    for(size_t point_id = 0; point_id < hypotheses.at(i)->getPointCloud().size(); point_id++, point_counter++)
-      cloud->points[point_counter].getVector3fMap() = hypotheses.at(i)->getPointCloud().at(point_id);
+  convertHypothesesPointsToCloud(hypotheses, cloud);
 
   m_hypotheses_points_publisher.publish(cloud);
+}
+
+void MOTPublisher::convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
+                                                  PointCloud::Ptr& cloud)
+{
+  int total_number_of_points = computeTotalNumberOfPoints(hypotheses);
+
+  cloud->points.resize(total_number_of_points);
+  int point_counter = 0;
+  for(const auto& hypothesis : hypotheses)
+    for(size_t point_id = 0; point_id < hypothesis->getPointCloud().size(); point_id++, point_counter++)
+      cloud->points[point_counter].getVector3fMap() = hypothesis->getPointCloud().at(point_id);
+}
+
+int MOTPublisher::computeTotalNumberOfPoints(const Hypotheses& hypotheses)
+{
+  int total_number_of_points = 0;
+  for(const auto& hypothesis : hypotheses)
+    total_number_of_points += (int)hypothesis->getPointCloud().size();
+  return total_number_of_points;
 }
 
 void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses,

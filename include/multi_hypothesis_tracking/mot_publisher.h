@@ -114,7 +114,10 @@ public:
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesPoints(const Hypotheses& hypotheses,
                                const ros::Time& stamp);
-
+  void convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
+                                      PointCloud::Ptr& cloud);
+  int computeTotalNumberOfPoints(const Hypotheses& hypotheses);
+  
   /** @brief Publish positions of static hypotheses that are tracked longer than #m_born_time_threshold */
   void publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
