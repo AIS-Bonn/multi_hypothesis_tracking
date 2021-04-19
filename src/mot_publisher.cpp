@@ -35,7 +35,6 @@ void MOTPublisher::initializePublishers(ros::NodeHandle& node_handle)
   m_hypotheses_predicted_positions_publisher = node_handle.advertise<MarkerMsg>("hypotheses_predicted_positions", 1);
 
   m_hypotheses_full_publisher = node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
-  m_hypotheses_predictions_publisher = node_handle.advertise<ObjectDetectionsMsg>("hypotheses_predictions", 1);
   m_hypotheses_box_evaluation_publisher = node_handle.advertise<HypothesesEvaluationBoxesMsg>(
     "hypotheses_boxes_evaluation", 1, true);
   
@@ -68,7 +67,6 @@ void MOTPublisher::publishAll(const Hypotheses& hypotheses,
   publishHypothesesPredictedPositions(hypotheses, stamp);
 
   publishHypothesesFull(hypotheses, stamp);
-  publishHypothesesPredictions(hypotheses, stamp);
   publishHypothesesBoxesEvaluation(hypotheses, stamp);
 }
 
@@ -543,35 +541,6 @@ void MOTPublisher::publishHypothesesFull(const Hypotheses& hypotheses,
     hypotheses_msg->boxes.push_back(box);
   }
   m_hypotheses_full_publisher.publish(hypotheses_msg);
-}
-
-void MOTPublisher::publishHypothesesPredictions(const Hypotheses& hypotheses,
-                                                const ros::Time& stamp)
-{
-  if(m_hypotheses_predictions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
-    return;
-
-  double current_time = getTimeHighRes();
-  ObjectDetectionsMsg object_detecions;
-  multi_hypothesis_tracking_msgs::ObjectDetection object;
-  object_detecions.header.stamp = stamp;
-  object_detecions.header.frame_id = m_world_frame;
-
-  // Publish tracks
-  for(size_t i = 0; i < hypotheses.size(); ++i)
-  {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
-    Eigen::Vector3f mean = hypothesis->getPosition();
-
-    //Predict a little bit into the future
-    mean += hypothesis->getVelocity() * m_future_time;
-    eigenToGeometryMsgs(mean, object.centroid);
-
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
-       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
-      object_detecions.object_detections.push_back(object);
-  }
-  m_hypotheses_predictions_publisher.publish(object_detecions);
 }
 
 void MOTPublisher::publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,

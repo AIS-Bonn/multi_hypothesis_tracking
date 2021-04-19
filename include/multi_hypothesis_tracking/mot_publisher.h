@@ -131,9 +131,6 @@ public:
   /** @brief Publish hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesFull(const Hypotheses& hypotheses,
                              const ros::Time& stamp);
-  /** @brief Publish hypotheses' predictions that are tracked longer than #m_born_time_threshold */
-  void publishHypothesesPredictions(const Hypotheses& hypotheses,
-                                    const ros::Time& stamp);
   /** @brief Publish the bounding boxes of dynamic hypotheses that were assigned in the current step. */
   void publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
@@ -172,7 +169,6 @@ private:
   ros::Publisher m_hypotheses_predicted_positions_publisher;
 
   ros::Publisher m_hypotheses_full_publisher;
-  ros::Publisher m_hypotheses_predictions_publisher;
   ros::Publisher m_hypotheses_box_evaluation_publisher;
 
   ros::Publisher m_likelihood_publisher;
