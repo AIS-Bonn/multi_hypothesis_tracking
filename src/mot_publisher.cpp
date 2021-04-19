@@ -190,12 +190,12 @@ void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    geometry_msgs::Point p;
-    eigenToGeometryMsgs(hypothesis->getPosition(), p);
+    geometry_msgs::Point position;
+    eigenToGeometryMsgs(hypothesis->getPosition(), position);
 
     if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
        && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
-      hypothesis_marker.points.push_back(p);
+      hypothesis_marker.points.push_back(position);
   }
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
 }
@@ -286,15 +286,15 @@ void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses
       color.g = (rand() % 1000) / 1000.f;
       color.b = (rand() % 1000) / 1000.f;
 
-      geometry_msgs::Point p;
-      eigenToGeometryMsgs(hypothesis->getPosition(), p);
+      geometry_msgs::Point position;
+      eigenToGeometryMsgs(hypothesis->getPosition(), position);
 
-      static_objects_marker.points.push_back(p);
+      static_objects_marker.points.push_back(position);
       static_objects_marker.colors.push_back(color);
 
       //push another point for the second point of the line
-      p.z += 2;
-      static_objects_marker.points.push_back(p);
+      position.z += 2;
+      static_objects_marker.points.push_back(position);
       static_objects_marker.colors.push_back(color);
     }
   }
@@ -331,15 +331,15 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
       color.g = (rand() % 1000) / 1000.f;
       color.b = (rand() % 1000) / 1000.f;
 
-      geometry_msgs::Point p;
-      eigenToGeometryMsgs(hypothesis->getPosition(), p);
+      geometry_msgs::Point position;
+      eigenToGeometryMsgs(hypothesis->getPosition(), position);
       
-      dynamic_objects_marker.points.push_back(p);
+      dynamic_objects_marker.points.push_back(position);
       dynamic_objects_marker.colors.push_back(color);
 
       //push another point for the second point of the line
-      p.z += 4;
-      dynamic_objects_marker.points.push_back(p);
+      position.z += 4;
+      dynamic_objects_marker.points.push_back(position);
       dynamic_objects_marker.colors.push_back(color);
     }
   }
@@ -390,10 +390,10 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
       size_t last_index = positions.size() - 1;
       for(size_t j = 0; j < positions.size(); j++)
       {
-        geometry_msgs::Point p;
-        eigenToGeometryMsgs(positions[j], p);
+        geometry_msgs::Point position;
+        eigenToGeometryMsgs(positions[j], position);
         
-        hypotheses_paths_marker.points.push_back(p);
+        hypotheses_paths_marker.points.push_back(position);
         if(was_assigned[j])
           hypotheses_paths_marker.colors.push_back(assigned_color);
         else
@@ -403,7 +403,7 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
           continue;
 
         // Add current position again, as the start of the next line segment
-        hypotheses_paths_marker.points.push_back(p);
+        hypotheses_paths_marker.points.push_back(position);
         if(was_assigned[j])
           hypotheses_paths_marker.colors.push_back(assigned_color);
         else
@@ -484,12 +484,12 @@ void MOTPublisher::publishHypothesesPredictedPositions(const Hypotheses& hypothe
     Eigen::Vector3f mean = hypothesis->getPosition();
     mean += hypothesis->getVelocity() * m_future_time;
 
-    geometry_msgs::Point p;
-    eigenToGeometryMsgs(mean, p);
+    geometry_msgs::Point position;
+    eigenToGeometryMsgs(mean, position);
 
     if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
        && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
-      hypothesis_marker.points.push_back(p);
+      hypothesis_marker.points.push_back(position);
   }
   m_hypotheses_predicted_positions_publisher.publish(hypothesis_marker);
 }
