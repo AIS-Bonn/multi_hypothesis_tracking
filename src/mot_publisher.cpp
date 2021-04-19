@@ -200,16 +200,27 @@ void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    geometry_msgs::Point position;
-    eigenToGeometryMsgs(hypothesis->getPosition(), position);
-
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
-       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    {
+      geometry_msgs::Point position;
+      eigenToGeometryMsgs(hypothesis->getPosition(), position);
       hypothesis_marker.points.push_back(position);
+    }
   }
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
 }
 
+bool MOTPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis, 
+                               double current_time) const
+{ 
+  return current_time - hypothesis->getBornTime() >= m_born_time_threshold; 
+}
+
+bool MOTPublisher::wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const
+{ 
+  return hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold;
+}
+                                                         
 void MOTPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
                                                 const ros::Time& stamp)
 {
@@ -225,16 +236,18 @@ void MOTPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
 
   for(size_t i = 0; i < hypotheses.size(); i++)
   {
-    hyp_covariance_marker.id = (int)i;
-    eigenToGeometryMsgs(hypotheses[i]->getPosition(), hyp_covariance_marker.pose.position);
+    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    {
+      hyp_covariance_marker.id = (int)i;
+      eigenToGeometryMsgs(hypothesis->getPosition(), hyp_covariance_marker.pose.position);
 
-    hyp_covariance_marker.scale.x = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(0, 0));
-    hyp_covariance_marker.scale.y = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(1, 1));
-    hyp_covariance_marker.scale.z = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(2, 2));
+      hyp_covariance_marker.scale.x = sqrt(4.204) * sqrt(hypothesis->getCovariance()(0, 0));
+      hyp_covariance_marker.scale.y = sqrt(4.204) * sqrt(hypothesis->getCovariance()(1, 1));
+      hyp_covariance_marker.scale.z = sqrt(4.204) * sqrt(hypothesis->getCovariance()(2, 2));
 
-    if(current_time - hypotheses[i]->getBornTime() >= m_born_time_threshold
-       && hypotheses[i]->getNumberOfAssignments() >= m_number_of_assignments_threshold)
       m_hypotheses_covariance_publisher.publish(hyp_covariance_marker);
+    }
   }
 }
 
@@ -279,9 +292,8 @@ void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(hypothesis->isStatic()
-       && current_time - hypothesis->getBornTime() >= m_born_time_threshold
-       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis)
+       && hypothesis->isStatic())
     {
       srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
@@ -324,9 +336,8 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(!hypothesis->isStatic()
-       && current_time - hypothesis->getBornTime() >= m_born_time_threshold
-       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis)
+       && !hypothesis->isStatic())
     {
       srand(hypothesis->getID());
       std_msgs::ColorRGBA color;
@@ -375,8 +386,7 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
-       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
     {
       const std::vector<Eigen::Vector3f>& positions = hypothesis->getPositionHistory();
       const std::vector<bool>& was_assigned = hypothesis->getWasAssignedHistory();
@@ -439,8 +449,7 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
-       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
     {
       hypotheses_boxes_marker.id = hypothesis->getID();
       srand(hypothesis->getID());
@@ -484,16 +493,16 @@ void MOTPublisher::publishHypothesesPredictedPositions(const Hypotheses& hypothe
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    //Predict a little bit into the future
-    Eigen::Vector3f mean = hypothesis->getPosition();
-    mean += hypothesis->getVelocity() * m_future_time;
+    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    {
+      //Predict a little bit into the future
+      Eigen::Vector3f mean = hypothesis->getPosition();
+      mean += hypothesis->getVelocity() * m_future_time;
 
-    geometry_msgs::Point position;
-    eigenToGeometryMsgs(mean, position);
-
-    if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
-       && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
+      geometry_msgs::Point position;
+      eigenToGeometryMsgs(mean, position);
       hypothesis_marker.points.push_back(position);
+    }
   }
   m_hypotheses_predicted_positions_publisher.publish(hypothesis_marker);
 }
