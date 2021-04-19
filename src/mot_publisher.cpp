@@ -163,17 +163,29 @@ void MOTPublisher::publishDetectionsPoints(const std::vector<Detection>& detecti
   cloud->header.frame_id = detections.at(0).frame_id;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
-  int total_points_count = 0;
-  for(size_t i = 0; i < detections.size(); i++)
-    total_points_count += detections.at(i).points.size();
+  convertDetectionsPointsToCloud(detections, cloud);
+
+  m_detections_points_publisher.publish(cloud);
+}
+
+void MOTPublisher::convertDetectionsPointsToCloud(const std::vector<Detection>& detections,
+                                                  PointCloud::Ptr& cloud)
+{
+  int total_points_count = computeTotalNumberOfPoints(detections);
 
   cloud->points.resize(total_points_count);
   int point_counter = 0;
-  for(size_t i = 0; i < detections.size(); i++)
-    for(size_t point_id = 0; point_id < detections.at(i).points.size(); point_id++, point_counter++)
-      cloud->points[point_counter].getVector3fMap() = detections.at(i).points.at(point_id);
+  for(const auto& detection : detections)
+    for(size_t point_id = 0; point_id < detection.points.size(); point_id++, point_counter++)
+      cloud->points[point_counter].getVector3fMap() = detection.points.at(point_id);
+}
 
-  m_detections_points_publisher.publish(cloud);
+int MOTPublisher::computeTotalNumberOfPoints(const std::vector<Detection>& detections)
+{
+  int total_number_of_points = 0;
+  for(const auto& detection : detections)
+    total_number_of_points += (int)detection.points.size();
+  return total_number_of_points;
 }
 
 void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,

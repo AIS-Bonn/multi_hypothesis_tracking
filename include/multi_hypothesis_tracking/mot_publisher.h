@@ -97,7 +97,10 @@ public:
   /** @brief Publishes point clouds corresponding to detections. */
   void publishDetectionsPoints(const std::vector<Detection>& detections,
                                const ros::Time& stamp);
-  
+  void convertDetectionsPointsToCloud(const std::vector<Detection>& detections, 
+                                      PointCloud::Ptr& cloud);
+  int computeTotalNumberOfPoints(const std::vector<Detection>& detections);
+
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesPositions(const Hypotheses& hypotheses,
                                   const ros::Time& stamp);
