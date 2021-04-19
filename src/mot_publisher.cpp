@@ -115,12 +115,17 @@ void MOTPublisher::publishDetectionPositions(const std::vector<Detection>& detec
 
   detection_positions_marker.points.resize(detections.size());
   for(size_t i = 0; i < detections.size(); i++)
-  {
-    detection_positions_marker.points[i].x = detections[i].position(0);
-    detection_positions_marker.points[i].y = detections[i].position(1);
-    detection_positions_marker.points[i].z = detections[i].position(2);
-  }
+    eigenToGeometryMsgs(detections[i].position, detection_positions_marker.points[i]);
+  
   m_detection_positions_publisher.publish(detection_positions_marker);
+}
+
+void MOTPublisher::eigenToGeometryMsgs(const Eigen::Vector3f& eigen_vector,
+                                       geometry_msgs::Point& point) const
+{
+  point.x = eigen_vector(0);
+  point.y = eigen_vector(1);
+  point.z = eigen_vector(2);
 }
 
 void MOTPublisher::publishDetectionsCovariances(const std::vector<Detection>& detections,
@@ -138,9 +143,7 @@ void MOTPublisher::publishDetectionsCovariances(const std::vector<Detection>& de
   {
     detection_cov_marker.header.frame_id = detections.at(i).frame_id;
     detection_cov_marker.id = (int)i;
-    detection_cov_marker.pose.position.x = detections[i].position(0);
-    detection_cov_marker.pose.position.y = detections[i].position(1);
-    detection_cov_marker.pose.position.z = detections[i].position(2);
+    eigenToGeometryMsgs(detections[i].position, detection_cov_marker.pose.position);
 
     detection_cov_marker.scale.x = sqrt(4.204) * sqrt(detections[i].covariance(0, 0));
     detection_cov_marker.scale.y = sqrt(4.204) * sqrt(detections[i].covariance(1, 1));
@@ -187,11 +190,8 @@ void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    const Eigen::Vector3f& mean = hypothesis->getPosition();
     geometry_msgs::Point p;
-    p.x = mean(0);
-    p.y = mean(1);
-    p.z = mean(2);
+    eigenToGeometryMsgs(hypothesis->getPosition(), p);
 
     if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
        && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
@@ -216,9 +216,7 @@ void MOTPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
   for(size_t i = 0; i < hypotheses.size(); i++)
   {
     hyp_covariance_marker.id = (int)i;
-    hyp_covariance_marker.pose.position.x = hypotheses[i]->getPosition()(0);
-    hyp_covariance_marker.pose.position.y = hypotheses[i]->getPosition()(1);
-    hyp_covariance_marker.pose.position.z = hypotheses[i]->getPosition()(2);
+    eigenToGeometryMsgs(hypotheses[i]->getPosition(), hyp_covariance_marker.pose.position);
 
     hyp_covariance_marker.scale.x = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(0, 0));
     hyp_covariance_marker.scale.y = sqrt(4.204) * sqrt(hypotheses[i]->getCovariance()(1, 1));
@@ -288,11 +286,9 @@ void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses
       color.g = (rand() % 1000) / 1000.f;
       color.b = (rand() % 1000) / 1000.f;
 
-      const Eigen::Vector3f& mean = hypothesis->getPosition();
       geometry_msgs::Point p;
-      p.x = mean(0);
-      p.y = mean(1);
-      p.z = mean(2);
+      eigenToGeometryMsgs(hypothesis->getPosition(), p);
+
       static_objects_marker.points.push_back(p);
       static_objects_marker.colors.push_back(color);
 
@@ -335,11 +331,9 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
       color.g = (rand() % 1000) / 1000.f;
       color.b = (rand() % 1000) / 1000.f;
 
-      const Eigen::Vector3f& mean = hypothesis->getPosition();
       geometry_msgs::Point p;
-      p.x = mean(0);
-      p.y = mean(1);
-      p.z = mean(2);
+      eigenToGeometryMsgs(hypothesis->getPosition(), p);
+      
       dynamic_objects_marker.points.push_back(p);
       dynamic_objects_marker.colors.push_back(color);
 
@@ -396,12 +390,9 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
       size_t last_index = positions.size() - 1;
       for(size_t j = 0; j < positions.size(); j++)
       {
-        const auto& position = positions[j];
-
         geometry_msgs::Point p;
-        p.x = position(0);
-        p.y = position(1);
-        p.z = position(2);
+        eigenToGeometryMsgs(positions[j], p);
+        
         hypotheses_paths_marker.points.push_back(p);
         if(was_assigned[j])
           hypotheses_paths_marker.colors.push_back(assigned_color);
@@ -454,13 +445,8 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
       hypotheses_boxes_marker.color.g = (rand() % 1000) / 1000.f;
       hypotheses_boxes_marker.color.b = (rand() % 1000) / 1000.f;
 
-      const Eigen::Vector3f& mean = hypothesis->getPosition();
-      geometry_msgs::Point p;
-      p.x = mean(0);
-      p.y = mean(1);
-      p.z = mean(2);
-      hypotheses_boxes_marker.pose.position = p;
-
+      eigenToGeometryMsgs(hypothesis->getPosition(), hypotheses_boxes_marker.pose.position);
+      
       hypotheses_boxes_marker.pose.orientation.x = 0.0;
       hypotheses_boxes_marker.pose.orientation.y = 0.0;
       hypotheses_boxes_marker.pose.orientation.z = 0.0;
@@ -499,9 +485,7 @@ void MOTPublisher::publishHypothesesPredictedPositions(const Hypotheses& hypothe
     mean += hypothesis->getVelocity() * m_future_time;
 
     geometry_msgs::Point p;
-    p.x = mean(0);
-    p.y = mean(1);
-    p.z = mean(2);
+    eigenToGeometryMsgs(mean, p);
 
     if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
        && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
@@ -532,15 +516,8 @@ void MOTPublisher::publishHypothesesFull(const Hypotheses& hypotheses,
     // fill state
     state.id = hypothesis->getID();
 
-    const Eigen::Vector3f pos = hypothesis->getPosition();
-    state.position.x = pos.x();
-    state.position.y = pos.y();
-    state.position.z = pos.z();
-
-    const Eigen::Vector3f vel = hypothesis->getVelocity();
-    state.velocity.x = vel.x();
-    state.velocity.y = vel.y();
-    state.velocity.z = vel.z();
+    eigenToGeometryMsgs(hypothesis->getPosition(), state.position);
+    eigenToGeometryMsgs(hypothesis->getVelocity(), state.velocity);
 
     hypotheses_msg->states.push_back(state);
 
@@ -582,10 +559,7 @@ void MOTPublisher::publishHypothesesPredictions(const Hypotheses& hypotheses,
 
     //Predict a little bit into the future
     mean += hypothesis->getVelocity() * m_future_time;
-
-    object.centroid.x = mean(0);
-    object.centroid.y = mean(1);
-    object.centroid.z = mean(2);
+    eigenToGeometryMsgs(mean, object.centroid);
 
     if(current_time - hypothesis->getBornTime() >= m_born_time_threshold
        && hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold)
