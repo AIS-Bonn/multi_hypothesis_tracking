@@ -19,7 +19,7 @@
 #include <person_msgs/PersonCovList.h>
 
 #include <multi_hypothesis_tracking/multi_hypothesis_tracker.h>
-#include <multi_hypothesis_tracking/mot_publisher.h>
+#include <multi_hypothesis_tracking/visualizer/mot_publisher.h>
 
 #include <ros/ros.h>
 #include <ros/console.h>
