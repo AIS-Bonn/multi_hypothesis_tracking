@@ -5,8 +5,8 @@
  * @author Jan Razlaw
  */
 
-#ifndef __MOT_PUBLISHER_H__
-#define __MOT_PUBLISHER_H__
+#ifndef __VISUALIZATIONS_PUBLISHER_H__
+#define __VISUALIZATIONS_PUBLISHER_H__
 
 #include <stdlib.h>     /* srand, rand */
 

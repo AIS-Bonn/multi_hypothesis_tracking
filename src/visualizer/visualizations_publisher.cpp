@@ -5,7 +5,7 @@
  * @author Jan Razlaw
  */
 
-#include <multi_hypothesis_tracking/visualizer/mot_publisher.h>
+#include <multi_hypothesis_tracking/visualizer/visualizations_publisher.h>
 
 namespace MultiHypothesisTracker
 {

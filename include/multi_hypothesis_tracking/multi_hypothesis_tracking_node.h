@@ -17,7 +17,7 @@
 #include <geometry_msgs/PoseArray.h>
 
 #include <multi_hypothesis_tracking/multi_hypothesis_tracker.h>
-#include <multi_hypothesis_tracking/visualizer/mot_publisher.h>
+#include <multi_hypothesis_tracking/visualizer/visualizations_publisher.h>
 
 #include <multi_hypothesis_tracking_msgs/ObjectDetections.h>
 
