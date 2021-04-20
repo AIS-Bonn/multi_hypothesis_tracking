@@ -8,8 +8,6 @@
 #ifndef __VISUALIZATIONS_PUBLISHER_H__
 #define __VISUALIZATIONS_PUBLISHER_H__
 
-#include <stdlib.h>     /* srand, rand */
-
 #include <queue>
 
 #include <ros/ros.h>
@@ -95,9 +93,6 @@ public:
   /** @brief Publishes point clouds corresponding to detections. */
   void publishDetectionsPoints(const std::vector<Detection>& detections,
                                const ros::Time& stamp);
-  void convertDetectionsPointsToCloud(const std::vector<Detection>& detections,
-                                      PointCloud::Ptr& cloud);
-  int computeTotalNumberOfPoints(const std::vector<Detection>& detections);
 
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesPositions(const Hypotheses& hypotheses,
@@ -112,15 +107,10 @@ public:
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesPoints(const Hypotheses& hypotheses,
                                const ros::Time& stamp);
-  void convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
-                                      PointCloud::Ptr& cloud);
-  int computeTotalNumberOfPoints(const Hypotheses& hypotheses);
 
   /** @brief Publish positions of static hypotheses that are tracked longer than #m_born_time_threshold */
   void publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
-  void getColorByID(const unsigned int id,
-                    std_msgs::ColorRGBA& color);
   /** @brief Publish positions of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
   void publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
                                          const ros::Time& stamp);

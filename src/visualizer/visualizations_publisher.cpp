@@ -157,26 +157,6 @@ void VisualizationsPublisher::publishDetectionsPoints(const std::vector<Detectio
   m_detections_points_publisher.publish(cloud);
 }
 
-void VisualizationsPublisher::convertDetectionsPointsToCloud(const std::vector<Detection>& detections,
-                                                             PointCloud::Ptr& cloud)
-{
-  int total_points_count = computeTotalNumberOfPoints(detections);
-
-  cloud->points.resize(total_points_count);
-  int point_counter = 0;
-  for(const auto& detection : detections)
-    for(size_t point_id = 0; point_id < detection.points.size(); point_id++, point_counter++)
-      cloud->points[point_counter].getVector3fMap() = detection.points.at(point_id);
-}
-
-int VisualizationsPublisher::computeTotalNumberOfPoints(const std::vector<Detection>& detections)
-{
-  int total_number_of_points = 0;
-  for(const auto& detection : detections)
-    total_number_of_points += (int)detection.points.size();
-  return total_number_of_points;
-}
-
 void VisualizationsPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
                                                          const ros::Time& stamp)
 {
@@ -257,26 +237,6 @@ void VisualizationsPublisher::publishHypothesesPoints(const Hypotheses& hypothes
   m_hypotheses_points_publisher.publish(cloud);
 }
 
-void VisualizationsPublisher::convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
-                                                             PointCloud::Ptr& cloud)
-{
-  int total_number_of_points = computeTotalNumberOfPoints(hypotheses);
-
-  cloud->points.resize(total_number_of_points);
-  int point_counter = 0;
-  for(const auto& hypothesis : hypotheses)
-    for(size_t point_id = 0; point_id < hypothesis->getPointCloud().size(); point_id++, point_counter++)
-      cloud->points[point_counter].getVector3fMap() = hypothesis->getPointCloud().at(point_id);
-}
-
-int VisualizationsPublisher::computeTotalNumberOfPoints(const Hypotheses& hypotheses)
-{
-  int total_number_of_points = 0;
-  for(const auto& hypothesis : hypotheses)
-    total_number_of_points += (int)hypothesis->getPointCloud().size();
-  return total_number_of_points;
-}
-
 void VisualizationsPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                                                const ros::Time& stamp)
 {
@@ -315,15 +275,6 @@ void VisualizationsPublisher::publishStaticHypothesesPositions(const Hypotheses&
     }
   }
   m_static_hypotheses_positions_publisher.publish(static_objects_marker);
-}
-
-void VisualizationsPublisher::getColorByID(const unsigned int id,
-                                           std_msgs::ColorRGBA& color)
-{
-  srand(id);
-  color.r = (rand() % 1000) / 1000.f;
-  color.g = (rand() % 1000) / 1000.f;
-  color.b = (rand() % 1000) / 1000.f;
 }
 
 void VisualizationsPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
