@@ -11,7 +11,7 @@
     <arg name="kalman_covariance_per_second" default="0.5"/>
     <arg name="world_frame_id" default="world"/>
 
-    <arg name="born_time_threshold" default="0.0"/>
+    <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
     <arg name="future_time" default="0.05"/>
 
     <arg name="compute_likelihood" default="false"/>
@@ -29,7 +29,7 @@
         <param name="kalman_covariance_per_second" value="$(arg kalman_covariance_per_second)"/>
         <param name="world_frame_id" value="$(arg world_frame_id)"/>
 
-        <param name="born_time_threshold" value="$(arg born_time_threshold)"/>
+        <param name="hypothesis_age_threshold_in_seconds" value="$(arg hypothesis_age_threshold_in_seconds)"/>
         <param name="future_time" value="$(arg future_time)"/>
 
         <param name="compute_likelihood" value="$(arg compute_likelihood)"/>

@@ -143,7 +143,7 @@ private:
    *
    * If the hypothesis is too young it may be unreliable.
    */
-  double m_born_time_threshold;
+  double m_hypothesis_age_threshold_in_seconds;
   /** @brief Number of times a hypotheses has to be assigned to detections to be considered for publishing. */
   int m_number_of_assignments_threshold;
   /** @brief Time offset for predictions. */

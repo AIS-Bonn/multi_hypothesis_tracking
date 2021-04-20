@@ -44,7 +44,7 @@ void VisualizationsPublisher::initializePublishers(ros::NodeHandle& node_handle)
 void VisualizationsPublisher::getRosParameters(ros::NodeHandle& node_handle)
 {
   node_handle.param<std::string>("world_frame_id", m_world_frame_id, "world");
-  node_handle.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
+  node_handle.param<double>("hypothesis_age_threshold_in_seconds", m_hypothesis_age_threshold_in_seconds, 0.5);
   node_handle.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
   node_handle.param<double>("future_time", m_future_time, 0.0);
 }
@@ -190,7 +190,7 @@ bool VisualizationsPublisher::isValid(std::shared_ptr<Hypothesis>& hypothesis,
 bool VisualizationsPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
                                           double current_time) const
 {
-  return current_time - hypothesis->getBornTime() >= m_born_time_threshold;
+  return current_time - hypothesis->getBornTime() >= m_hypothesis_age_threshold_in_seconds;
 }
 
 bool VisualizationsPublisher::wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const
