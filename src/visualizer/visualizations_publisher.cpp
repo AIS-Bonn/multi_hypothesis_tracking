@@ -171,7 +171,7 @@ void VisualizationsPublisher::publishHypothesesPositions(const Hypotheses& hypot
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    if(isValid(hypothesis, current_time))
     {
       geometry_msgs::Point position;
       eigenToGeometryMsgs(hypothesis->getPosition(), position);
@@ -179,6 +179,12 @@ void VisualizationsPublisher::publishHypothesesPositions(const Hypotheses& hypot
     }
   }
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
+}
+
+bool VisualizationsPublisher::isValid(std::shared_ptr<Hypothesis>& hypothesis,
+                                      double current_time) const
+{
+  return isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis);
 }
 
 bool VisualizationsPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
@@ -208,7 +214,7 @@ void VisualizationsPublisher::publishHypothesesCovariances(const Hypotheses& hyp
   for(size_t i = 0; i < hypotheses.size(); i++)
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
-    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    if(isValid(hypothesis, current_time))
     {
       hyp_covariance_marker.id = (int)i;
       eigenToGeometryMsgs(hypothesis->getPosition(), hyp_covariance_marker.pose.position);
@@ -255,8 +261,7 @@ void VisualizationsPublisher::publishStaticHypothesesPositions(const Hypotheses&
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis)
-       && hypothesis->isStatic())
+    if(isValid(hypothesis, current_time) && hypothesis->isStatic())
     {
       std_msgs::ColorRGBA color;
       getColorByID(hypothesis->getID(), color);
@@ -296,8 +301,7 @@ void VisualizationsPublisher::publishDynamicHypothesesPositions(const Hypotheses
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis)
-       && !hypothesis->isStatic())
+    if(isValid(hypothesis, current_time) && !hypothesis->isStatic())
     {
       std_msgs::ColorRGBA color;
       getColorByID(hypothesis->getID(), color);
@@ -343,7 +347,7 @@ void VisualizationsPublisher::publishHypothesesPaths(const Hypotheses& hypothese
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    if(isValid(hypothesis, current_time))
     {
       const std::vector<Eigen::Vector3f>& positions = hypothesis->getPositionHistory();
       const std::vector<bool>& was_assigned = hypothesis->getWasAssignedHistory();
@@ -403,7 +407,7 @@ void VisualizationsPublisher::publishHypothesesBoundingBoxes(const Hypotheses& h
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    if(isValid(hypothesis, current_time))
     {
       hypotheses_boxes_marker.id = hypothesis->getID();
       getColorByID(hypothesis->getID(), hypotheses_boxes_marker.color);
@@ -444,7 +448,7 @@ void VisualizationsPublisher::publishHypothesesPredictedPositions(const Hypothes
   {
     std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
 
-    if(isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis))
+    if(isValid(hypothesis, current_time))
     {
       //Predict a little bit into the future
       Eigen::Vector3f mean = hypothesis->getPosition();

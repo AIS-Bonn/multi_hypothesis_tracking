@@ -97,6 +97,8 @@ public:
   /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
   void publishHypothesesPositions(const Hypotheses& hypotheses,
                                   const ros::Time& stamp);
+  bool isValid(std::shared_ptr<Hypothesis>& hypothesis,
+               double current_time) const;
   bool isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
                    double current_time) const;
   bool wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const;
