@@ -53,13 +53,26 @@ target_link_libraries(multi_hypothesis_tracker
   hungarian
 )
 
+# Library for the Multi Hypothesis Tracker combining hypotheses and assignment method
+add_library(visualizations_publisher
+  src/visualizer/visualizations_publisher.cpp
+)
+target_link_libraries(visualizations_publisher
+  hypothesis
+  ${catkin_LIBRARIES}
+)
+add_dependencies(visualizations_publisher
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
+
 # Ros node as interface between incoming messages and tracker
 add_executable(${PROJECT_NAME}_node
   src/${PROJECT_NAME}_node.cpp
-  src/visualizer/visualizations_publisher.cpp
 )
 target_link_libraries(${PROJECT_NAME}_node
   multi_hypothesis_tracker
+  visualizations_publisher
   ${catkin_LIBRARIES}
 )
 add_dependencies(${PROJECT_NAME}_node
@@ -70,10 +83,10 @@ add_dependencies(${PROJECT_NAME}_node
 # Ros node as interface between incoming human_msgs and tracker
 add_executable(multi_human_tracking_node
   src/multi_human_tracking_node.cpp
-  src/visualizer/visualizations_publisher.cpp
 )
 target_link_libraries(multi_human_tracking_node
   multi_hypothesis_tracker
+  visualizations_publisher
   ${catkin_LIBRARIES}
 )
 add_dependencies(multi_human_tracking_node
