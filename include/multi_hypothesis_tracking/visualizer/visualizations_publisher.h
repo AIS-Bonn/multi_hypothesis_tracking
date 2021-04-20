@@ -147,7 +147,7 @@ private:
   /** @brief Number of times a hypotheses has to be assigned to detections to be considered for publishing. */
   int m_number_of_assignments_threshold;
   /** @brief Time offset for predictions. */
-  double m_future_time;
+  double m_time_offset_for_predictions;
 
   ros::Publisher m_detection_positions_publisher;
   ros::Publisher m_detections_covariances_publisher;

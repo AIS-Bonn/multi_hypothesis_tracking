@@ -12,7 +12,7 @@
     <arg name="world_frame_id" default="world"/>
 
     <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
-    <arg name="future_time" default="0.05"/>
+    <arg name="time_offset_for_predictions" default="0.05"/>
 
     <arg name="compute_likelihood" default="false"/>
 
@@ -30,7 +30,7 @@
         <param name="world_frame_id" value="$(arg world_frame_id)"/>
 
         <param name="hypothesis_age_threshold_in_seconds" value="$(arg hypothesis_age_threshold_in_seconds)"/>
-        <param name="future_time" value="$(arg future_time)"/>
+        <param name="time_offset_for_predictions" value="$(arg time_offset_for_predictions)"/>
 
         <param name="compute_likelihood" value="$(arg compute_likelihood)"/>
 
