@@ -23,7 +23,7 @@
 
 
     <include file="$(find multi_hypothesis_tracking)/launch/multi_human_tracking.launch">
-        <arg name="world_frame" value="base"/>
+        <arg name="world_frame_id" value="base"/>
     </include>
 
 </launch>

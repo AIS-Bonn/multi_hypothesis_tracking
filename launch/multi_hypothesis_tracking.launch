@@ -9,7 +9,7 @@
     <arg name="max_covariance" default="5.0"/>
     <arg name="max_correspondence_distance" default="6.6"/>
     <arg name="kalman_covariance_per_second" default="0.5"/>
-    <arg name="world_frame" default="odom"/>
+    <arg name="world_frame_id" default="odom"/>
 
     <arg name="born_time_threshold" default="0.0"/>
     <arg name="future_time" default="0.05"/>
@@ -28,7 +28,7 @@
         <param name="max_covariance" value="$(arg max_covariance)"/>
         <param name="max_correspondence_distance" value="$(arg max_correspondence_distance)"/>
         <param name="kalman_covariance_per_second" value="$(arg kalman_covariance_per_second)"/>
-        <param name="world_frame" value="$(arg world_frame)"/>
+        <param name="world_frame_id" value="$(arg world_frame_id)"/>
 
         <param name="born_time_threshold" value="$(arg born_time_threshold)"/>
         <param name="future_time" value="$(arg future_time)"/>

@@ -43,7 +43,7 @@ void VisualizationsPublisher::initializePublishers(ros::NodeHandle& node_handle)
 
 void VisualizationsPublisher::getRosParameters(ros::NodeHandle& node_handle)
 {
-  node_handle.param<std::string>("world_frame", m_world_frame, "world");
+  node_handle.param<std::string>("world_frame_id", m_world_frame_id, "world");
   node_handle.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
   node_handle.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
   node_handle.param<double>("future_time", m_future_time, 0.0);
@@ -76,7 +76,7 @@ MarkerMsg VisualizationsPublisher::createMarker(float r,
                                                 const std::string& name_space)
 {
   MarkerMsg marker;
-  marker.header.frame_id = m_world_frame;
+  marker.header.frame_id = m_world_frame_id;
   marker.header.stamp = ros::Time::now();
   marker.ns = name_space;
   marker.id = 0;
@@ -235,7 +235,7 @@ void VisualizationsPublisher::publishHypothesesPoints(const Hypotheses& hypothes
     return;
 
   PointCloud::Ptr cloud(new PointCloud);
-  cloud->header.frame_id = m_world_frame;
+  cloud->header.frame_id = m_world_frame_id;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
 
   convertHypothesesPointsToCloud(hypotheses, cloud);
@@ -469,7 +469,7 @@ void VisualizationsPublisher::publishHypothesesFull(const Hypotheses& hypotheses
     return;
 
   HypothesesFullMsg::Ptr hypotheses_msg(new HypothesesFullMsg());
-  hypotheses_msg->header.frame_id = m_world_frame;
+  hypotheses_msg->header.frame_id = m_world_frame_id;
   hypotheses_msg->header.stamp = stamp;
 
   multi_hypothesis_tracking_msgs::State state;
@@ -514,7 +514,7 @@ void VisualizationsPublisher::publishHypothesesBoxesEvaluation(const Hypotheses&
     return;
 
   HypothesesEvaluationBoxesMsg::Ptr hypotheses_msg(new HypothesesEvaluationBoxesMsg());
-  hypotheses_msg->header.frame_id = m_world_frame;
+  hypotheses_msg->header.frame_id = m_world_frame_id;
   hypotheses_msg->header.stamp = stamp;
 
   multi_hypothesis_tracking_msgs::EvaluationBox box;

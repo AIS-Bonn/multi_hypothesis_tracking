@@ -138,7 +138,7 @@ public:
 private:
   // Parameters
   /** @brief The ID of a fixed frame in the world. */
-  std::string m_world_frame;
+  std::string m_world_frame_id;
   /** @brief The duration a hypothesis has to exist to be considered for publishing.
    *
    * If the hypothesis is too young it may be unreliable.
