@@ -351,12 +351,9 @@ void VisualizationsPublisher::publishHypothesesPaths(const Hypotheses& hypothese
       if(positions.size() <= 1)
         continue;
 
-      srand(hypothesis->getID());
       std_msgs::ColorRGBA assigned_color;
+      getColorByID(hypothesis->getID(), assigned_color);
       assigned_color.a = color_alpha;
-      assigned_color.r = (rand() % 1000) / 1000.f;
-      assigned_color.g = (rand() % 1000) / 1000.f;
-      assigned_color.b = (rand() % 1000) / 1000.f;
 
       size_t last_index = positions.size() - 1;
       for(size_t j = 0; j < positions.size(); j++)
