@@ -1,6 +1,6 @@
 /** @file
  *
- * Class to publish data from the multi object tracker.
+ * Class to publish data from the multi hypothesis tracker.
  *
  * @author Jan Razlaw
  */
@@ -92,7 +92,7 @@ public:
   void publishDetectionsPoints(const std::vector<Detection>& detections,
                                const ros::Time& stamp);
 
-  /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes positions of valid hypotheses. */
   void publishHypothesesPositions(const Hypotheses& hypotheses,
                                   const ros::Time& stamp);
   bool isValid(std::shared_ptr<Hypothesis>& hypothesis,
@@ -101,34 +101,34 @@ public:
                    double current_time) const;
   bool wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const;
 
-  /** @brief Publish covariances of hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes covariances of valid hypotheses. */
   void publishHypothesesCovariances(const Hypotheses& hypotheses,
                                     const ros::Time& stamp);
-  /** @brief Publish positions of hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes points corresponding to valid hypotheses. */
   void publishHypothesesPoints(const Hypotheses& hypotheses,
                                const ros::Time& stamp);
 
-  /** @brief Publish positions of static hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes positions of static and valid hypotheses. */
   void publishStaticHypothesesPositions(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
-  /** @brief Publish positions of dynamic hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes positions of dynamic and valid hypotheses. */
   void publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
                                          const ros::Time& stamp);
 
-  /** @brief Publish paths of hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes paths of valid hypotheses. */
   void publishHypothesesPaths(const Hypotheses& hypotheses,
                               const ros::Time& stamp);
-  /** @brief Publish bounding boxes of all hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes bounding boxes of valid hypotheses. */
   void publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
                                       const ros::Time& stamp);
-  /** @brief Publish predicted positions of hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes predicted positions of valid hypotheses. */
   void publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
                                            const ros::Time& stamp);
 
-  /** @brief Publish hypotheses that are tracked longer than #m_born_time_threshold */
+  /** @brief Publishes full hypotheses messages. */
   void publishHypothesesFull(const Hypotheses& hypotheses,
                              const ros::Time& stamp);
-  /** @brief Publish the bounding boxes of dynamic hypotheses that were assigned in the current step. */
+  /** @brief Publish the bounding boxes of all hypotheses. */
   void publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
 
@@ -137,15 +137,14 @@ public:
 
 private:
   // Parameters
-  /** @brief A fixed frame in the world. */
+  /** @brief The ID of a fixed frame in the world. */
   std::string m_world_frame;
-  /** @brief Time after which we start publishing a new hypothesis.
+  /** @brief The duration a hypothesis has to exist to be considered for publishing.
    *
-   * If the hypothesis is too young it may be unreliable and therefore it
-   * will be removed by the isSpurious.
+   * If the hypothesis is too young it may be unreliable.
    */
   double m_born_time_threshold;
-  /** @brief Number of times a hypotheses has to be assigned to detections to be considered valid. */
+  /** @brief Number of times a hypotheses has to be assigned to detections to be considered for publishing. */
   int m_number_of_assignments_threshold;
   /** @brief Time offset for predictions. */
   double m_future_time;

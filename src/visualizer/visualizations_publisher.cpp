@@ -1,6 +1,6 @@
 /** @file
  *
- * Class to publish data from the multi object tracker.
+ * Class to publish data from the multi hypothesis tracker.
  *
  * @author Jan Razlaw
  */
