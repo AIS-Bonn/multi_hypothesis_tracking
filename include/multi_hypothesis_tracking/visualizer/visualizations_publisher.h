@@ -37,6 +37,7 @@
 #include <multi_hypothesis_tracking_msgs/HypothesesBoxesArray.h>
 #include <multi_hypothesis_tracking_msgs/HypothesesFull.h>
 
+#include <multi_hypothesis_tracking/definitions.h>
 #include <multi_hypothesis_tracking/hypothesis.h>
 #include <multi_hypothesis_tracking/utils.h>
 #include <multi_hypothesis_tracking/visualizer/utils.h>

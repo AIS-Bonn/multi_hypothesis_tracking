@@ -18,6 +18,7 @@
 
 #include <person_msgs/PersonCovList.h>
 
+#include <multi_hypothesis_tracking/definitions.h>
 #include <multi_hypothesis_tracking/multi_hypothesis_tracker.h>
 #include <multi_hypothesis_tracking/visualizer/visualizations_publisher.h>
 

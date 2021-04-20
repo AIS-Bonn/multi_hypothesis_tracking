@@ -12,6 +12,8 @@
 
 #include <geometry_msgs/Point.h>
 
+#include <multi_hypothesis_tracking/definitions.h>
+
 namespace MultiHypothesisTracker
 {
 
