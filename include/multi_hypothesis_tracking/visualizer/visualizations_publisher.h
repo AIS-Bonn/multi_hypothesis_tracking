@@ -8,8 +8,6 @@
 #ifndef __VISUALIZATIONS_PUBLISHER_H__
 #define __VISUALIZATIONS_PUBLISHER_H__
 
-#include <queue>
-
 #include <ros/ros.h>
 
 #include <std_msgs/Float32.h>
