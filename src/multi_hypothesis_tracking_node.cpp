@@ -84,7 +84,7 @@ void Tracker::detectionPosesCallback(const geometry_msgs::PoseArray::ConstPtr& m
   if(!transformToFrame(detections, msg->header, m_world_frame))
     return;
 
-  m_visualizations_publisher.publishDetectionPositions(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
   m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
 
   processDetections(detections);
@@ -105,7 +105,7 @@ void Tracker::detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDete
   if(!transformToFrame(detections, msg->header, m_world_frame))
     return;
 
-  m_visualizations_publisher.publishDetectionPositions(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
   m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
   m_visualizations_publisher.publishDetectionsPoints(detections, msg->header.stamp);
 

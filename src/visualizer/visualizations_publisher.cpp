@@ -100,8 +100,8 @@ MarkerMsg VisualizationsPublisher::createMarker(float r,
   return marker;
 }
 
-void VisualizationsPublisher::publishDetectionPositions(const std::vector<Detection>& detections,
-                                                        const ros::Time& stamp)
+void VisualizationsPublisher::publishDetectionsPositions(const std::vector<Detection>& detections,
+                                                         const ros::Time& stamp)
 {
   if(m_detection_positions_publisher.getNumSubscribers() == 0 || detections.empty())
     return;

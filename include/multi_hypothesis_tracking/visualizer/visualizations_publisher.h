@@ -85,8 +85,8 @@ public:
                          const std::string& name_space = "multi_object_tracker");
 
   /** @brief Publishes detections' positions as markers. */
-  void publishDetectionPositions(const std::vector<Detection>& detections,
-                                 const ros::Time& stamp);
+  void publishDetectionsPositions(const std::vector<Detection>& detections,
+                                  const ros::Time& stamp);
   /** @brief Publishes detections' covariances as markers. */
   void publishDetectionsCovariances(const std::vector<Detection>& detections,
                                     const ros::Time& stamp);

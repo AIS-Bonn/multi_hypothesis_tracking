@@ -71,7 +71,7 @@ void Tracker::detectionCallback(const HumanMsg::ConstPtr& msg)
   if(!transformToFrame(detections, msg->header, m_world_frame))
     return;
 
-  m_visualizations_publisher.publishDetectionPositions(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
   m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
 
   processDetections(detections);
