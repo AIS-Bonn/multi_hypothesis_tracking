@@ -55,13 +55,13 @@ typedef std::vector<std::shared_ptr<Hypothesis>> Hypotheses;
 typedef visualization_msgs::Marker MarkerMsg;
 typedef visualization_msgs::MarkerArray MarkerArrayMsg;
 
-class MOTPublisher
+class VisualizationsPublisher
 {
 public:
   /** @brief Constructor */
-  MOTPublisher();
+  VisualizationsPublisher();
   /** @brief Destructor */
-  ~MOTPublisher(){};
+  ~VisualizationsPublisher(){};
 
   void initializePublishers(ros::NodeHandle& node_handle);
   void getRosParameters(ros::NodeHandle& node_handle);

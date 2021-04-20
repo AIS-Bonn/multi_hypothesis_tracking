@@ -54,9 +54,9 @@ Tracker::Tracker()
 
 void Tracker::publish(const ros::Time& stamp)
 {
-  m_mot_publisher.publishAll(getHypotheses(), stamp);
+  m_visualizations_publisher.publishAll(getHypotheses(), stamp);
   if(m_compute_likelihood)
-    m_mot_publisher.publishLikelihood(m_multi_hypothesis_tracker.getAverageLikelihood());
+    m_visualizations_publisher.publishLikelihood(m_multi_hypothesis_tracker.getAverageLikelihood());
 }
 
 void Tracker::detectionCallback(const HumanMsg::ConstPtr& msg)
@@ -71,8 +71,8 @@ void Tracker::detectionCallback(const HumanMsg::ConstPtr& msg)
   if(!transformToFrame(detections, msg->header, m_world_frame))
     return;
 
-  m_mot_publisher.publishDetectionPositions(detections, msg->header.stamp);
-  m_mot_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionPositions(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
 
   processDetections(detections);
 

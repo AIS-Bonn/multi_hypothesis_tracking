@@ -122,7 +122,7 @@ private:
   /** @brief Subscribes to detections. */
   ros::Subscriber m_laser_detection_subscriber;
   /** @brief Publishes results. */
-  MOTPublisher m_mot_publisher;
+  VisualizationsPublisher m_visualizations_publisher;
 
   /** @brief Provides transforms to world frame. */
   std::shared_ptr<tf::TransformListener> m_transform_listener;

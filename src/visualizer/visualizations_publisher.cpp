@@ -10,14 +10,14 @@
 namespace MultiHypothesisTracker
 {
 
-MOTPublisher::MOTPublisher()
+VisualizationsPublisher::VisualizationsPublisher()
 {
   ros::NodeHandle private_node_handle("~");
   initializePublishers(private_node_handle);
   getRosParameters(private_node_handle);
 }
 
-void MOTPublisher::initializePublishers(ros::NodeHandle& node_handle)
+void VisualizationsPublisher::initializePublishers(ros::NodeHandle& node_handle)
 {
   m_detection_positions_publisher = node_handle.advertise<MarkerMsg>("detections_positions", 1);
   m_detections_covariances_publisher = node_handle.advertise<MarkerMsg>("detections_covariances", 1);
@@ -41,7 +41,7 @@ void MOTPublisher::initializePublishers(ros::NodeHandle& node_handle)
   m_likelihood_publisher = node_handle.advertise<std_msgs::Float32>("likelihood", 1);
 }
 
-void MOTPublisher::getRosParameters(ros::NodeHandle& node_handle)
+void VisualizationsPublisher::getRosParameters(ros::NodeHandle& node_handle)
 {
   node_handle.param<std::string>("world_frame", m_world_frame, "world");
   node_handle.param<double>("born_time_threshold", m_born_time_threshold, 0.5);
@@ -49,8 +49,8 @@ void MOTPublisher::getRosParameters(ros::NodeHandle& node_handle)
   node_handle.param<double>("future_time", m_future_time, 0.0);
 }
 
-void MOTPublisher::publishAll(const Hypotheses& hypotheses,
-                              const ros::Time& stamp)
+void VisualizationsPublisher::publishAll(const Hypotheses& hypotheses,
+                                         const ros::Time& stamp)
 {
   if(hypotheses.empty())
     ROS_DEBUG_STREAM("Publishing empty hypotheses.");
@@ -70,10 +70,10 @@ void MOTPublisher::publishAll(const Hypotheses& hypotheses,
   publishHypothesesBoxesEvaluation(hypotheses, stamp);
 }
 
-MarkerMsg MOTPublisher::createMarker(float r,
-                                     float g,
-                                     float b,
-                                     const std::string& name_space)
+MarkerMsg VisualizationsPublisher::createMarker(float r,
+                                                float g,
+                                                float b,
+                                                const std::string& name_space)
 {
   MarkerMsg marker;
   marker.header.frame_id = m_world_frame;
@@ -100,8 +100,8 @@ MarkerMsg MOTPublisher::createMarker(float r,
   return marker;
 }
 
-void MOTPublisher::publishDetectionPositions(const std::vector<Detection>& detections,
-                                             const ros::Time& stamp)
+void VisualizationsPublisher::publishDetectionPositions(const std::vector<Detection>& detections,
+                                                        const ros::Time& stamp)
 {
   if(m_detection_positions_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
@@ -117,16 +117,16 @@ void MOTPublisher::publishDetectionPositions(const std::vector<Detection>& detec
   m_detection_positions_publisher.publish(detection_positions_marker);
 }
 
-void MOTPublisher::eigenToGeometryMsgs(const Eigen::Vector3f& eigen_vector,
-                                       geometry_msgs::Point& point) const
+void VisualizationsPublisher::eigenToGeometryMsgs(const Eigen::Vector3f& eigen_vector,
+                                                  geometry_msgs::Point& point) const
 {
   point.x = eigen_vector(0);
   point.y = eigen_vector(1);
   point.z = eigen_vector(2);
 }
 
-void MOTPublisher::publishDetectionsCovariances(const std::vector<Detection>& detections,
-                                                const ros::Time& stamp)
+void VisualizationsPublisher::publishDetectionsCovariances(const std::vector<Detection>& detections,
+                                                           const ros::Time& stamp)
 {
   if(m_detections_covariances_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
@@ -150,8 +150,8 @@ void MOTPublisher::publishDetectionsCovariances(const std::vector<Detection>& de
   }
 }
 
-void MOTPublisher::publishDetectionsPoints(const std::vector<Detection>& detections,
-                                           const ros::Time& stamp)
+void VisualizationsPublisher::publishDetectionsPoints(const std::vector<Detection>& detections,
+                                                      const ros::Time& stamp)
 {
   if(m_detections_points_publisher.getNumSubscribers() == 0 || detections.empty())
     return;
@@ -165,8 +165,8 @@ void MOTPublisher::publishDetectionsPoints(const std::vector<Detection>& detecti
   m_detections_points_publisher.publish(cloud);
 }
 
-void MOTPublisher::convertDetectionsPointsToCloud(const std::vector<Detection>& detections,
-                                                  PointCloud::Ptr& cloud)
+void VisualizationsPublisher::convertDetectionsPointsToCloud(const std::vector<Detection>& detections,
+                                                             PointCloud::Ptr& cloud)
 {
   int total_points_count = computeTotalNumberOfPoints(detections);
 
@@ -177,7 +177,7 @@ void MOTPublisher::convertDetectionsPointsToCloud(const std::vector<Detection>& 
       cloud->points[point_counter].getVector3fMap() = detection.points.at(point_id);
 }
 
-int MOTPublisher::computeTotalNumberOfPoints(const std::vector<Detection>& detections)
+int VisualizationsPublisher::computeTotalNumberOfPoints(const std::vector<Detection>& detections)
 {
   int total_number_of_points = 0;
   for(const auto& detection : detections)
@@ -185,8 +185,8 @@ int MOTPublisher::computeTotalNumberOfPoints(const std::vector<Detection>& detec
   return total_number_of_points;
 }
 
-void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
-                                              const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
+                                                         const ros::Time& stamp)
 {
   if(m_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -209,19 +209,19 @@ void MOTPublisher::publishHypothesesPositions(const Hypotheses& hypotheses,
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
 }
 
-bool MOTPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
-                               double current_time) const
+bool VisualizationsPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
+                                          double current_time) const
 {
   return current_time - hypothesis->getBornTime() >= m_born_time_threshold;
 }
 
-bool MOTPublisher::wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const
+bool VisualizationsPublisher::wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const
 {
   return hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold;
 }
 
-void MOTPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
-                                                const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
+                                                           const ros::Time& stamp)
 {
   if(m_hypotheses_covariance_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -250,8 +250,8 @@ void MOTPublisher::publishHypothesesCovariances(const Hypotheses& hypotheses,
   }
 }
 
-void MOTPublisher::publishHypothesesPoints(const Hypotheses& hypotheses,
-                                           const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesPoints(const Hypotheses& hypotheses,
+                                                      const ros::Time& stamp)
 {
   if(m_hypotheses_points_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -265,8 +265,8 @@ void MOTPublisher::publishHypothesesPoints(const Hypotheses& hypotheses,
   m_hypotheses_points_publisher.publish(cloud);
 }
 
-void MOTPublisher::convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
-                                                  PointCloud::Ptr& cloud)
+void VisualizationsPublisher::convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
+                                                             PointCloud::Ptr& cloud)
 {
   int total_number_of_points = computeTotalNumberOfPoints(hypotheses);
 
@@ -277,7 +277,7 @@ void MOTPublisher::convertHypothesesPointsToCloud(const Hypotheses& hypotheses,
       cloud->points[point_counter].getVector3fMap() = hypothesis->getPointCloud().at(point_id);
 }
 
-int MOTPublisher::computeTotalNumberOfPoints(const Hypotheses& hypotheses)
+int VisualizationsPublisher::computeTotalNumberOfPoints(const Hypotheses& hypotheses)
 {
   int total_number_of_points = 0;
   for(const auto& hypothesis : hypotheses)
@@ -285,8 +285,8 @@ int MOTPublisher::computeTotalNumberOfPoints(const Hypotheses& hypotheses)
   return total_number_of_points;
 }
 
-void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses,
-                                                    const ros::Time& stamp)
+void VisualizationsPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses,
+                                                               const ros::Time& stamp)
 {
   if(m_static_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -325,8 +325,8 @@ void MOTPublisher::publishStaticHypothesesPositions(const Hypotheses& hypotheses
   m_static_hypotheses_positions_publisher.publish(static_objects_marker);
 }
 
-void MOTPublisher::getColorByID(const unsigned int id,
-                                std_msgs::ColorRGBA& color)
+void VisualizationsPublisher::getColorByID(const unsigned int id,
+                                           std_msgs::ColorRGBA& color)
 {
   srand(id);
   color.r = (rand() % 1000) / 1000.f;
@@ -334,8 +334,8 @@ void MOTPublisher::getColorByID(const unsigned int id,
   color.b = (rand() % 1000) / 1000.f;
 }
 
-void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
-                                                     const ros::Time& stamp)
+void VisualizationsPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypotheses,
+                                                                const ros::Time& stamp)
 {
   if(m_dynamic_hypotheses_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -375,8 +375,8 @@ void MOTPublisher::publishDynamicHypothesesPositions(const Hypotheses& hypothese
   m_dynamic_hypotheses_positions_publisher.publish(dynamic_objects_marker);
 }
 
-void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
-                                          const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
+                                                     const ros::Time& stamp)
 {
   if(m_hypotheses_paths_publisher.getNumSubscribers() == 0)
     return;
@@ -442,8 +442,8 @@ void MOTPublisher::publishHypothesesPaths(const Hypotheses& hypotheses,
   m_hypotheses_paths_publisher.publish(hypotheses_paths_marker);
 }
 
-void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
-                                                  const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
+                                                             const ros::Time& stamp)
 {
   if(m_hypotheses_bounding_boxes_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -489,8 +489,8 @@ void MOTPublisher::publishHypothesesBoundingBoxes(const Hypotheses& hypotheses,
   m_hypotheses_bounding_boxes_publisher.publish(bounding_boxes_markers);
 }
 
-void MOTPublisher::publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
-                                                       const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
+                                                                  const ros::Time& stamp)
 {
   if(m_hypotheses_predicted_positions_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -518,8 +518,8 @@ void MOTPublisher::publishHypothesesPredictedPositions(const Hypotheses& hypothe
   m_hypotheses_predicted_positions_publisher.publish(hypothesis_marker);
 }
 
-void MOTPublisher::publishHypothesesFull(const Hypotheses& hypotheses,
-                                         const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesFull(const Hypotheses& hypotheses,
+                                                    const ros::Time& stamp)
 {
   if(m_hypotheses_full_publisher.getNumSubscribers() == 0 || hypotheses.empty())
     return;
@@ -563,8 +563,8 @@ void MOTPublisher::publishHypothesesFull(const Hypotheses& hypotheses,
   m_hypotheses_full_publisher.publish(hypotheses_msg);
 }
 
-void MOTPublisher::publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,
-                                                    const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,
+                                                               const ros::Time& stamp)
 {
   if(m_hypotheses_box_evaluation_publisher.getNumSubscribers() == 0)
     return;
@@ -597,7 +597,7 @@ void MOTPublisher::publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses
   m_hypotheses_box_evaluation_publisher.publish(hypotheses_msg);
 }
 
-void MOTPublisher::publishLikelihood(float likelihood)
+void VisualizationsPublisher::publishLikelihood(float likelihood)
 {
   std_msgs::Float32 likelihood_msg;
   likelihood_msg.data = likelihood;
