@@ -117,14 +117,6 @@ void VisualizationsPublisher::publishDetectionPositions(const std::vector<Detect
   m_detection_positions_publisher.publish(detection_positions_marker);
 }
 
-void VisualizationsPublisher::eigenToGeometryMsgs(const Eigen::Vector3f& eigen_vector,
-                                                  geometry_msgs::Point& point) const
-{
-  point.x = eigen_vector(0);
-  point.y = eigen_vector(1);
-  point.z = eigen_vector(2);
-}
-
 void VisualizationsPublisher::publishDetectionsCovariances(const std::vector<Detection>& detections,
                                                            const ros::Time& stamp)
 {

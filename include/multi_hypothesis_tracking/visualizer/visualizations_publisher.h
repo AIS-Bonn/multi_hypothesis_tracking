@@ -39,6 +39,7 @@
 
 #include <multi_hypothesis_tracking/hypothesis.h>
 #include <multi_hypothesis_tracking/utils.h>
+#include <multi_hypothesis_tracking/visualizer/utils.h>
 
 
 namespace MultiHypothesisTracker
@@ -83,9 +84,6 @@ public:
                          float g = 1.0,
                          float b = 0.0,
                          const std::string& name_space = "multi_object_tracker");
-
-  void eigenToGeometryMsgs(const Eigen::Vector3f& eigen_vector,
-                           geometry_msgs::Point& point) const;
 
   /** @brief Publishes detections' positions as markers. */
   void publishDetectionPositions(const std::vector<Detection>& detections,
