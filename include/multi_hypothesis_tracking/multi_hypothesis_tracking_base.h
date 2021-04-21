@@ -56,6 +56,16 @@ public:
                         const std::string& target_frame);
 
   /**
+   * @brief Gets the transform from source_frame to target_frame at time time_stamp.
+   *
+   * @return false if transform was not available, true otherwise
+   */
+  bool getTransform(const std::string& source_frame,
+                    const std::string& target_frame,
+                    const ros::Time& time_stamp,
+                    tf::StampedTransform& transform);
+  
+  /**
    * @brief Performs one prediction and correction step for every hypothesis.
    *
    * Invokes prediction step for every hypothesis.

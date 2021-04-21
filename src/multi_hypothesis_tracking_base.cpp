@@ -67,23 +67,12 @@ bool MultiHypothesisTrackingBase::transformToFrame(std::vector<Detection>& detec
   if(target_frame == header.frame_id)
     return true;
 
-  if(!m_transform_listener->waitForTransform(target_frame, header.frame_id, header.stamp, ros::Duration(1.0)))
-  {
-    ROS_ERROR_STREAM("Could not wait for transform at time " << header.stamp);
-    return false;
-  }
-
   tf::StampedTransform transform;
-  try
-  {
-    m_transform_listener->lookupTransform(target_frame, header.frame_id, header.stamp, transform);
-  }
-  catch(tf::TransformException& ex)
-  {
-    ROS_ERROR("Received an exception trying to transform a point from \"%s\" to \"%s\"", header.frame_id.c_str(),
-              target_frame.c_str());
+  if(!getTransform(header.frame_id, 
+                   target_frame, 
+                   header.stamp, 
+                   transform))
     return false;
-  }
 
   for(auto& detection : detections)
   {
@@ -102,6 +91,37 @@ bool MultiHypothesisTrackingBase::transformToFrame(std::vector<Detection>& detec
   return true;
 }
 
+bool MultiHypothesisTrackingBase::getTransform(const std::string& source_frame,
+                                               const std::string& target_frame,
+                                               const ros::Time& time_stamp,
+                                               tf::StampedTransform& transform)
+{
+  if(!m_transform_listener->waitForTransform(target_frame, 
+                                             source_frame, 
+                                             time_stamp, 
+                                             ros::Duration(1.0)))
+  {
+    ROS_ERROR_STREAM("Could not wait for transform at time " << time_stamp);
+    return false;
+  }
+
+  try
+  {
+    m_transform_listener->lookupTransform(target_frame, 
+                                          source_frame, 
+                                          time_stamp, 
+                                          transform);
+  }
+  catch(tf::TransformException& ex)
+  {
+    ROS_ERROR("Received an exception trying to transform a point from \"%s\" to \"%s\"", 
+              source_frame.c_str(),
+              target_frame.c_str());
+    return false;
+  }
+  return true;
+}                                                   
+                                                   
 void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>& detections)
 {
   if(detections.empty())
