@@ -8,6 +8,8 @@
 #ifndef MULTI_HYPOTHESIS_TRACKING_DEFINITIONS_H
 #define MULTI_HYPOTHESIS_TRACKING_DEFINITIONS_H
 
+#include <vector>
+
 #include <Eigen/Dense>
 
 namespace MultiHypothesisTracker
