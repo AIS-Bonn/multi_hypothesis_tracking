@@ -133,12 +133,13 @@ void MultiHypothesisTrackingBase::transformDetections(std::vector<Detection>& de
   }
 }
 
-void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>& detections)
+void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>& detections,
+                                                    const ros::Time& time_stamp)
 {
   if(detections.empty())
     return;
 
-  double time_since_last_detections = detections.at(0).time_stamp - m_last_prediction_time;
+  double time_since_last_detections = time_stamp.toSec() - m_last_prediction_time;
   if(time_since_last_detections <= 0.0)
     return;
 
@@ -146,7 +147,7 @@ void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>
   if(m_last_prediction_time > 0.0)
     m_multi_hypothesis_tracker.predict(time_since_last_detections);
 
-  m_last_prediction_time = detections.at(0).time_stamp;
+  m_last_prediction_time = time_stamp.toSec();
 
   // Correction step of kalman filter for all hypotheses
   m_multi_hypothesis_tracker.correct(detections);

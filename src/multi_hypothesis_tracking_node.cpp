@@ -42,7 +42,7 @@ void MultiHypothesisTrackingNode::detectionPosesCallback(const geometry_msgs::Po
   m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
   m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
 
-  processDetections(detections);
+  processDetections(detections, msg->header.stamp);
 
 //  std::cout << std::setprecision(10) << "\n####time for one callback " << (getTimeHighRes() - start) << " " << std::endl;
   publish(msg->header.stamp);
@@ -64,7 +64,7 @@ void MultiHypothesisTrackingNode::detectionCallback(const multi_hypothesis_track
   m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
   m_visualizations_publisher.publishDetectionsPoints(detections, msg->header.stamp);
 
-  processDetections(detections);
+  processDetections(detections, msg->header.stamp);
 
   if(!m_got_first_detections && !msg->object_detections.empty())
     m_got_first_detections = true;

@@ -34,7 +34,7 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& msg)
   m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
   m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
 
-  processDetections(detections);
+  processDetections(detections, msg->header.stamp);
 
   if(!m_got_first_detections && !msg->persons.empty())
     m_got_first_detections = true;

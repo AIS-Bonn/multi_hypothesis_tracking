@@ -80,9 +80,11 @@ public:
    * Passes detections to multi hypothesis tracker for correction step.
    * Filters out weak hypotheses.
    *
-   * @param detections    new detections.
+   * @param detections    current detections.
+   * @param time_stamp    time stamp of detections.
    */
-  void processDetections(const std::vector<Detection>& detections);
+  void processDetections(const std::vector<Detection>& detections,
+                         const ros::Time& time_stamp);
 
   /** @brief Getter for hypotheses vector. */
   const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
