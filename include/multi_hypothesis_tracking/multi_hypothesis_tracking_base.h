@@ -37,6 +37,8 @@ public:
   /** @brief Destructor. */
   ~MultiHypothesisTrackingBase(){ m_time_file.close(); };
 
+  void getRosParameters();
+
   /**
    * @brief Publishes the hypotheses in several versions.
    */

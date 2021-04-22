@@ -17,17 +17,23 @@ MultiHypothesisTrackingBase::MultiHypothesisTrackingBase()
     , m_number_of_callbacks(0)
     , m_got_first_detections(false)
 {
-  ros::NodeHandle private_node_handle("~");
-
+  getRosParameters();
+  
   m_transform_listener = std::make_shared<tf::TransformListener>();
 
-  std::string input_topic;
+}
+
+void MultiHypothesisTrackingBase::getRosParameters()
+{
+  ros::NodeHandle private_node_handle("~");
+
   private_node_handle.param<std::string>("input_topic", m_input_topic, "/object_poses");
-  
   private_node_handle.param<std::string>("world_frame_id", m_world_frame, "world");
 
   private_node_handle.param<double>("merge_close_hypotheses_distance", m_merge_distance, 0.1);
   private_node_handle.param<float>("max_covariance", m_max_covariance, 5.f);
+  
+  private_node_handle.param<bool>("measure_time", m_measure_time, false);
 
   bool use_bhattacharyya_distance;
   private_node_handle.param<bool>("use_bhattacharyya_distance", use_bhattacharyya_distance, true);
