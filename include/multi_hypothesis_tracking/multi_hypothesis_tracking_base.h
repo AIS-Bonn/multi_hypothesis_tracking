@@ -38,6 +38,7 @@ public:
   ~MultiHypothesisTrackingBase(){ m_time_file.close(); };
 
   void getRosParameters();
+  void prepareMeasuringProcessingTime();
 
   /**
    * @brief Publishes the hypotheses in several versions.

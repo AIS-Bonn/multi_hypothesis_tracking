@@ -13,14 +13,12 @@ namespace MultiHypothesisTracker
 MultiHypothesisTrackingBase::MultiHypothesisTrackingBase()
   : m_multi_hypothesis_tracker(std::make_shared<HypothesisFactory>())
     , m_last_prediction_time(0)
-    , m_measure_time(false)
-    , m_number_of_callbacks(0)
-    , m_got_first_detections(false)
 {
   getRosParameters();
-  
   m_transform_listener = std::make_shared<tf::TransformListener>();
 
+  if(m_measure_time)
+    prepareMeasuringProcessingTime();
 }
 
 void MultiHypothesisTrackingBase::getRosParameters()
@@ -49,14 +47,15 @@ void MultiHypothesisTrackingBase::getRosParameters()
 
   private_node_handle.param<bool>("compute_likelihood", m_compute_likelihood, false);
   m_multi_hypothesis_tracker.setComputeLikelihood(m_compute_likelihood);
+}
 
-  private_node_handle.getParam("measure_time", m_measure_time);
-  if(m_measure_time)
-  {
-    std::string path_to_results_file = "/tmp/times_multi_hypothesis_tracking";
-    m_time_file.open(path_to_results_file);
-  }
+void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()
+{
+  std::string path_to_results_file = "/tmp/times_multi_hypothesis_tracking";
+  m_time_file.open(path_to_results_file);
+  m_number_of_callbacks = 0;
   m_summed_time_for_callbacks = std::chrono::microseconds::zero();
+  m_got_first_detections = false;
 }
 
 void MultiHypothesisTrackingBase::publish(const ros::Time& stamp)
