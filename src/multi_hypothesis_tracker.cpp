@@ -39,11 +39,7 @@ void MultiHypothesisTracker::correctHypothesesStates(const Detections& detection
   hungarian_problem_t hung;
   size_t dim = detections.detections.size() + m_hypotheses.size();
   hungarian_init(&hung, cost_matrix, dim, dim, HUNGARIAN_MODE_MINIMIZE_COST);
-
-// 		hungarian_print_costmatrix(&hung);
   hungarian_solve(&hung);
-// 		hungarian_print_assignment(&hung);
-
   applyAssignments(hung.assignment, cost_matrix, detections, m_hypotheses);
 
   for(size_t i = 0; i < dim; i++)
