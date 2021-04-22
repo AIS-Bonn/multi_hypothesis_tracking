@@ -132,12 +132,18 @@ void MultiHypothesisTrackingBase::transformDetections(Detections& detections,
   detections.frame_id = target_frame;
 }
 
+bool currentDetectionsOlderThanLatestPrediction(const double detections_time_stamp,
+                                                const double latest_prediction_time_stamp)
+{
+  return detections_time_stamp <= latest_prediction_time_stamp;
+}
+
 void MultiHypothesisTrackingBase::processDetections(const Detections& detections)
 {
-  double duration_since_previous_prediction = detections.time_stamp - m_last_prediction_time;
-  if(duration_since_previous_prediction <= 0.0)
+  if(currentDetectionsOlderThanLatestPrediction(detections.time_stamp, m_last_prediction_time))
     return;
 
+  double duration_since_previous_prediction = detections.time_stamp - m_last_prediction_time;
   // Prediction step of kalman filter for all hypotheses
   if(m_last_prediction_time > 0.0)
     m_multi_hypothesis_tracker.predict(duration_since_previous_prediction);
