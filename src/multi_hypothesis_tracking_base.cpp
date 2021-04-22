@@ -136,9 +136,6 @@ void MultiHypothesisTrackingBase::transformDetections(std::vector<Detection>& de
 void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>& detections,
                                                     const ros::Time& time_stamp)
 {
-  if(detections.empty())
-    return;
-
   double time_since_last_detections = time_stamp.toSec() - m_last_prediction_time;
   if(time_since_last_detections <= 0.0)
     return;
