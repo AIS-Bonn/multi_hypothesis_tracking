@@ -50,11 +50,11 @@ public:
   /**
    * @brief Converts the human detections into the internal format.
    *
-   * @param[in]     msg             detections.
-   * @param[out]    detections    detections in tracker format.
+   * @param[in]     msg             message containing detections.
+   * @param[out]    detections      detections in tracker format.
    */
   void convert(const HumanMsg::ConstPtr& msg,
-               std::vector<Detection>& detections);
+               Detections& detections);
 
 private:
   /** @brief Subscribes to detections. */

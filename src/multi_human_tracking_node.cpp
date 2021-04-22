@@ -25,16 +25,16 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& msg)
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
-  std::vector<Detection> detections;
+  Detections detections;
   convert(msg, detections);
 
-  if(!transformToFrame(detections, msg->header, m_world_frame))
+  if(!transformToFrame(detections, m_world_frame))
     return;
 
-  m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
-  m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionsPositions(detections);
+  m_visualizations_publisher.publishDetectionsCovariances(detections);
 
-  processDetections(detections, msg->header.stamp);
+  processDetections(detections);
 
   if(!m_got_first_detections && !msg->persons.empty())
     m_got_first_detections = true;
@@ -56,11 +56,10 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& msg)
 }
 
 void MultiHumanTrackingNode::convert(const HumanMsg::ConstPtr& msg,
-                                     std::vector<Detection>& detections)
+                                     Detections& detections)
 {
-  Detection detection;
-  detection.frame_id = msg->header.frame_id;
-  detection.time_stamp = msg->header.stamp.toSec();
+  detections.frame_id = msg->header.frame_id;
+  detections.time_stamp = msg->header.stamp.toSec();
 
   float score_threshold = 0.1f;
   for(const auto& person_detection : msg->persons)
@@ -76,6 +75,7 @@ void MultiHumanTrackingNode::convert(const HumanMsg::ConstPtr& msg,
       continue;
     }
 
+    Detection detection;
     detection.position(0) = static_cast<float>(person_detection.keypoints[8].joint.x);
     detection.position(1) = static_cast<float>(person_detection.keypoints[8].joint.y);
     detection.position(2) = static_cast<float>(person_detection.keypoints[8].joint.z);
@@ -93,7 +93,7 @@ void MultiHumanTrackingNode::convert(const HumanMsg::ConstPtr& msg,
                                                       joint.joint.y,
                                                       joint.joint.z));
 
-    detections.push_back(detection);
+    detections.detections.push_back(detection);
   }
 }
 

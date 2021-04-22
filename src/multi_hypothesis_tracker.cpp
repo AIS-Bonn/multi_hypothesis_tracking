@@ -35,16 +35,16 @@ void MultiHypothesisTracker::predict(double time_diff,
     hypothesis->predict(time_diff, control);
 }
 
-void MultiHypothesisTracker::correct(const std::vector<Detection>& detections)
+void MultiHypothesisTracker::correct(const Detections& detections)
 {
-  if(detections.empty())
+  if(detections.detections.empty())
     return;
 
   int** cost_matrix;
   setupCostMatrix(detections, m_hypotheses, cost_matrix);
 
   hungarian_problem_t hung;
-  size_t dim = detections.size() + m_hypotheses.size();
+  size_t dim = detections.detections.size() + m_hypotheses.size();
   hungarian_init(&hung, cost_matrix, dim, dim, HUNGARIAN_MODE_MINIMIZE_COST);
 
 // 		hungarian_print_costmatrix(&hung);
@@ -59,12 +59,12 @@ void MultiHypothesisTracker::correct(const std::vector<Detection>& detections)
   hungarian_free(&hung);
 }
 
-void MultiHypothesisTracker::setupCostMatrix(const std::vector<Detection>& detections,
+void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
                                              std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                                              int**& cost_matrix)
 {
   size_t hyp_size = hypotheses.size();
-  size_t meas_size = detections.size();
+  size_t meas_size = detections.detections.size();
   size_t dim = hyp_size + meas_size;
 
   cost_matrix = new int* [dim];
@@ -82,13 +82,13 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector<Detection>& detec
         if(m_use_bhattacharyya_for_assignments)
         {
           distance = bhattacharyya(m_hypotheses[i]->getPosition(),
-                                   detections[j].position.block<3, 1>(0, 0),
+                                   detections.detections[j].position.block<3, 1>(0, 0),
                                    m_hypotheses[i]->getCovariance(),
-                                   detections[j].covariance.block<3, 3>(0, 0));
+                                   detections.detections[j].covariance.block<3, 3>(0, 0));
         }
         else
         {
-          distance = (m_hypotheses[i]->getPosition() - detections[j].position.block<3, 1>(0, 0)).norm();
+          distance = (m_hypotheses[i]->getPosition() - detections.detections[j].position.block<3, 1>(0, 0)).norm();
         }
         int scaled_distance = (int)(m_dist_scale * distance);
         if(scaled_distance < m_max_distance)
@@ -122,14 +122,14 @@ void MultiHypothesisTracker::setupCostMatrix(const std::vector<Detection>& detec
 
 void MultiHypothesisTracker::applyAssignments(int**& assignments,
                                               int**& cost_matrix,
-                                              const std::vector<Detection>& detections,
+                                              const Detections& detections,
                                               std::vector<std::shared_ptr<Hypothesis>>& hypotheses)
 {
   if(m_compute_likelihood)
     resetAverageLikelihood();
 
   size_t hyp_size = hypotheses.size();
-  size_t meas_size = detections.size();
+  size_t meas_size = detections.detections.size();
   size_t dim = hyp_size + meas_size;
 
   for(size_t i = 0; i < dim; i++)
@@ -142,16 +142,18 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
         if(assignments[i][j] == HUNGARIAN_ASSIGNED && cost_matrix[i][j] < m_max_distance)
         {
           if(m_compute_likelihood)
-            updateLikelihoodSum(m_hypotheses[i]->computeLikelihood(detections[j]));
+            updateLikelihoodSum(m_hypotheses[i]->computeLikelihood(detections.detections[j]));
 
-          m_hypotheses[i]->correct(detections[j]);
+          m_hypotheses[i]->correct(detections.detections[j]);
         }
         else if(assignments[i][j] == HUNGARIAN_ASSIGNED)
         {
           // if assigned but distance too high -> prohibited assignment -> hypothesis unassignment
 
           // create new hypothesis from detection
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections[j], m_current_hypothesis_id++));
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j], 
+                                                                           m_current_hypothesis_id++,
+                                                                           detections.time_stamp));
         }
       }
       else if(i < hyp_size && j >= meas_size)
@@ -162,7 +164,9 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
       {
         // if detection assigned to dummy hypothesis -> create new hypothesis
         if(assignments[i][j] == HUNGARIAN_ASSIGNED)
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections[j], m_current_hypothesis_id++));
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j], 
+                                                                           m_current_hypothesis_id++,
+                                                                           detections.time_stamp));
       }
       else if(i >= hyp_size && j >= meas_size)
       {

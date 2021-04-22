@@ -65,17 +65,16 @@ void MultiHypothesisTrackingBase::publish(const ros::Time& stamp)
     m_visualizations_publisher.publishLikelihood(m_multi_hypothesis_tracker.getAverageLikelihood());
 }
 
-bool MultiHypothesisTrackingBase::transformToFrame(std::vector<Detection>& detections,
-                                                   const std_msgs::Header& header,
+bool MultiHypothesisTrackingBase::transformToFrame(Detections& detections,
                                                    const std::string& target_frame)
 {
-  if(target_frame == header.frame_id)
+  if(target_frame == detections.frame_id)
     return true;
 
   tf::StampedTransform transform;
-  if(!getTransform(header.frame_id, 
-                   target_frame, 
-                   header.stamp, 
+  if(!getTransform(detections.frame_id, 
+                   target_frame,
+                   detections.time_stamp, 
                    transform))
     return false;
 
@@ -85,12 +84,13 @@ bool MultiHypothesisTrackingBase::transformToFrame(std::vector<Detection>& detec
 
 bool MultiHypothesisTrackingBase::getTransform(const std::string& source_frame,
                                                const std::string& target_frame,
-                                               const ros::Time& time_stamp,
+                                               const double time_stamp,
                                                tf::StampedTransform& transform)
 {
+  ros::Time ros_time_stamp = ros::Time(time_stamp);
   if(!m_transform_listener->waitForTransform(target_frame, 
-                                             source_frame, 
-                                             time_stamp, 
+                                             source_frame,
+                                             ros_time_stamp, 
                                              ros::Duration(1.0)))
   {
     ROS_ERROR_STREAM("Could not wait for transform at time " << time_stamp);
@@ -100,8 +100,8 @@ bool MultiHypothesisTrackingBase::getTransform(const std::string& source_frame,
   try
   {
     m_transform_listener->lookupTransform(target_frame, 
-                                          source_frame, 
-                                          time_stamp, 
+                                          source_frame,
+                                          ros_time_stamp, 
                                           transform);
   }
   catch(tf::TransformException& ex)
@@ -114,7 +114,7 @@ bool MultiHypothesisTrackingBase::getTransform(const std::string& source_frame,
   return true;
 }
 
-void MultiHypothesisTrackingBase::transformDetections(std::vector<Detection>& detections,
+void MultiHypothesisTrackingBase::transformDetections(Detections& detections,
                                                       const tf::StampedTransform& transform,
                                                       const std::string& target_frame)
 {
@@ -122,21 +122,19 @@ void MultiHypothesisTrackingBase::transformDetections(std::vector<Detection>& de
   tf::transformTFToEigen(transform, transform_eigen);
   Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
   
-  for(auto& detection : detections)
+  for(auto& detection : detections.detections)
   {
     detection.position = transform_eigenf * detection.position;
 
     for(auto& point : detection.points)
       point = transform_eigenf * point;
-
-    detection.frame_id = target_frame;
   }
+  detections.frame_id = target_frame;
 }
 
-void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>& detections,
-                                                    const ros::Time& time_stamp)
+void MultiHypothesisTrackingBase::processDetections(const Detections& detections)
 {
-  double time_since_last_detections = time_stamp.toSec() - m_last_prediction_time;
+  double time_since_last_detections = detections.time_stamp - m_last_prediction_time;
   if(time_since_last_detections <= 0.0)
     return;
 
@@ -144,7 +142,7 @@ void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>
   if(m_last_prediction_time > 0.0)
     m_multi_hypothesis_tracker.predict(time_since_last_detections);
 
-  m_last_prediction_time = time_stamp.toSec();
+  m_last_prediction_time = detections.time_stamp;
 
   // Correction step of kalman filter for all hypotheses
   m_multi_hypothesis_tracker.correct(detections);

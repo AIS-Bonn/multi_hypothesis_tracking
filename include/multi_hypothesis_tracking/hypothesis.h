@@ -28,12 +28,14 @@ public:
   /**
    * @brief Constructor.
    *
-   * @param[in] detection             initial state.
+   * @param[in] detection               initial state.
    * @param[in] id                      id of hypothesis.
+   * @param[in] time_stamp              time stamp when the detection was created.
    * @param[in] covariance_per_second   parameter for kalman filter.
    */
   Hypothesis(const Detection& detection,
              unsigned int id,
+             double time_stamp,
              double covariance_per_second = 0.5);
   /** @brief Destructor. */
   virtual ~Hypothesis() = default;
@@ -225,13 +227,15 @@ public:
 
   /** @brief Creates hypothesis.
    *
-   * @param[in] detection     initial state.
+   * @param[in] detection       initial state.
    * @param[in] id              ID of created hypothesis.
+   * @param[in] time_stamp      time stamp when the detection was created.
    *
    * @return pointer to created hypothesis.
    */
   std::shared_ptr<Hypothesis> createHypothesis(const Detection& detection,
-                                               unsigned int id);
+                                               const unsigned int id,
+                                               const double time_stamp);
 };
 
 };

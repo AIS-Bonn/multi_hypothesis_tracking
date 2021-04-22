@@ -64,19 +64,19 @@ public:
    * @brief Converts the detection's poses from the laser into the internal format
    *
    * @param[in]     msg             poses of the detections.
-   * @param[out]    detections    detections in tracker format.
+   * @param[out]    detections      detections in tracker format.
    */
   void convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-               std::vector<Detection>& detections);
+               Detections& detections);
 
   /**
    * @brief Converts the detections from the laser into the internal format
    *
    * @param[in]     msg             detections.
-   * @param[out]    detections    detections in tracker format.
+   * @param[out]    detections      detections in tracker format.
    */
   void convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
-               std::vector<Detection>& detections);
+               Detections& detections);
 
 public:
   /** @brief Subscribes to detections. */

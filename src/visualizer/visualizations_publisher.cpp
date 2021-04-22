@@ -100,60 +100,53 @@ MarkerMsg VisualizationsPublisher::createMarker(float r,
   return marker;
 }
 
-void VisualizationsPublisher::publishDetectionsPositions(const std::vector<Detection>& detections,
-                                                         const ros::Time& stamp)
+void VisualizationsPublisher::publishDetectionsPositions(const Detections& detections)
 {
-  if(m_detection_positions_publisher.getNumSubscribers() == 0 || detections.empty())
+  if(m_detection_positions_publisher.getNumSubscribers() == 0 || detections.detections.empty())
     return;
 
   MarkerMsg detection_positions_marker = createMarker(1.0, 0.0, 0.0, "mot_detections_markers");
-  detection_positions_marker.header.frame_id = detections.at(0).frame_id;
-  detection_positions_marker.header.stamp = stamp;
+  detection_positions_marker.header.frame_id = detections.frame_id;
+  detection_positions_marker.header.stamp = ros::Time(detections.time_stamp);
 
-  detection_positions_marker.points.resize(detections.size());
-  for(size_t i = 0; i < detections.size(); i++)
-    eigenToGeometryMsgs(detections[i].position, detection_positions_marker.points[i]);
+  detection_positions_marker.points.resize(detections.detections.size());
+  for(size_t i = 0; i < detections.detections.size(); i++)
+    eigenToGeometryMsgs(detections.detections[i].position, detection_positions_marker.points[i]);
 
   m_detection_positions_publisher.publish(detection_positions_marker);
 }
 
-void VisualizationsPublisher::publishDetectionsCovariances(const std::vector<Detection>& detections,
-                                                           const ros::Time& stamp)
+void VisualizationsPublisher::publishDetectionsCovariances(const Detections& detections)
 {
-  if(m_detections_covariances_publisher.getNumSubscribers() == 0 || detections.empty())
+  if(m_detections_covariances_publisher.getNumSubscribers() == 0 || detections.detections.empty())
     return;
 
   MarkerMsg detection_cov_marker = createMarker(1.0, 0.0, 0.0, "mot_detection_covariance_marker");;
   detection_cov_marker.type = MarkerMsg::SPHERE;
   detection_cov_marker.color.a = 0.5f;
-  detection_cov_marker.header.stamp = stamp;
+  detection_cov_marker.header.frame_id = detections.frame_id;
+  detection_cov_marker.header.stamp = ros::Time(detections.time_stamp);
 
-  for(size_t i = 0; i < detections.size(); i++)
+  for(size_t i = 0; i < detections.detections.size(); i++)
   {
-    detection_cov_marker.header.frame_id = detections.at(i).frame_id;
     detection_cov_marker.id = (int)i;
-    eigenToGeometryMsgs(detections[i].position, detection_cov_marker.pose.position);
+    eigenToGeometryMsgs(detections.detections[i].position, detection_cov_marker.pose.position);
 
-    detection_cov_marker.scale.x = sqrt(4.204) * sqrt(detections[i].covariance(0, 0));
-    detection_cov_marker.scale.y = sqrt(4.204) * sqrt(detections[i].covariance(1, 1));
-    detection_cov_marker.scale.z = sqrt(4.204) * sqrt(detections[i].covariance(2, 2));
+    detection_cov_marker.scale.x = sqrt(4.204) * sqrt(detections.detections[i].covariance(0, 0));
+    detection_cov_marker.scale.y = sqrt(4.204) * sqrt(detections.detections[i].covariance(1, 1));
+    detection_cov_marker.scale.z = sqrt(4.204) * sqrt(detections.detections[i].covariance(2, 2));
 
     m_detections_covariances_publisher.publish(detection_cov_marker);
   }
 }
 
-void VisualizationsPublisher::publishDetectionsPoints(const std::vector<Detection>& detections,
-                                                      const ros::Time& stamp)
+void VisualizationsPublisher::publishDetectionsPoints(const Detections& detections)
 {
-  if(m_detections_points_publisher.getNumSubscribers() == 0 || detections.empty())
+  if(m_detections_points_publisher.getNumSubscribers() == 0 || detections.detections.empty())
     return;
 
   PointCloud::Ptr cloud(new PointCloud);
-  cloud->header.frame_id = detections.at(0).frame_id;
-  cloud->header.stamp = pcl_conversions::toPCL(stamp);
-
   convertDetectionsPointsToCloud(detections, cloud);
-
   m_detections_points_publisher.publish(cloud);
 }
 

@@ -12,9 +12,10 @@ namespace MultiHypothesisTracker
 
 Hypothesis::Hypothesis(const Detection& detection,
                        unsigned int id,
+                       double time_stamp,
                        double covariance_per_second)
   : m_id(id)
-    , m_born_time(detection.time_stamp)
+    , m_born_time(time_stamp)
     , m_is_static(true)
     , m_static_distance_threshold(1.f)
     , m_cap_velocity(true)
@@ -256,9 +257,10 @@ float Hypothesis::computeLikelihood(const Detection& detection)
 
 
 std::shared_ptr<Hypothesis> HypothesisFactory::createHypothesis(const Detection& detection,
-                                                                unsigned int id)
+                                                                const unsigned int id,
+                                                                const double time_stamp)
 {
-  return std::make_shared<Hypothesis>(detection, id, m_covariance_per_second);
+  return std::make_shared<Hypothesis>(detection, id, time_stamp, m_covariance_per_second);
 }
 
 };

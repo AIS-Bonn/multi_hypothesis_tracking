@@ -83,14 +83,11 @@ public:
                          const std::string& name_space = "multi_object_tracker");
 
   /** @brief Publishes detections' positions as markers. */
-  void publishDetectionsPositions(const std::vector<Detection>& detections,
-                                  const ros::Time& stamp);
+  void publishDetectionsPositions(const Detections& detections);
   /** @brief Publishes detections' covariances as markers. */
-  void publishDetectionsCovariances(const std::vector<Detection>& detections,
-                                    const ros::Time& stamp);
+  void publishDetectionsCovariances(const Detections& detections);
   /** @brief Publishes point clouds corresponding to detections. */
-  void publishDetectionsPoints(const std::vector<Detection>& detections,
-                               const ros::Time& stamp);
+  void publishDetectionsPoints(const Detections& detections);
 
   /** @brief Publishes positions of valid hypotheses. */
   void publishHypothesesPositions(const Hypotheses& hypotheses,

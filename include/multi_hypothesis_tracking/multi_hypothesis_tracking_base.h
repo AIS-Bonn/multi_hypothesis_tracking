@@ -48,14 +48,12 @@ public:
   /**
    * @brief Transforms detections to the target_frame.
    *
-   * @param[in,out] detections   detections.
-   * @param[in]     header         header - in case there are no detections we still want to continue to tell the tracker exactly that.
-   * @param[in]     target_frame   frame the detections are transformed to.
+   * @param[in,out] detections      detections.
+   * @param[in]     target_frame    frame the detections are transformed to.
    *
    * @return false if at least one detection couldn't be transformed, true otherwise
    */
-  bool transformToFrame(std::vector<Detection>& detections,
-                        const std_msgs::Header& header,
+  bool transformToFrame(Detections& detections,
                         const std::string& target_frame);
 
   /**
@@ -65,11 +63,11 @@ public:
    */
   bool getTransform(const std::string& source_frame,
                     const std::string& target_frame,
-                    const ros::Time& time_stamp,
+                    const double time_stamp,
                     tf::StampedTransform& transform);
 
   /** @brief Transform the detections using the given transform and replace their frame_id with the target_frame. */
-  void transformDetections(std::vector<Detection>& detections,
+  void transformDetections(Detections& detections,
                            const tf::StampedTransform& transform,
                            const std::string& target_frame);
                                                         
@@ -81,10 +79,8 @@ public:
    * Filters out weak hypotheses.
    *
    * @param detections    current detections.
-   * @param time_stamp    time stamp of detections.
    */
-  void processDetections(const std::vector<Detection>& detections,
-                         const ros::Time& time_stamp);
+  void processDetections(const Detections& detections);
 
   /** @brief Getter for hypotheses vector. */
   const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();

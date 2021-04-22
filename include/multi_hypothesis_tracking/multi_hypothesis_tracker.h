@@ -56,7 +56,7 @@ public:
    *
    * @param[in] detections    detections
    */
-  void correct(const std::vector<Detection>& detections);
+  void correct(const Detections& detections);
 
   /**
    * @brief Deletes hypotheses that are spurious
@@ -114,11 +114,11 @@ protected:
    * Bottom right block: Fake distance between dummy detections and dummy
    * hypotheses -> Zeroes.
    *
-   * @param[in]     detections    detections.
+   * @param[in]     detections      detections.
    * @param[in]     hypotheses      already existing hypotheses.
    * @param[out]    cost_matrix     cost matrix.
    */
-  void setupCostMatrix(const std::vector<Detection>& detections,
+  void setupCostMatrix(const Detections& detections,
                        std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                        int**& cost_matrix);
 
@@ -131,12 +131,12 @@ protected:
    *
    * @param[in]     assignments     assignments from hungarian method.
    * @param[in]     cost_matrix     original cost_matrix hungarian method was initialized with.
-   * @param[in]     detections    detections.
+   * @param[in]     detections      detections.
    * @param[in,out] hypotheses      in current hypotheses, out corrected and new hypotheses.
    */
   void applyAssignments(int**& assignments,
                         int**& cost_matrix,
-                        const std::vector<Detection>& detections,
+                        const Detections& detections,
                         std::vector<std::shared_ptr<Hypothesis>>& hypotheses);
 
   /** @brief Sets members used to compute the average likelihood to zero. */

@@ -15,14 +15,16 @@
 namespace MultiHypothesisTracker
 {
 
-/**
- * @brief Description of detection.
- */
 struct Detection
 {
   Eigen::Vector3f position;             ///< Position of detection - e.g. center point.
   Eigen::Matrix3f covariance;           ///< Covariance of detection.
   std::vector<Eigen::Vector3f> points;  ///< Point cloud corresponding to detection.
+};
+
+struct Detections
+{
+  std::vector<Detection> detections;    ///< Vector of detection at current time_stamp in frame frame_id.
 
   std::string frame_id;                 ///< Frame ID of detection - e.g. world or sensor frame.
   double time_stamp;                    ///< Time stamp when the detection was created.

@@ -33,16 +33,16 @@ void MultiHypothesisTrackingNode::detectionPosesCallback(const geometry_msgs::Po
 
 //  double start = getTimeHighRes();
 
-  std::vector<Detection> detections;
+  Detections detections;
   convert(msg, detections);
 
-  if(!transformToFrame(detections, msg->header, m_world_frame))
+  if(!transformToFrame(detections, m_world_frame))
     return;
 
-  m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
-  m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionsPositions(detections);
+  m_visualizations_publisher.publishDetectionsCovariances(detections);
 
-  processDetections(detections, msg->header.stamp);
+  processDetections(detections);
 
 //  std::cout << std::setprecision(10) << "\n####time for one callback " << (getTimeHighRes() - start) << " " << std::endl;
   publish(msg->header.stamp);
@@ -54,17 +54,17 @@ void MultiHypothesisTrackingNode::detectionCallback(const multi_hypothesis_track
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
-  std::vector<Detection> detections;
+  Detections detections;
   convert(msg, detections);
 
-  if(!transformToFrame(detections, msg->header, m_world_frame))
+  if(!transformToFrame(detections, m_world_frame))
     return;
 
-  m_visualizations_publisher.publishDetectionsPositions(detections, msg->header.stamp);
-  m_visualizations_publisher.publishDetectionsCovariances(detections, msg->header.stamp);
-  m_visualizations_publisher.publishDetectionsPoints(detections, msg->header.stamp);
+  m_visualizations_publisher.publishDetectionsPositions(detections);
+  m_visualizations_publisher.publishDetectionsCovariances(detections);
+  m_visualizations_publisher.publishDetectionsPoints(detections);
 
-  processDetections(detections, msg->header.stamp);
+  processDetections(detections);
 
   if(!m_got_first_detections && !msg->object_detections.empty())
     m_got_first_detections = true;
@@ -86,14 +86,14 @@ void MultiHypothesisTrackingNode::detectionCallback(const multi_hypothesis_track
 }
 
 void MultiHypothesisTrackingNode::convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-                                          std::vector<Detection>& detections)
+                                          Detections& detections)
 {
-  Detection detection;
-  detection.frame_id = msg->header.frame_id;
-  detection.time_stamp = msg->header.stamp.toSec();
+  detections.frame_id = msg->header.frame_id;
+  detections.time_stamp = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->poses.size(); i++)
   {
+    Detection detection;
     detection.position(0) = static_cast<float>(msg->poses[i].position.x);
     detection.position(1) = static_cast<float>(msg->poses[i].position.y);
     detection.position(2) = static_cast<float>(msg->poses[i].position.z);
@@ -106,19 +106,19 @@ void MultiHypothesisTrackingNode::convert(const geometry_msgs::PoseArray::ConstP
 
     detection.points.clear();
 
-    detections.push_back(detection);
+    detections.detections.push_back(detection);
   }
 }
 
 void MultiHypothesisTrackingNode::convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
-                                          std::vector<Detection>& detections)
+                                          Detections& detections)
 {
-  Detection detection;
-  detection.frame_id = msg->header.frame_id;
-  detection.time_stamp = msg->header.stamp.toSec();
+  detections.frame_id = msg->header.frame_id;
+  detections.time_stamp = msg->header.stamp.toSec();
 
   for(size_t i = 0; i < msg->object_detections.size(); i++)
   {
+    Detection detection;
     detection.position(0) = static_cast<float>(msg->object_detections[i].centroid.x);
     detection.position(1) = static_cast<float>(msg->object_detections[i].centroid.y);
     detection.position(2) = static_cast<float>(msg->object_detections[i].centroid.z);
@@ -138,7 +138,7 @@ void MultiHypothesisTrackingNode::convert(const multi_hypothesis_tracking_msgs::
     for(sensor_msgs::PointCloud2ConstIterator<float> it(msg->object_detections[i].cloud, "x"); it != it.end(); ++it)
       detection.points.push_back(Eigen::Vector3f(it[0], it[1], it[2]));
 
-    detections.push_back(detection);
+    detections.detections.push_back(detection);
   }
 }
 

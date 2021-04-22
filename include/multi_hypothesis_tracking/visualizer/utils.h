@@ -44,14 +44,17 @@ inline int computeTotalNumberOfPoints(const std::vector<Detection>& detections)
 }
 
 /** @breif Converts and accumulates the points associated with the detections into one pcl point cloud. */
-inline void convertDetectionsPointsToCloud(const std::vector<Detection>& detections,
+inline void convertDetectionsPointsToCloud(const Detections& detections,
                                            pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud)
 {
-  int total_points_count = computeTotalNumberOfPoints(detections);
+  cloud->header.frame_id = detections.frame_id;
+  cloud->header.stamp = pcl_conversions::toPCL(ros::Time(detections.time_stamp));
+  
+  int total_points_count = computeTotalNumberOfPoints(detections.detections);
 
   cloud->points.resize(total_points_count);
   int point_counter = 0;
-  for(const auto& detection : detections)
+  for(const auto& detection : detections.detections)
     for(size_t point_id = 0; point_id < detection.points.size(); point_id++, point_counter++)
       cloud->points[point_counter].getVector3fMap() = detection.points.at(point_id);
 }
