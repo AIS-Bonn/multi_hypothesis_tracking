@@ -74,7 +74,7 @@ void KalmanFilter::predict(float dt,
 
   // check if cov matrix is symmetric as is should be
   if(!isAlmostSymmetric(m_error_covariance))
-    std::cout << "KalmanFilter::predict: m_error_covariance is not symmetric!!!!!" << std::endl;
+    std::cout << "KalmanFilter::predictNextHypothesesStates: m_error_covariance is not symmetric!!!!!" << std::endl;
 
   // TODO: check if matrix is positive definite ?!?
 }

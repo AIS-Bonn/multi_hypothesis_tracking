@@ -35,21 +35,17 @@ public:
   /** @brief Destructor. */
   ~MultiHypothesisTracker() = default;
 
-  /**
-   * @brief Calls predict for each hypothesis.
-   *
-   * @param[in] time_diff   time difference between last and current prediction
-   */
-  virtual void predict(double time_diff);
+  /** @brief Calls predictNextHypothesesStates for each hypothesis. */
+  virtual void predictNextHypothesesStates(double duration_since_previous_prediction);
 
   /**
-   * @brief Calls predict for each hypothesis.
+   * @brief Calls predictNextHypothesesStates for each hypothesis.
    *
-   * @param[in] time_diff   time difference between last and current prediction
+   * @param[in] duration_since_previous_prediction   time difference between last and current prediction
    * @param[in] control     control input for state prediction
    */
-  virtual void predict(double time_diff,
-                       Eigen::Vector3f& control);
+  virtual void predictNextHypothesesStates(double duration_since_previous_prediction,
+                                           Eigen::Vector3f& control);
 
   /**
    * @brief Uses Hungarian method to assign detections to hypotheses and corrects the latter.

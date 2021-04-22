@@ -22,17 +22,17 @@ MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr<HypothesisFactory
 {
 }
 
-void MultiHypothesisTracker::predict(double time_diff)
+void MultiHypothesisTracker::predictNextHypothesesStates(double duration_since_previous_prediction)
 {
   for(auto& hypothesis : m_hypotheses)
-    hypothesis->predict(time_diff);
+    hypothesis->predict(duration_since_previous_prediction);
 }
 
-void MultiHypothesisTracker::predict(double time_diff,
-                                     Eigen::Vector3f& control)
+void MultiHypothesisTracker::predictNextHypothesesStates(double duration_since_previous_prediction,
+                                                         Eigen::Vector3f& control)
 {
   for(auto& hypothesis : m_hypotheses)
-    hypothesis->predict(time_diff, control);
+    hypothesis->predict(duration_since_previous_prediction, control);
 }
 
 void MultiHypothesisTracker::correct(const Detections& detections)

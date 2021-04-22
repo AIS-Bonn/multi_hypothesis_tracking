@@ -41,7 +41,7 @@ public:
    * @brief Predicts the position after dt seconds without a control.
    *
    * @param[in] dt  time delta that has passed
-   * @see predict(float, const Eigen::VectorXf&)
+   * @see predictNextHypothesesStates(float, const Eigen::VectorXf&)
    */
   void predict(float dt);
 

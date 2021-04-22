@@ -146,7 +146,7 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
   double duration_since_previous_prediction = detections.time_stamp - m_last_prediction_time;
   // Prediction step of kalman filter for all hypotheses
   if(m_last_prediction_time > 0.0)
-    m_multi_hypothesis_tracker.predict(duration_since_previous_prediction);
+    m_multi_hypothesis_tracker.predictNextHypothesesStates(duration_since_previous_prediction);
 
   m_last_prediction_time = detections.time_stamp;
 

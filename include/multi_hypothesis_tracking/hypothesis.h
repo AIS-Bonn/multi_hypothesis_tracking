@@ -44,7 +44,7 @@ public:
    * @brief Predicts the state after time difference without control using kalman filter.
    *
    * @param[in] dt  time difference to last state.
-   * @see predict(float, Eigen::Vector3f&)
+   * @see predictNextHypothesesStates(float, Eigen::Vector3f&)
    */
   void predict(float dt);
   /**
@@ -52,7 +52,7 @@ public:
    *
    * @param[in] dt          time difference to last state.
    * @param[in] control     control vector used for prediction.
-   * @see predict(float, Eigen::Vector3f&)
+   * @see predictNextHypothesesStates(float, Eigen::Vector3f&)
    */
   void predict(float dt,
                Eigen::Vector3f& control);
