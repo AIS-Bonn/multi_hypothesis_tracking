@@ -47,15 +47,6 @@ public:
    * @see predictNextHypothesesStates(float, Eigen::Vector3f&)
    */
   void predict(float dt);
-  /**
-   * @brief Predicts the state after time difference using kalman filter.
-   *
-   * @param[in] dt          time difference to last state.
-   * @param[in] control     control vector used for prediction.
-   * @see predictNextHypothesesStates(float, Eigen::Vector3f&)
-   */
-  void predict(float dt,
-               Eigen::Vector3f& control);
 
   /**
    * @brief Corrects the hypothesis' state using the detection.

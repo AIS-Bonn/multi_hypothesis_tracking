@@ -39,15 +39,6 @@ public:
   virtual void predictNextHypothesesStates(double duration_since_previous_prediction);
 
   /**
-   * @brief Calls predictNextHypothesesStates for each hypothesis.
-   *
-   * @param[in] duration_since_previous_prediction   time difference between last and current prediction
-   * @param[in] control     control input for state prediction
-   */
-  virtual void predictNextHypothesesStates(double duration_since_previous_prediction,
-                                           Eigen::Vector3f& control);
-
-  /**
    * @brief Uses Hungarian method to assign detections to hypotheses and corrects the latter.
    *
    * @param[in] detections    detections

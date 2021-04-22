@@ -28,13 +28,6 @@ void MultiHypothesisTracker::predictNextHypothesesStates(double duration_since_p
     hypothesis->predict(duration_since_previous_prediction);
 }
 
-void MultiHypothesisTracker::predictNextHypothesesStates(double duration_since_previous_prediction,
-                                                         Eigen::Vector3f& control)
-{
-  for(auto& hypothesis : m_hypotheses)
-    hypothesis->predict(duration_since_previous_prediction, control);
-}
-
 void MultiHypothesisTracker::correct(const Detections& detections)
 {
   if(detections.detections.empty())

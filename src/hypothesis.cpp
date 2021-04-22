@@ -47,13 +47,6 @@ Hypothesis::Hypothesis(const Detection& detection,
 
 void Hypothesis::predict(float dt)
 {
-  Eigen::Vector3f control;
-  predict(dt, control);
-}
-
-void Hypothesis::predict(float dt,
-                         Eigen::Vector3f& control)
-{
   auto current_position = getPosition();
 
   m_kalman->predict(dt);
