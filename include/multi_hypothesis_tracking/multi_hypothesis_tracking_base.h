@@ -90,16 +90,14 @@ public:
   const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
 
 public:
-
+  /** @brief The functionality. */
+  MultiHypothesisTracker m_multi_hypothesis_tracker;
+  
   /** @brief Publishes results. */
   VisualizationsPublisher m_visualizations_publisher;
 
-  /** @brief Provides transforms to world frame. */
+  /** @brief Provides transforms to the specified world frame. */
   std::shared_ptr<tf::TransformListener> m_transform_listener;
-
-  /** @brief The functionality. */
-  MultiHypothesisTracker m_multi_hypothesis_tracker;
-
 
   //Params
   /** @brief Fixed frame the detections and tracks are in. */

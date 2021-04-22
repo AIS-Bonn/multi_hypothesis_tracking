@@ -12,10 +12,10 @@ namespace MultiHypothesisTracker
 
 MultiHypothesisTrackingBase::MultiHypothesisTrackingBase()
   : m_multi_hypothesis_tracker(std::make_shared<HypothesisFactory>())
+    , m_transform_listener(std::make_shared<tf::TransformListener>())
     , m_last_prediction_time(0)
 {
   getRosParameters();
-  m_transform_listener = std::make_shared<tf::TransformListener>();
 
   if(m_measure_time)
     prepareMeasuringProcessingTime();
