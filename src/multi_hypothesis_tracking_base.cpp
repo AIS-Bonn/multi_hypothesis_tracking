@@ -55,12 +55,12 @@ void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()
   m_time_file.open(path_to_results_file);
   m_number_of_callbacks = 0;
   m_summed_time_for_callbacks = std::chrono::microseconds::zero();
-  m_got_first_detections = false;
+  m_processed_first_detections = false;
 }
 
 void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(std::chrono::high_resolution_clock::time_point callback_start_time)
 {
-  if(m_measure_time && m_got_first_detections)
+  if(m_measure_time && m_processed_first_detections)
   {
     auto time_for_one_callback = std::chrono::duration_cast<std::chrono::microseconds>(
       std::chrono::high_resolution_clock::now() - callback_start_time);
@@ -169,7 +169,7 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
   filterWeakHypotheses();
 
   if(!detections.detections.empty())
-    m_got_first_detections = true;
+    m_processed_first_detections = true;
 }
 
 void MultiHypothesisTrackingBase::filterWeakHypotheses()

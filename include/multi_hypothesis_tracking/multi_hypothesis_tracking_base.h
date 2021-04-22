@@ -117,7 +117,7 @@ public:
   std::chrono::microseconds m_summed_time_for_callbacks;
   int m_number_of_callbacks;
   std::ofstream m_time_file;
-  bool m_got_first_detections;
+  bool m_processed_first_detections;
 };
 
 }
