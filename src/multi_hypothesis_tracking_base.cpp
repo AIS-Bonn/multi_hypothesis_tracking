@@ -58,6 +58,23 @@ void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()
   m_got_first_detections = false;
 }
 
+void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(std::chrono::high_resolution_clock::time_point callback_start_time)
+{
+  if(m_measure_time && m_got_first_detections)
+  {
+    auto time_for_one_callback = std::chrono::duration_cast<std::chrono::microseconds>(
+      std::chrono::high_resolution_clock::now() - callback_start_time);
+    m_time_file << (double)time_for_one_callback.count() / 1000.0 << std::endl;
+    m_summed_time_for_callbacks += time_for_one_callback;
+    m_number_of_callbacks++;
+
+    ROS_DEBUG_STREAM("Processing time needed for one callback: " << time_for_one_callback.count() << " microseconds.");
+    ROS_DEBUG_STREAM("Mean processing time for a callback: " 
+    << m_summed_time_for_callbacks.count() / m_number_of_callbacks
+    << " microseconds.");
+  }
+}
+
 void MultiHypothesisTrackingBase::publish(const ros::Time& stamp)
 {
   m_visualizations_publisher.publishAll(getHypotheses(), stamp);
@@ -150,6 +167,9 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
   m_multi_hypothesis_tracker.correctHypothesesStates(detections);
 
   filterWeakHypotheses();
+
+  if(!detections.detections.empty())
+    m_got_first_detections = true;
 }
 
 void MultiHypothesisTrackingBase::filterWeakHypotheses()

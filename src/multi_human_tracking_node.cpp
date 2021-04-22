@@ -36,21 +36,7 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& msg)
 
   processDetections(detections);
 
-  if(!m_got_first_detections && !msg->persons.empty())
-    m_got_first_detections = true;
-
-  if(m_measure_time && m_got_first_detections)
-  {
-    std::chrono::microseconds time_for_one_callback = std::chrono::duration_cast<std::chrono::microseconds>(
-      std::chrono::high_resolution_clock::now() - callback_start_time);
-    ROS_DEBUG_STREAM("Time for tracking for one cloud: " << time_for_one_callback.count() << " microseconds.");
-    m_time_file << (double)time_for_one_callback.count() / 1000.0 << std::endl;
-    m_summed_time_for_callbacks += time_for_one_callback;
-    m_number_of_callbacks++;
-    ROS_DEBUG_STREAM(
-      "Mean time for tracking for one cloud: " << m_summed_time_for_callbacks.count() / m_number_of_callbacks
-                                               << " microseconds.");
-  }
+  updateProcessingTimeMeasurements(callback_start_time);
 
   publish(msg->header.stamp);
 }

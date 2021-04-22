@@ -39,6 +39,7 @@ public:
 
   void getRosParameters();
   void prepareMeasuringProcessingTime();
+  void updateProcessingTimeMeasurements(std::chrono::high_resolution_clock::time_point callback_start_time);
 
   /**
    * @brief Publishes the hypotheses in several versions.
