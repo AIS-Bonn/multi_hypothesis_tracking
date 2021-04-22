@@ -145,11 +145,9 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
 
   double duration_since_previous_prediction = detections.time_stamp - m_last_prediction_time;
   m_multi_hypothesis_tracker.predictNextHypothesesStates(duration_since_previous_prediction);
-
   m_last_prediction_time = detections.time_stamp;
 
-  // Correction step of kalman filter for all hypotheses
-  m_multi_hypothesis_tracker.correct(detections);
+  m_multi_hypothesis_tracker.correctHypothesesStates(detections);
 
   // Filter out weak hypotheses
   m_multi_hypothesis_tracker.deleteSpuriousHypotheses(m_max_covariance);

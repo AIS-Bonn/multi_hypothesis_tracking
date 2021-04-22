@@ -38,12 +38,8 @@ public:
   /** @brief Calls predictNextHypothesesStates for each hypothesis. */
   virtual void predictNextHypothesesStates(double duration_since_previous_prediction);
 
-  /**
-   * @brief Uses Hungarian method to assign detections to hypotheses and corrects the latter.
-   *
-   * @param[in] detections    detections
-   */
-  void correct(const Detections& detections);
+  /** @brief Uses Hungarian method to assign detections to hypotheses and corrects the latter. */
+  void correctHypothesesStates(const Detections& detections);
 
   /**
    * @brief Deletes hypotheses that are spurious
