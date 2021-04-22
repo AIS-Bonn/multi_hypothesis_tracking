@@ -134,13 +134,13 @@ void MultiHypothesisTrackingBase::transformDetections(Detections& detections,
 
 void MultiHypothesisTrackingBase::processDetections(const Detections& detections)
 {
-  double time_since_last_detections = detections.time_stamp - m_last_prediction_time;
-  if(time_since_last_detections <= 0.0)
+  double duration_since_previous_prediction = detections.time_stamp - m_last_prediction_time;
+  if(duration_since_previous_prediction <= 0.0)
     return;
 
   // Prediction step of kalman filter for all hypotheses
   if(m_last_prediction_time > 0.0)
-    m_multi_hypothesis_tracker.predict(time_since_last_detections);
+    m_multi_hypothesis_tracker.predict(duration_since_previous_prediction);
 
   m_last_prediction_time = detections.time_stamp;
 
