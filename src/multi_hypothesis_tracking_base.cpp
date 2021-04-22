@@ -74,20 +74,7 @@ bool MultiHypothesisTrackingBase::transformToFrame(std::vector<Detection>& detec
                    transform))
     return false;
 
-  for(auto& detection : detections)
-  {
-    Eigen::Affine3d transform_eigen;
-    tf::transformTFToEigen(transform, transform_eigen);
-    Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
-
-    detection.position = transform_eigenf * detection.position;
-
-    for(auto& point : detection.points)
-      point = transform_eigenf * point;
-
-    detection.frame_id = target_frame;
-  }
-
+  transformDetections(detections, transform, target_frame);
   return true;
 }
 
@@ -120,8 +107,27 @@ bool MultiHypothesisTrackingBase::getTransform(const std::string& source_frame,
     return false;
   }
   return true;
-}                                                   
-                                                   
+}
+
+void MultiHypothesisTrackingBase::transformDetections(std::vector<Detection>& detections,
+                                                      const tf::StampedTransform& transform,
+                                                      const std::string& target_frame)
+{
+  Eigen::Affine3d transform_eigen;
+  tf::transformTFToEigen(transform, transform_eigen);
+  Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
+  
+  for(auto& detection : detections)
+  {
+    detection.position = transform_eigenf * detection.position;
+
+    for(auto& point : detection.points)
+      point = transform_eigenf * point;
+
+    detection.frame_id = target_frame;
+  }
+}
+
 void MultiHypothesisTrackingBase::processDetections(const std::vector<Detection>& detections)
 {
   if(detections.empty())

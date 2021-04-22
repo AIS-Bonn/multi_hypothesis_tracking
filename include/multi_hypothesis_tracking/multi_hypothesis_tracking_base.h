@@ -64,7 +64,12 @@ public:
                     const std::string& target_frame,
                     const ros::Time& time_stamp,
                     tf::StampedTransform& transform);
-  
+
+  /** @brief Transform the detections using the given transform and replace their frame_id with the target_frame. */
+  void transformDetections(std::vector<Detection>& detections,
+                           const tf::StampedTransform& transform,
+                           const std::string& target_frame);
+                                                        
   /**
    * @brief Performs one prediction and correction step for every hypothesis.
    *
