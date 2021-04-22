@@ -149,7 +149,11 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
 
   m_multi_hypothesis_tracker.correctHypothesesStates(detections);
 
-  // Filter out weak hypotheses
+  filterWeakHypotheses();
+}
+
+void MultiHypothesisTrackingBase::filterWeakHypotheses()
+{
   m_multi_hypothesis_tracker.deleteSpuriousHypotheses(m_max_covariance);
   m_multi_hypothesis_tracker.mergeCloseHypotheses(m_merge_distance);
 }
