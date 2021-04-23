@@ -5,21 +5,21 @@
  * @author Jan Razlaw
  */
 
-#include <multi_hypothesis_tracking/multi_human_tracking_node.h>
+#include <multi_hypothesis_tracking/multi_hypothesis_tracking_node_for_humans.h>
 
 namespace MultiHypothesisTracker
 {
 
-MultiHumanTrackingNode::MultiHumanTrackingNode()
+MultiHypothesisTrackingNodeForHumans::MultiHypothesisTrackingNodeForHumans()
 {
   ros::NodeHandle private_node_handle("~");
   m_human_detection_subscriber = private_node_handle.subscribe<HumanMsg>(m_input_topic,
                                                                          1,
-                                                                         &MultiHumanTrackingNode::detectionCallback,
+                                                                         &MultiHypothesisTrackingNodeForHumans::detectionCallback,
                                                                          this);
 }
 
-void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& detections_message)
+void MultiHypothesisTrackingNodeForHumans::detectionCallback(const HumanMsg::ConstPtr& detections_message)
 {
   ROS_DEBUG_STREAM("MultiHumanTrackingNode::detectionCallback.");
 
@@ -37,8 +37,8 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& detecti
   publishVisualizations(detections);
 }
 
-void MultiHumanTrackingNode::convert(const HumanMsg::ConstPtr& detections_message,
-                                     Detections& detections)
+void MultiHypothesisTrackingNodeForHumans::convert(const HumanMsg::ConstPtr& detections_message,
+                                                   Detections& detections)
 {
   detections.frame_id = detections_message->header.frame_id;
   detections.time_stamp = detections_message->header.stamp.toSec();
@@ -90,7 +90,7 @@ int main(int argc,
   if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info))
     ros::console::notifyLoggerLevelsChanged();
 
-  MultiHypothesisTracker::MultiHumanTrackingNode tracker;
+  MultiHypothesisTracker::MultiHypothesisTrackingNodeForHumans tracker;
 
   ros::spin();
 

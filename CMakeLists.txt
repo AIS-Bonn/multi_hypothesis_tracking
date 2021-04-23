@@ -94,14 +94,14 @@ add_dependencies(${PROJECT_NAME}_node
 )
 
 # Ros node as interface between incoming human_msgs and tracker
-add_executable(multi_human_tracking_node
-  src/multi_human_tracking_node.cpp
+add_executable(${PROJECT_NAME}_node_for_humans
+  src/multi_hypothesis_tracking_node_for_humans.cpp
 )
-target_link_libraries(multi_human_tracking_node
+target_link_libraries(${PROJECT_NAME}_node_for_humans
   ${PROJECT_NAME}_base
   ${catkin_LIBRARIES}
 )
-add_dependencies(multi_human_tracking_node
+add_dependencies(${PROJECT_NAME}_node_for_humans
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )

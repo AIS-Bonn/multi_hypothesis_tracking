@@ -22,11 +22,11 @@ namespace MultiHypothesisTracker
 
 typedef person_msgs::PersonCovList HumanMsg;
 
-class MultiHumanTrackingNode : public MultiHypothesisTrackingBase
+class MultiHypothesisTrackingNodeForHumans : public MultiHypothesisTrackingBase
 {
 public:
-  MultiHumanTrackingNode();
-  ~MultiHumanTrackingNode(){};
+  MultiHypothesisTrackingNodeForHumans();
+  ~MultiHypothesisTrackingNodeForHumans(){};
 
   /**
    * @brief Callback function for HumanMsg messages.
