@@ -1,6 +1,8 @@
 /** @file
  *
- * Multi hypothesis tracking node receiving detection messages and providing those to the multi hypothesis tracker.
+ * Multi hypothesis tracking base node. 
+ * Provides basic functionality using the multi hypothesis tracker.
+ * Inheriting nodes have to receive detection messages and prove those to the processDetections method.
  *
  * @author Jan Razlaw
  */
@@ -26,24 +28,17 @@
 namespace MultiHypothesisTracker
 {
 
-/**
- * @brief Ros node to track multiple hypotheses simultaneously.
- */
 class MultiHypothesisTrackingBase
 {
 public:
-  /** @brief Constructor. */
   MultiHypothesisTrackingBase();
-  /** @brief Destructor. */
   ~MultiHypothesisTrackingBase(){ m_time_file.close(); };
 
   void getRosParameters();
   void prepareMeasuringProcessingTime();
   void updateProcessingTimeMeasurements(std::chrono::high_resolution_clock::time_point callback_start_time);
 
-  /**
-   * @brief Publishes the hypotheses in several versions.
-   */
+  /** @brief Publishes the hypotheses in several versions. */
   void publish(const ros::Time& stamp);
 
   /**
@@ -67,7 +62,7 @@ public:
                     const double time_stamp,
                     tf::StampedTransform& transform);
 
-  /** @brief Transform the detections using the given transform and replace their frame_id with the target_frame. */
+  /** @brief Transforms the detections using the given transform and replaces their frame_id with the target_frame. */
   void transformDetections(Detections& detections,
                            const tf::StampedTransform& transform,
                            const std::string& target_frame);
@@ -79,7 +74,7 @@ public:
    * Passes detections to multi hypothesis tracker for correction step.
    * Filters out weak hypotheses.
    *
-   * @param detections    current detections.
+   * @param[in] detections    current detections.
    */
   void processDetections(const Detections& detections);
 
@@ -88,7 +83,7 @@ public:
 
 public:
   // Member variables
-  /** @brief The functionality. */
+  /** @brief The tracking functionality. */
   MultiHypothesisTracker m_multi_hypothesis_tracker;
   /** @brief Publishes results. */
   VisualizationsPublisher m_visualizations_publisher;

@@ -1,6 +1,8 @@
 /** @file
  *
- * Multi hypothesis tracking node receiving detection messages and providing those to the multi hypothesis tracker.
+ * Multi hypothesis tracking base node. 
+ * Provides basic functionality using the multi hypothesis tracker.
+ * Inheriting nodes have to receive detection messages and prove those to the processDetections method.
  *
  * @author Jan Razlaw
  */
@@ -173,7 +175,3 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
 }
 
 }
-
-
-
-
