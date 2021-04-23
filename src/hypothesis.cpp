@@ -243,11 +243,6 @@ void Hypothesis::verifyStatic()
   }
 }
 
-float Hypothesis::computeLikelihood(const Detection& detection)
-{
-  return m_kalman->computeLikelihood(detection.position);
-}
-
 
 std::shared_ptr<Hypothesis> HypothesisFactory::createHypothesis(const Detection& detection,
                                                                 const unsigned int id,

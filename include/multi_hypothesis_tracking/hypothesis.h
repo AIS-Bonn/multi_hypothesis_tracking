@@ -97,14 +97,6 @@ public:
    */
   bool isSpurious(float max_covariance = 5.f);
 
-  /**
-   * @brief Computes the likelihood of the detection given the state.
-   *
-   * @param[in] detection   detection.
-   * @return likelihood.
-   */
-  float computeLikelihood(const Detection& detection);
-
   /** @brief Getter for hypothesis ID. */
   inline unsigned int getID(){ return m_id; }
 

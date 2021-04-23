@@ -81,16 +81,6 @@ public:
    */
   void setCovariancePerSecond(double covariance_per_second){ m_covariance_per_second = covariance_per_second; };
 
-  /**
-   * @brief Compute log likelihood of detection position given the state.
-   *
-   * See "Likelihood Function" in https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python/blob/master/08-Designing-Kalman-Filters.ipynb
-   *
-   * @param[in] detection_position      position of the current detection.
-   * @return likelihood.
-   */
-  float computeLikelihood(const Eigen::VectorXf& detection_position);
-
 protected:
 
   /**

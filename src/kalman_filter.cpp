@@ -127,18 +127,4 @@ bool KalmanFilter::isAlmostSymmetric(const Eigen::MatrixXf& matrix,
   return true;
 }
 
-float KalmanFilter::computeLikelihood(const Eigen::VectorXf& detection_position)
-{
-  Eigen::VectorXf y = detection_position - m_observation_model * m_state;
-  Eigen::MatrixXf S =
-    m_observation_model * m_error_covariance * m_observation_model.transpose() + m_observation_noise_covariance;
-
-  float exponential_input = -0.5f * (y.transpose() * S.inverse() * y).value();
-  double likelihood = exp(exponential_input) / sqrt(pow(2.0 * M_PI, y.size()) * S.determinant());
-  double log_likelihood = log(likelihood);
-  if(!std::isfinite(log_likelihood))
-    log_likelihood = -100.0; // visible in plot but doesn't destroy it.
-  return static_cast<float>(log_likelihood);
-}
-
 };

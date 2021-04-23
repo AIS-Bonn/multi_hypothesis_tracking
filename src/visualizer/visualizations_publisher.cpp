@@ -37,8 +37,6 @@ void VisualizationsPublisher::initializePublishers(ros::NodeHandle& node_handle)
   m_hypotheses_full_publisher = node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
   m_hypotheses_box_evaluation_publisher = node_handle.advertise<HypothesesEvaluationBoxesMsg>(
     "hypotheses_boxes_evaluation", 1, true);
-
-  m_likelihood_publisher = node_handle.advertise<std_msgs::Float32>("likelihood", 1);
 }
 
 void VisualizationsPublisher::getRosParameters(ros::NodeHandle& node_handle)
