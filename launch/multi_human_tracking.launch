@@ -9,7 +9,7 @@
     <arg name="distance_threshold_for_hypotheses_merge" default="0.3"/>
     <arg name="maximally_allowed_hypothesis_covariance" default="5.0"/>
     <arg name="max_correspondence_distance" default="6.6"/>
-    <arg name="kalman_covariance_per_second" default="0.5"/>
+    <arg name="kalman_noise_covariance_increase_per_second" default="0.5"/>
     <arg name="world_frame_id" default="world"/>
 
     <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
@@ -28,7 +28,7 @@
         <param name="distance_threshold_for_hypotheses_merge" value="$(arg distance_threshold_for_hypotheses_merge)"/>
         <param name="maximally_allowed_hypothesis_covariance" value="$(arg maximally_allowed_hypothesis_covariance)"/>
         <param name="max_correspondence_distance" value="$(arg max_correspondence_distance)"/>
-        <param name="kalman_covariance_per_second" value="$(arg kalman_covariance_per_second)"/>
+        <param name="kalman_noise_covariance_increase_per_second" value="$(arg kalman_noise_covariance_increase_per_second)"/>
         <param name="world_frame_id" value="$(arg world_frame_id)"/>
 
         <param name="hypothesis_age_threshold_in_seconds" value="$(arg hypothesis_age_threshold_in_seconds)"/>
