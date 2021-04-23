@@ -5,7 +5,7 @@
  * @author Jan Razlaw
  */
 
-#include <multi_hypothesis_tracking/multi_hypothesis_tracking_node_for_pose_arrays.h>
+#include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_node_for_pose_arrays.h>
 
 namespace MultiHypothesisTracker
 {

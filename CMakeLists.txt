@@ -68,7 +68,7 @@ add_dependencies(visualizations_publisher
 
 # Library for Multi Hypothesis Tracking Base class - nodes inherit and implement callback methods
 add_library(${PROJECT_NAME}_base
-  src/${PROJECT_NAME}_base.cpp
+  src/nodes/${PROJECT_NAME}_base.cpp
 )
 target_link_libraries(${PROJECT_NAME}_base
   multi_hypothesis_tracker
@@ -82,7 +82,7 @@ add_dependencies(${PROJECT_NAME}_base
 
 # Ros node as interface between incoming object detection messages and tracker
 add_executable(${PROJECT_NAME}_node
-  src/${PROJECT_NAME}_node.cpp
+  src/nodes/${PROJECT_NAME}_node.cpp
 )
 target_link_libraries(${PROJECT_NAME}_node
   ${PROJECT_NAME}_base
@@ -95,7 +95,7 @@ add_dependencies(${PROJECT_NAME}_node
 
 # Ros node as interface between incoming pose array messages and tracker
 add_executable(${PROJECT_NAME}_node_for_pose_arrays
-  src/${PROJECT_NAME}_node_for_pose_arrays.cpp
+  src/nodes/${PROJECT_NAME}_node_for_pose_arrays.cpp
 )
 target_link_libraries(${PROJECT_NAME}_node_for_pose_arrays
   ${PROJECT_NAME}_base
@@ -108,7 +108,7 @@ add_dependencies(${PROJECT_NAME}_node_for_pose_arrays
 
 # Ros node as interface between incoming human_msgs and tracker
 add_executable(${PROJECT_NAME}_node_for_humans
-  src/multi_hypothesis_tracking_node_for_humans.cpp
+  src/nodes/multi_hypothesis_tracking_node_for_humans.cpp
 )
 target_link_libraries(${PROJECT_NAME}_node_for_humans
   ${PROJECT_NAME}_base

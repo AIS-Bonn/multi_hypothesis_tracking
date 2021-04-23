@@ -7,7 +7,7 @@
  * @author Jan Razlaw
  */
 
-#include <multi_hypothesis_tracking/multi_hypothesis_tracking_base.h>
+#include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_base.h>
 
 namespace MultiHypothesisTracker
 {
