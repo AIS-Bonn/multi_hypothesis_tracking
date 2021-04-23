@@ -33,9 +33,9 @@ void MultiHypothesisTrackingBase::getRosParameters()
   
   private_node_handle.param<bool>("measure_processing_time", m_measure_processing_time, false);
 
-  bool use_bhattacharyya_distance;
-  private_node_handle.param<bool>("use_bhattacharyya_distance", use_bhattacharyya_distance, true);
-  m_multi_hypothesis_tracker.setUseBhattacharyyaDistance(use_bhattacharyya_distance);
+  bool use_bhattacharyya_instead_of_euclidean_distance;
+  private_node_handle.param<bool>("use_bhattacharyya_instead_of_euclidean_distance", use_bhattacharyya_instead_of_euclidean_distance, true);
+  m_multi_hypothesis_tracker.setUseBhattacharyyaDistance(use_bhattacharyya_instead_of_euclidean_distance);
 
   double max_correspondence_distance;
   private_node_handle.param<double>("max_correspondence_distance", max_correspondence_distance, 3.75);
