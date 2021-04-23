@@ -26,7 +26,7 @@ void MultiHypothesisTrackingBase::getRosParameters()
   ros::NodeHandle private_node_handle("~");
 
   private_node_handle.param<std::string>("input_topic", m_input_topic, "/object_poses");
-  private_node_handle.param<std::string>("world_frame_id", m_world_frame, "world");
+  private_node_handle.param<std::string>("world_frame_id", m_world_frame_id, "world");
 
   private_node_handle.param<double>("merge_close_hypotheses_distance", m_merge_distance, 0.1);
   private_node_handle.param<float>("max_covariance", m_max_covariance, 5.f);

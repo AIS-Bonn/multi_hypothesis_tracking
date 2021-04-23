@@ -101,7 +101,7 @@ public:
 
   //Params
   /** @brief Fixed frame the detections and tracks are in. */
-  std::string m_world_frame;
+  std::string m_world_frame_id;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
   double m_merge_distance;
   /** @brief Hypotheses are deleted if their covariance is above this parameter. */

@@ -36,7 +36,7 @@ void MultiHypothesisTrackingNode::detectionPosesCallback(const geometry_msgs::Po
   Detections detections;
   convert(msg, detections);
 
-  if(!transformToFrame(detections, m_world_frame))
+  if(!transformToFrame(detections, m_world_frame_id))
     return;
 
   m_visualizations_publisher.publishDetectionsPositions(detections);
@@ -57,7 +57,7 @@ void MultiHypothesisTrackingNode::detectionCallback(const multi_hypothesis_track
   Detections detections;
   convert(msg, detections);
 
-  if(!transformToFrame(detections, m_world_frame))
+  if(!transformToFrame(detections, m_world_frame_id))
     return;
 
   m_visualizations_publisher.publishDetectionsPositions(detections);

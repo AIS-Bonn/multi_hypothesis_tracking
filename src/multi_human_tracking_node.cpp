@@ -28,7 +28,7 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& msg)
   Detections detections;
   convert(msg, detections);
 
-  if(!transformToFrame(detections, m_world_frame))
+  if(!transformToFrame(detections, m_world_frame_id))
     return;
 
   m_visualizations_publisher.publishDetectionsPositions(detections);
