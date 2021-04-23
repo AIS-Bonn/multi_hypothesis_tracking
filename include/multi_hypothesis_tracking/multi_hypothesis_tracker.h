@@ -71,7 +71,7 @@ public:
   inline void setMaxCorrespondenceDistance(double distance){ m_max_distance = (int)m_dist_scale * distance; }
 
   /** @brief Setter for covariance increase per second. */
-  inline void setKalmanCovariancePerSecond(double covariance_per_second)
+  inline void setKalmanCovariancePerSecond(float covariance_per_second)
   {
     m_hypothesis_factory->setKalmanCovariancePerSecond(covariance_per_second);
   }

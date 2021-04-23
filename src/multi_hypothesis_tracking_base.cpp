@@ -43,8 +43,8 @@ void MultiHypothesisTrackingBase::getRosParameters()
   private_node_handle.param<double>("max_correspondence_distance", max_correspondence_distance, 3.75);
   m_multi_hypothesis_tracker.setMaxCorrespondenceDistance(max_correspondence_distance);
 
-  double kalman_noise_covariance_increase_per_second;
-  private_node_handle.param<double>("kalman_noise_covariance_increase_per_second", kalman_noise_covariance_increase_per_second, 0.5);
+  float kalman_noise_covariance_increase_per_second;
+  private_node_handle.param<float>("kalman_noise_covariance_increase_per_second", kalman_noise_covariance_increase_per_second, 0.5f);
   m_multi_hypothesis_tracker.setKalmanCovariancePerSecond(kalman_noise_covariance_increase_per_second);
 }
 

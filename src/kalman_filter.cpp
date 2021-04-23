@@ -13,7 +13,7 @@ namespace MultiHypothesisTracker
 KalmanFilter::KalmanFilter(const Eigen::VectorXf& state)
   : m_detection_dimensions(3)
     , m_control_dimensions(1)
-    , m_covariance_per_second(0.5)
+    , m_covariance_per_second(0.5f)
 {
   m_state_dimensions = state.size();
   m_state = state;

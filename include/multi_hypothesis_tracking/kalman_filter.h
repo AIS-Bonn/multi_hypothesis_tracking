@@ -79,7 +79,7 @@ public:
    * @brief Setter for #m_covariance_per_second.
    * @param[in] covariance_per_second   new value for #m_covariance_per_second.
    */
-  void setCovariancePerSecond(double covariance_per_second){ m_covariance_per_second = covariance_per_second; };
+  void setCovariancePerSecond(float covariance_per_second){ m_covariance_per_second = covariance_per_second; };
 
 protected:
 
@@ -119,7 +119,7 @@ protected:
   size_t m_control_dimensions;
 
   /** @brief Covariance that is added to the #m_error_covariance per second of prediction without correction. */
-  double m_covariance_per_second;
+  float m_covariance_per_second;
 };
 
 };

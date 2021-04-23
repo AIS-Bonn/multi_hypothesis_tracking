@@ -13,7 +13,7 @@ namespace MultiHypothesisTracker
 Hypothesis::Hypothesis(const Detection& detection,
                        unsigned int id,
                        double time_stamp,
-                       double covariance_per_second)
+                       float covariance_per_second)
   : m_id(id)
     , m_born_time(time_stamp)
     , m_is_static(true)

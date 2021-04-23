@@ -36,7 +36,7 @@ public:
   Hypothesis(const Detection& detection,
              unsigned int id,
              double time_stamp,
-             double covariance_per_second = 0.5);
+             float covariance_per_second = 0.5f);
   /** @brief Destructor. */
   virtual ~Hypothesis() = default;
 
@@ -203,10 +203,10 @@ public:
 
   /** @brief Setter for distance threshold #m_max_bhattacharyya_distance. */
   inline void
-  setKalmanCovariancePerSecond(double covariance_per_second){ m_covariance_per_second = covariance_per_second; }
+  setKalmanCovariancePerSecond(float covariance_per_second){ m_covariance_per_second = covariance_per_second; }
 
   /** @brief Covariance per second for kalman filter.*/
-  double m_covariance_per_second = 0.5;
+  float m_covariance_per_second = 0.5f;
 
   /** @brief Creates hypothesis.
    *
