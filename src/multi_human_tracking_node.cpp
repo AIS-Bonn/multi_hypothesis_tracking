@@ -19,14 +19,14 @@ MultiHumanTrackingNode::MultiHumanTrackingNode()
                                                                          this);
 }
 
-void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& msg)
+void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& detections_message)
 {
   ROS_DEBUG_STREAM("MultiHumanTrackingNode::detectionCallback.");
 
   auto callback_start_time = std::chrono::high_resolution_clock::now();
 
   Detections detections;
-  convert(msg, detections);
+  convert(detections_message, detections);
 
   if(!transformToFrame(detections, m_world_frame_id))
     return;
@@ -38,17 +38,17 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& msg)
 
   updateProcessingTimeMeasurements(callback_start_time);
 
-  publish(msg->header.stamp);
+  publish(detections_message->header.stamp);
 }
 
-void MultiHumanTrackingNode::convert(const HumanMsg::ConstPtr& msg,
+void MultiHumanTrackingNode::convert(const HumanMsg::ConstPtr& detections_message,
                                      Detections& detections)
 {
-  detections.frame_id = msg->header.frame_id;
-  detections.time_stamp = msg->header.stamp.toSec();
+  detections.frame_id = detections_message->header.frame_id;
+  detections.time_stamp = detections_message->header.stamp.toSec();
 
   float score_threshold = 0.1f;
-  for(const auto& person_detection : msg->persons)
+  for(const auto& person_detection : detections_message->persons)
   {
     if((int)person_detection.keypoints.size() != 21)
       ROS_INFO_STREAM(

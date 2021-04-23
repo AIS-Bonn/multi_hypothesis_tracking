@@ -41,19 +41,19 @@ public:
    * @brief Callback function for HumanMsg messages.
    *
    * Converts messages to detections.
-   * Transforms detections to #m_world_frame and passes those to the tracking algorithm.
+   * Transforms detections to #m_world_frame_id and passes those to the tracking algorithm.
    *
-   * @param [in] msg    detections.
+   * @param [in] detections_message    detections message.
    */
-  void detectionCallback(const HumanMsg::ConstPtr& msg);
+  void detectionCallback(const HumanMsg::ConstPtr& detections_message);
 
   /**
    * @brief Converts the human detections into the internal format.
    *
-   * @param[in]     msg             message containing detections.
+   * @param[in]     detections_message             message containing detections.
    * @param[out]    detections      detections in tracker format.
    */
-  void convert(const HumanMsg::ConstPtr& msg,
+  void convert(const HumanMsg::ConstPtr& detections_message,
                Detections& detections);
 
 private:
