@@ -47,6 +47,13 @@ void VisualizationsPublisher::getRosParameters(ros::NodeHandle& node_handle)
   node_handle.param<double>("time_offset_for_predictions", m_time_offset_for_predictions, 0.0);
 }
 
+void VisualizationsPublisher::publishDetectionsVisualizations(const Detections& detections)
+{
+  publishDetectionsPositions(detections);
+  publishDetectionsCovariances(detections);
+  publishDetectionsPoints(detections);
+}
+
 void VisualizationsPublisher::publishHypothesesVisualizations(const Hypotheses& hypotheses,
                                                               const ros::Time& stamp)
 {

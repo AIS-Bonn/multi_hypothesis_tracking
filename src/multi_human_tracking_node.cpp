@@ -31,14 +31,10 @@ void MultiHumanTrackingNode::detectionCallback(const HumanMsg::ConstPtr& detecti
   if(!transformToFrame(detections, m_world_frame_id))
     return;
 
-  m_visualizations_publisher.publishDetectionsPositions(detections);
-  m_visualizations_publisher.publishDetectionsCovariances(detections);
-
   processDetections(detections);
-
+  
   updateProcessingTimeMeasurements(callback_start_time);
-
-  publish(detections_message->header.stamp);
+  publishVisualizations(detections);
 }
 
 void MultiHumanTrackingNode::convert(const HumanMsg::ConstPtr& detections_message,

@@ -63,7 +63,9 @@ public:
   void initializePublishers(ros::NodeHandle& node_handle);
   void getRosParameters(ros::NodeHandle& node_handle);
 
-  /** @brief Calls all publishers. */
+  /** @brief Calls all detections publishers. */
+  void publishDetectionsVisualizations(const Detections& detections);
+  /** @brief Calls all hypotheses publishers. */
   void publishHypothesesVisualizations(const Hypotheses& hypotheses,
                                        const ros::Time& stamp);
 

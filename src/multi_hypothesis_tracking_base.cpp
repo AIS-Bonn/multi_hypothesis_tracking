@@ -79,9 +79,11 @@ void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(std::chrono::
   }
 }
 
-void MultiHypothesisTrackingBase::publish(const ros::Time& stamp)
+void MultiHypothesisTrackingBase::publishVisualizations(const Detections& detections)
 {
-  m_visualizations_publisher.publishHypothesesVisualizations(getHypotheses(), stamp);
+  m_visualizations_publisher.publishDetectionsVisualizations(detections);
+  m_visualizations_publisher.publishHypothesesVisualizations(getHypotheses(), 
+                                                             ros::Time(detections.time_stamp));
 }
 
 bool MultiHypothesisTrackingBase::transformToFrame(Detections& detections,

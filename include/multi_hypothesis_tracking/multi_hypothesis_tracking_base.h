@@ -38,8 +38,8 @@ public:
   void prepareMeasuringProcessingTime();
   void updateProcessingTimeMeasurements(std::chrono::high_resolution_clock::time_point callback_start_time);
 
-  /** @brief Publishes the hypotheses in several versions. */
-  void publish(const ros::Time& stamp);
+  /** @brief Publishes the detections and hypotheses states - for visualization and further processing. */
+  void publishVisualizations(const Detections& detections);
 
   /**
    * @brief Transforms detections to the target_frame.
