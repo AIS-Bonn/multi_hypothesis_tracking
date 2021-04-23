@@ -31,8 +31,9 @@ void MultiHypothesisTrackingBase::getRosParameters()
   private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", distance_threshold_for_hypotheses_merge, 0.1);
   m_multi_hypothesis_tracker.setDistanceThresholdForHypothesesMerge(distance_threshold_for_hypotheses_merge);
 
-  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", m_maximally_allowed_hypothesis_covariance, 5.f);
-  
+  float maximally_allowed_hypothesis_covariance;
+  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance, 5.f);
+  m_multi_hypothesis_tracker.setMaxAllowedHypothesisCovariance(maximally_allowed_hypothesis_covariance);
   private_node_handle.param<bool>("measure_processing_time", m_measure_processing_time, false);
 
   bool use_bhattacharyya_instead_of_euclidean_distance;
@@ -171,7 +172,7 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
 
 void MultiHypothesisTrackingBase::filterWeakHypotheses()
 {
-  m_multi_hypothesis_tracker.deleteSpuriousHypotheses(m_maximally_allowed_hypothesis_covariance);
+  m_multi_hypothesis_tracker.deleteSpuriousHypotheses();
   m_multi_hypothesis_tracker.mergeCloseHypotheses();
 }
 

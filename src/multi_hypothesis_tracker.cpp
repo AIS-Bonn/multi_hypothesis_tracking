@@ -156,12 +156,12 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
   }
 }
 
-void MultiHypothesisTracker::deleteSpuriousHypotheses(float max_covariance)
+void MultiHypothesisTracker::deleteSpuriousHypotheses()
 {
   auto it = m_hypotheses.begin();
   while(it != m_hypotheses.end())
   {
-    if((*it)->isSpurious(max_covariance))
+    if((*it)->isSpurious(m_maximally_allowed_hypothesis_covariance))
     {
       it = m_hypotheses.erase(it);
       continue;

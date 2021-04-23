@@ -86,16 +86,8 @@ public:
   bool exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
                             float max_covariance);
 
-  /**
-   * @brief Checks if hypothesis is spurious.
-   *
-   * Checks if hypothesis' covariance is below max covariance.
-   *
-   * @param[in] max_covariance              maximally allowed covariance.
-   *
-   * @return true if hypothesis is spurious, false otherwise.
-   */
-  bool isSpurious(float max_covariance = 5.f);
+  /** @brief Currently calls exceedsMaxCovariance to check if hypothesis is spurious. */
+  bool isSpurious(float max_covariance);
 
   /** @brief Getter for hypothesis ID. */
   inline unsigned int getID(){ return m_id; }

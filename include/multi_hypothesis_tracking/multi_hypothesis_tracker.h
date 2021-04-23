@@ -44,11 +44,9 @@ public:
   /**
    * @brief Deletes hypotheses that are spurious
    *
-   * @param[in] max_covariance              maximally allowed covariance
-   *
    * @see isSpurious()
    */
-  void deleteSpuriousHypotheses(float max_covariance);
+  void deleteSpuriousHypotheses();
 
   /** @brief Deletes the younger hypothesis if the distance between two hypotheses is below 
    * #m_distance_threshold_for_hypotheses_merge. */
@@ -66,6 +64,9 @@ public:
   /** @brief Setter for #m_use_bhattacharyya_for_assignments. */
   inline void
   setUseBhattacharyyaDistance(bool use_bhattacharyya){ m_use_bhattacharyya_for_assignments = use_bhattacharyya; }
+
+  /** @brief Setter for covariance threshold #m_maximally_allowed_hypothesis_covariance. */
+  inline void setMaxAllowedHypothesisCovariance(float covariance){ m_maximally_allowed_hypothesis_covariance = covariance; }
 
   /** @brief Setter for distance threshold #m_max_distance. */
   inline void setMaxCorrespondenceDistance(double distance){ m_max_distance = (int)m_dist_scale * distance; }
@@ -126,6 +127,8 @@ protected:
   bool m_use_bhattacharyya_for_assignments;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
   double m_distance_threshold_for_hypotheses_merge;
+  /** @brief Hypothesis is deleted if one eigen value of its covariance matrix is greater than this parameter. */
+  float m_maximally_allowed_hypothesis_covariance;
   /** @brief Scale from double to int, because distance is in double but hungarian needs int costs.*/
   int m_dist_scale;
   /** @brief Scaled distance threshold for assignments.*/
