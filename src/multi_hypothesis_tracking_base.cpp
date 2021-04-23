@@ -174,11 +174,6 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
 
 }
 
-const std::vector<std::shared_ptr<Hypothesis>>& MultiHypothesisTrackingBase::getHypotheses()
-{
-  return m_multi_hypothesis_tracker.getHypotheses();
-}
-
 
 
 

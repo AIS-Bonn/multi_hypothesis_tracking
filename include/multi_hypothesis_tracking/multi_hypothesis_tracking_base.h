@@ -84,7 +84,7 @@ public:
   void processDetections(const Detections& detections);
 
   /** @brief Getter for hypotheses vector. */
-  const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
+  const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_multi_hypothesis_tracker.getHypotheses(); };
 
 public:
   // Member variables
