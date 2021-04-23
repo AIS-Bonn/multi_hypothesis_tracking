@@ -80,7 +80,7 @@ add_dependencies(${PROJECT_NAME}_base
   ${catkin_EXPORTED_TARGETS}
 )
 
-# Ros node as interface between incoming messages and tracker
+# Ros node as interface between incoming object detection messages and tracker
 add_executable(${PROJECT_NAME}_node
   src/${PROJECT_NAME}_node.cpp
 )
@@ -89,6 +89,19 @@ target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
 add_dependencies(${PROJECT_NAME}_node
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
+
+# Ros node as interface between incoming pose array messages and tracker
+add_executable(${PROJECT_NAME}_node_for_pose_arrays
+  src/${PROJECT_NAME}_node_for_pose_arrays.cpp
+)
+target_link_libraries(${PROJECT_NAME}_node_for_pose_arrays
+  ${PROJECT_NAME}_base
+  ${catkin_LIBRARIES}
+)
+add_dependencies(${PROJECT_NAME}_node_for_pose_arrays
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )

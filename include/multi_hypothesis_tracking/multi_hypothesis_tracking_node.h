@@ -5,10 +5,8 @@
  * @author Jan Razlaw
  */
 
-#ifndef __MULTI_OBJECT_TRACKING_NODE_H__
-#define __MULTI_OBJECT_TRACKING_NODE_H__
-
-#include <geometry_msgs/PoseArray.h>
+#ifndef MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_H
+#define MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_H
 
 #include <multi_hypothesis_tracking/definitions.h>
 #include <multi_hypothesis_tracking/multi_hypothesis_tracking_base.h>
@@ -25,58 +23,36 @@
 namespace MultiHypothesisTracker
 {
 
-/**
- * @brief Ros node to track multiple hypotheses simultaneously.
- */
+typedef multi_hypothesis_tracking_msgs::ObjectDetections DetectionsMsg;
+
 class MultiHypothesisTrackingNode : public MultiHypothesisTrackingBase
 {
 public:
-  /** @brief Constructor. */
   MultiHypothesisTrackingNode();
-  /** @brief Destructor. */
   ~MultiHypothesisTrackingNode(){};
-
-  /**
-   * @brief Callback function for PoseArray messages.
-   *
-   * Converts messages to detections.
-   * Transforms detections to #m_world_frame and passes those to the tracking algorithm.
-   *
-   * @param [in] msg    poses of the detections.
-   */
-  void detectionPosesCallback(const geometry_msgs::PoseArray::ConstPtr& msg);
 
   /**
    * @brief Callback function for ObjectDetection messages.
    *
    * Converts messages to detections.
-   * Transforms detections to #m_world_frame and passes those to the tracking algorithm.
+   * Transforms detections to #m_world_frame_id and passes those to the tracking algorithm.
    *
-   * @param [in] msg    detections.
+   * @param [in] detections_message    detections.
    */
-  void detectionCallback(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg);
-
-  /**
-   * @brief Converts the detection's poses from the laser into the internal format
-   *
-   * @param[in]     msg             poses of the detections.
-   * @param[out]    detections      detections in tracker format.
-   */
-  void convert(const geometry_msgs::PoseArray::ConstPtr& msg,
-               Detections& detections);
+  void detectionCallback(const DetectionsMsg::ConstPtr& detections_message);
 
   /**
    * @brief Converts the detections from the laser into the internal format
    *
-   * @param[in]     msg             detections.
-   * @param[out]    detections      detections in tracker format.
+   * @param[in]     detections_message     detections.
+   * @param[out]    detections             detections in tracker format.
    */
-  void convert(const multi_hypothesis_tracking_msgs::ObjectDetections::ConstPtr& msg,
+  void convert(const DetectionsMsg::ConstPtr& detections_message,
                Detections& detections);
 
 public:
-  /** @brief Subscribes to detections. */
-  ros::Subscriber m_laser_detection_subscriber;
+  /** @brief Subscribes to object detections. */
+  ros::Subscriber m_object_detection_subscriber;
 };
 
 }
