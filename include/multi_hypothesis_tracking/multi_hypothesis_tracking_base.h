@@ -104,8 +104,8 @@ public:
   std::string m_world_frame_id;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
   double m_distance_threshold_for_hypotheses_merge;
-  /** @brief Hypotheses are deleted if their covariance is above this parameter. */
-  float m_max_covariance;
+  /** @brief Hypothesis is deleted if one eigen value of its covariance matrix is greater than this parameter. */
+  float m_maximally_allowed_hypothesis_covariance;
   /** @brief If true, the likelihood of the detections given the hypotheses' states is computed. */
   bool m_compute_likelihood;
 
