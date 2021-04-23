@@ -17,7 +17,7 @@ MultiHypothesisTrackingBase::MultiHypothesisTrackingBase()
 {
   getRosParameters();
 
-  if(m_measure_time)
+  if(m_measure_processing_time)
     prepareMeasuringProcessingTime();
 }
 
@@ -31,7 +31,7 @@ void MultiHypothesisTrackingBase::getRosParameters()
   private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", m_distance_threshold_for_hypotheses_merge, 0.1);
   private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", m_maximally_allowed_hypothesis_covariance, 5.f);
   
-  private_node_handle.param<bool>("measure_time", m_measure_time, false);
+  private_node_handle.param<bool>("measure_processing_time", m_measure_processing_time, false);
 
   bool use_bhattacharyya_distance;
   private_node_handle.param<bool>("use_bhattacharyya_distance", use_bhattacharyya_distance, true);
@@ -60,7 +60,7 @@ void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()
 
 void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(std::chrono::high_resolution_clock::time_point callback_start_time)
 {
-  if(m_measure_time && m_processed_first_detections)
+  if(m_measure_processing_time && m_processed_first_detections)
   {
     auto time_for_one_callback = std::chrono::duration_cast<std::chrono::microseconds>(
       std::chrono::high_resolution_clock::now() - callback_start_time);

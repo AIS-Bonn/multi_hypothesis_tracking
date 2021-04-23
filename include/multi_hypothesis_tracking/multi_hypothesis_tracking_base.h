@@ -108,12 +108,12 @@ public:
   float m_maximally_allowed_hypothesis_covariance;
   /** @brief If true, the likelihood of the detections given the hypotheses' states is computed. */
   bool m_compute_likelihood;
+  /** @brief Processing time per callback is measured if true. */
+  bool m_measure_processing_time;
 
   /** @brief Time when the last prediction was performed. */
   double m_last_prediction_time;
 
-  std::string m_input_topic;
-  bool m_measure_time;
   std::chrono::microseconds m_summed_time_for_callbacks;
   int m_number_of_callbacks;
   std::ofstream m_time_file;

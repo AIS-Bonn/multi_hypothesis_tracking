@@ -16,7 +16,7 @@
 
     <arg name="compute_likelihood" default="false"/>
 
-    <arg name="measure_time" default="false"/>
+    <arg name="measure_processing_time" default="false"/>
 
     <node pkg="multi_hypothesis_tracking" type="multi_human_tracking_node" name="multi_human_tracking_node"
           output="screen">
@@ -34,7 +34,7 @@
 
         <param name="compute_likelihood" value="$(arg compute_likelihood)"/>
 
-        <param name="measure_time" value="$(arg measure_time)"/>
+        <param name="measure_processing_time" value="$(arg measure_processing_time)"/>
     </node>
 
 </launch>
