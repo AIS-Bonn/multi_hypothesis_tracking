@@ -166,16 +166,12 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
 
   m_multi_hypothesis_tracker.correctHypothesesStates(detections);
 
-  filterWeakHypotheses();
+  m_multi_hypothesis_tracker.filterWeakHypotheses();
 
   if(!detections.detections.empty())
     m_processed_first_detections = true;
 }
 
-void MultiHypothesisTrackingBase::filterWeakHypotheses()
-{
-  m_multi_hypothesis_tracker.deleteSpuriousHypotheses();
-  m_multi_hypothesis_tracker.mergeCloseHypotheses();
 }
 
 const std::vector<std::shared_ptr<Hypothesis>>& MultiHypothesisTrackingBase::getHypotheses()
@@ -183,7 +179,6 @@ const std::vector<std::shared_ptr<Hypothesis>>& MultiHypothesisTrackingBase::get
   return m_multi_hypothesis_tracker.getHypotheses();
 }
 
-}
 
 
 

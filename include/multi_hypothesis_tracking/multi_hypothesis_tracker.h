@@ -41,6 +41,9 @@ public:
   /** @brief Uses Hungarian method to assign detections to hypotheses and corrects the latter. */
   void correctHypothesesStates(const Detections& detections);
 
+  /** @brief Calls methods to check which hypotheses are weak and deletes those. */
+  void filterWeakHypotheses();
+
   /**
    * @brief Deletes hypotheses that are spurious
    *

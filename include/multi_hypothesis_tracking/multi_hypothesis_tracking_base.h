@@ -83,9 +83,6 @@ public:
    */
   void processDetections(const Detections& detections);
 
-  /** @brief Calls methods of tracker to delete weak hypotheses. */
-  void filterWeakHypotheses();
-
   /** @brief Getter for hypotheses vector. */
   const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
 
