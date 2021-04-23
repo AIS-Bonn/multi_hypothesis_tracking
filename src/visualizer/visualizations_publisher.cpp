@@ -47,8 +47,8 @@ void VisualizationsPublisher::getRosParameters(ros::NodeHandle& node_handle)
   node_handle.param<double>("time_offset_for_predictions", m_time_offset_for_predictions, 0.0);
 }
 
-void VisualizationsPublisher::publishAll(const Hypotheses& hypotheses,
-                                         const ros::Time& stamp)
+void VisualizationsPublisher::publishHypothesesVisualizations(const Hypotheses& hypotheses,
+                                                              const ros::Time& stamp)
 {
   if(hypotheses.empty())
     ROS_DEBUG_STREAM("Publishing empty hypotheses.");

@@ -64,8 +64,8 @@ public:
   void getRosParameters(ros::NodeHandle& node_handle);
 
   /** @brief Calls all publishers. */
-  void publishAll(const Hypotheses& hypotheses,
-                  const ros::Time& stamp);
+  void publishHypothesesVisualizations(const Hypotheses& hypotheses,
+                                       const ros::Time& stamp);
 
   /**
    * @brief Return a rather specific marker.
