@@ -129,9 +129,6 @@ public:
   void publishHypothesesBoxesEvaluation(const Hypotheses& hypotheses,
                                         const ros::Time& stamp);
 
-  /** @brief Publish the likelihood. */
-  void publishLikelihood(float likelihood);
-
 private:
   // Parameters
   /** @brief The ID of a fixed frame in the world. */

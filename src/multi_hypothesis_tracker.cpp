@@ -16,9 +16,6 @@ MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr<HypothesisFactory
     , m_use_bhattacharyya_for_assignments(true)
     , m_dist_scale(10000)
     , m_max_distance((int)(m_dist_scale * 20.0))
-    , m_compute_likelihood(false)
-    , m_likelihood_sum(0.f)
-    , m_assigned_hypotheses_counter(0)
 {
 }
 
@@ -114,9 +111,6 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
                                               const Detections& detections,
                                               std::vector<std::shared_ptr<Hypothesis>>& hypotheses)
 {
-  if(m_compute_likelihood)
-    resetAverageLikelihood();
-
   size_t hyp_size = hypotheses.size();
   size_t meas_size = detections.detections.size();
   size_t dim = hyp_size + meas_size;
@@ -130,9 +124,6 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
         // if hypothesis assigned to detection and distance below threshold -> correct hypothesis
         if(assignments[i][j] == HUNGARIAN_ASSIGNED && cost_matrix[i][j] < m_max_distance)
         {
-          if(m_compute_likelihood)
-            updateLikelihoodSum(m_hypotheses[i]->computeLikelihood(detections.detections[j]));
-
           m_hypotheses[i]->correct(detections.detections[j]);
         }
         else if(assignments[i][j] == HUNGARIAN_ASSIGNED)

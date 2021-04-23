@@ -109,8 +109,6 @@ public:
   double m_distance_threshold_for_hypotheses_merge;
   /** @brief Hypothesis is deleted if one eigen value of its covariance matrix is greater than this parameter. */
   float m_maximally_allowed_hypothesis_covariance;
-  /** @brief If true, the likelihood of the detections given the hypotheses' states is computed. */
-  bool m_compute_likelihood;
   /** @brief Processing time per callback is measured if true. */
   bool m_measure_processing_time;
   

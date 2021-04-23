@@ -15,7 +15,6 @@
     <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
     <arg name="time_offset_for_predictions" default="0.05"/>
 
-    <arg name="compute_likelihood" default="false"/>
     <arg name="subscribe_to_poses_only" default="false"/>
 
     <arg name="measure_processing_time" default="false"/>
@@ -35,7 +34,6 @@
         <param name="hypothesis_age_threshold_in_seconds" value="$(arg hypothesis_age_threshold_in_seconds)"/>
         <param name="time_offset_for_predictions" value="$(arg time_offset_for_predictions)"/>
 
-        <param name="compute_likelihood" value="$(arg compute_likelihood)"/>
         <param name="subscribe_to_poses_only" value="$(arg subscribe_to_poses_only)"/>
 
         <param name="measure_processing_time" value="$(arg measure_processing_time)"/>

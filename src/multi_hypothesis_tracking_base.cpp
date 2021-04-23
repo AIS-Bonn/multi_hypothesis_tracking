@@ -44,9 +44,6 @@ void MultiHypothesisTrackingBase::getRosParameters()
   double kalman_noise_covariance_increase_per_second;
   private_node_handle.param<double>("kalman_noise_covariance_increase_per_second", kalman_noise_covariance_increase_per_second, 0.5);
   m_multi_hypothesis_tracker.setKalmanCovariancePerSecond(kalman_noise_covariance_increase_per_second);
-
-  private_node_handle.param<bool>("compute_likelihood", m_compute_likelihood, false);
-  m_multi_hypothesis_tracker.setComputeLikelihood(m_compute_likelihood);
 }
 
 void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()
@@ -78,8 +75,6 @@ void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(std::chrono::
 void MultiHypothesisTrackingBase::publish(const ros::Time& stamp)
 {
   m_visualizations_publisher.publishAll(getHypotheses(), stamp);
-  if(m_compute_likelihood)
-    m_visualizations_publisher.publishLikelihood(m_multi_hypothesis_tracker.getAverageLikelihood());
 }
 
 bool MultiHypothesisTrackingBase::transformToFrame(Detections& detections,

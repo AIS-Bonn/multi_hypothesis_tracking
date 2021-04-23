@@ -534,11 +534,4 @@ void VisualizationsPublisher::publishHypothesesBoxesEvaluation(const Hypotheses&
   m_hypotheses_box_evaluation_publisher.publish(hypotheses_msg);
 }
 
-void VisualizationsPublisher::publishLikelihood(float likelihood)
-{
-  std_msgs::Float32 likelihood_msg;
-  likelihood_msg.data = likelihood;
-  m_likelihood_publisher.publish(likelihood_msg);
-}
-
 }

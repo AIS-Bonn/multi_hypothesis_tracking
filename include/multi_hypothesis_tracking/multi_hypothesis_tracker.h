@@ -78,12 +78,6 @@ public:
     m_hypothesis_factory->setKalmanCovariancePerSecond(covariance_per_second);
   }
 
-  /** @brief Setter for #m_compute_likelihood. */
-  inline void setComputeLikelihood(bool compute_likelihood){ m_compute_likelihood = compute_likelihood; }
-
-  /** @brief Getter for the average likelihood. */
-  float getAverageLikelihood(){ return m_likelihood_sum / m_assigned_hypotheses_counter; };
-
 protected:
   /**
    * @brief Set up cost matrix for hungarian method.
@@ -122,23 +116,6 @@ protected:
                         const Detections& detections,
                         std::vector<std::shared_ptr<Hypothesis>>& hypotheses);
 
-  /** @brief Sets members used to compute the average likelihood to zero. */
-  void resetAverageLikelihood()
-  {
-    m_likelihood_sum = 0.f;
-    m_assigned_hypotheses_counter = 0;
-  };
-
-  /**
-   * @brief Updates the #m_likelihood_sum and #m_assigned_hypotheses_counter.
-   * @param[in] likelihood  the likelihood of the current detection given its hypothesis' state.
-   */
-  void updateLikelihoodSum(float likelihood)
-  {
-    m_likelihood_sum += likelihood;
-    m_assigned_hypotheses_counter++;
-  };
-
   /** @brief Hypothesis factory.*/
   std::shared_ptr<HypothesisFactory> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses.*/
@@ -153,12 +130,6 @@ protected:
   int m_dist_scale;
   /** @brief Scaled distance threshold for assignments.*/
   int m_max_distance;
-  /** @brief If true, computes m_average_likelihood.*/
-  bool m_compute_likelihood;
-  /** @brief Sum of likelihoods of detections given the states.*/
-  float m_likelihood_sum;
-  /** @brief Number of hypotheses that were assigned to detections for the current time.*/
-  int m_assigned_hypotheses_counter;
 };
 
 };

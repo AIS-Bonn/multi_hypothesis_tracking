@@ -15,8 +15,6 @@
     <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
     <arg name="time_offset_for_predictions" default="0.05"/>
 
-    <arg name="compute_likelihood" default="false"/>
-
     <arg name="measure_processing_time" default="false"/>
 
     <node pkg="multi_hypothesis_tracking" type="multi_human_tracking_node" name="multi_human_tracking_node"
@@ -33,8 +31,6 @@
 
         <param name="hypothesis_age_threshold_in_seconds" value="$(arg hypothesis_age_threshold_in_seconds)"/>
         <param name="time_offset_for_predictions" value="$(arg time_offset_for_predictions)"/>
-
-        <param name="compute_likelihood" value="$(arg compute_likelihood)"/>
 
         <param name="measure_processing_time" value="$(arg measure_processing_time)"/>
     </node>
