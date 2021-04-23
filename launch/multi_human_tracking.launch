@@ -5,7 +5,7 @@
 
     <arg name="input_topic" default="/human_pose_estimation/persons3d_fused"/>
 
-    <arg name="merge_close_hypotheses_distance" default="0.3"/>
+    <arg name="distance_threshold_for_hypotheses_merge" default="0.3"/>
     <arg name="max_covariance" default="5.0"/>
     <arg name="max_correspondence_distance" default="6.6"/>
     <arg name="kalman_covariance_per_second" default="0.5"/>
@@ -23,7 +23,7 @@
 
         <param name="input_topic" value="$(arg input_topic)"/>
 
-        <param name="merge_close_hypotheses_distance" value="$(arg merge_close_hypotheses_distance)"/>
+        <param name="distance_threshold_for_hypotheses_merge" value="$(arg distance_threshold_for_hypotheses_merge)"/>
         <param name="max_covariance" value="$(arg max_covariance)"/>
         <param name="max_correspondence_distance" value="$(arg max_correspondence_distance)"/>
         <param name="kalman_covariance_per_second" value="$(arg kalman_covariance_per_second)"/>

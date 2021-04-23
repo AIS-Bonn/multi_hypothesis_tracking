@@ -103,7 +103,7 @@ public:
   /** @brief Fixed frame the detections and tracks are in. */
   std::string m_world_frame_id;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
-  double m_merge_distance;
+  double m_distance_threshold_for_hypotheses_merge;
   /** @brief Hypotheses are deleted if their covariance is above this parameter. */
   float m_max_covariance;
   /** @brief If true, the likelihood of the detections given the hypotheses' states is computed. */

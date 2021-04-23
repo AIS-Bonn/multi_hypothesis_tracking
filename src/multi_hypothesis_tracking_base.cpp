@@ -28,7 +28,7 @@ void MultiHypothesisTrackingBase::getRosParameters()
   private_node_handle.param<std::string>("input_topic", m_input_topic, "/object_poses");
   private_node_handle.param<std::string>("world_frame_id", m_world_frame_id, "world");
 
-  private_node_handle.param<double>("merge_close_hypotheses_distance", m_merge_distance, 0.1);
+  private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", m_distance_threshold_for_hypotheses_merge, 0.1);
   private_node_handle.param<float>("max_covariance", m_max_covariance, 5.f);
   
   private_node_handle.param<bool>("measure_time", m_measure_time, false);
@@ -175,7 +175,7 @@ void MultiHypothesisTrackingBase::processDetections(const Detections& detections
 void MultiHypothesisTrackingBase::filterWeakHypotheses()
 {
   m_multi_hypothesis_tracker.deleteSpuriousHypotheses(m_max_covariance);
-  m_multi_hypothesis_tracker.mergeCloseHypotheses(m_merge_distance);
+  m_multi_hypothesis_tracker.mergeCloseHypotheses(m_distance_threshold_for_hypotheses_merge);
 }
 
 const std::vector<std::shared_ptr<Hypothesis>>& MultiHypothesisTrackingBase::getHypotheses()
