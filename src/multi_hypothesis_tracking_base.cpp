@@ -27,15 +27,9 @@ void MultiHypothesisTrackingBase::getRosParameters()
 
   private_node_handle.param<std::string>("input_topic", m_input_topic, "/object_poses");
   private_node_handle.param<std::string>("world_frame_id", m_world_frame_id, "world");
-  double distance_threshold_for_hypotheses_merge;
-  private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", distance_threshold_for_hypotheses_merge, 0.1);
-  m_multi_hypothesis_tracker.setDistanceThresholdForHypothesesMerge(distance_threshold_for_hypotheses_merge);
-
-  float maximally_allowed_hypothesis_covariance;
-  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance, 5.f);
-  m_multi_hypothesis_tracker.setMaxAllowedHypothesisCovariance(maximally_allowed_hypothesis_covariance);
   private_node_handle.param<bool>("measure_processing_time", m_measure_processing_time, false);
 
+  // Parameters for m_multi_hypothesis_tracker
   bool use_bhattacharyya_instead_of_euclidean_distance;
   private_node_handle.param<bool>("use_bhattacharyya_instead_of_euclidean_distance", use_bhattacharyya_instead_of_euclidean_distance, true);
   m_multi_hypothesis_tracker.setUseBhattacharyyaDistance(use_bhattacharyya_instead_of_euclidean_distance);
@@ -44,9 +38,17 @@ void MultiHypothesisTrackingBase::getRosParameters()
   private_node_handle.param<double>("max_correspondence_distance", max_correspondence_distance, 3.75);
   m_multi_hypothesis_tracker.setMaxCorrespondenceDistance(max_correspondence_distance);
 
+  double distance_threshold_for_hypotheses_merge;
+  private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", distance_threshold_for_hypotheses_merge, 0.1);
+  m_multi_hypothesis_tracker.setDistanceThresholdForHypothesesMerge(distance_threshold_for_hypotheses_merge);
+
   float kalman_noise_covariance_increase_per_second;
   private_node_handle.param<float>("kalman_noise_covariance_increase_per_second", kalman_noise_covariance_increase_per_second, 0.5f);
   m_multi_hypothesis_tracker.setKalmanCovariancePerSecond(kalman_noise_covariance_increase_per_second);
+
+  float maximally_allowed_hypothesis_covariance;
+  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance, 5.f);
+  m_multi_hypothesis_tracker.setMaxAllowedHypothesisCovariance(maximally_allowed_hypothesis_covariance);
 }
 
 void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()

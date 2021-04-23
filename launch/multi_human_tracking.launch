@@ -2,37 +2,37 @@
 <!-- run multi_hypothesis_tracking/multi_human_tracking_node in a node -->
 
 <launch>
-
+    <!-- Node Parameters -->
     <arg name="input_topic" default="/human_pose_estimation/persons3d_fused"/>
-
-    <arg name="use_bhattacharyya_instead_of_euclidean_distance" default="false"/>
-    <arg name="distance_threshold_for_hypotheses_merge" default="0.3"/>
-    <arg name="maximally_allowed_hypothesis_covariance" default="5.0"/>
-    <arg name="max_correspondence_distance" default="6.6"/>
-    <arg name="kalman_noise_covariance_increase_per_second" default="0.5"/>
     <arg name="world_frame_id" default="world"/>
+    <arg name="measure_processing_time" default="false"/>
 
+    <!-- Multi Hypotheses Tracker Parameters -->
+    <arg name="use_bhattacharyya_instead_of_euclidean_distance" default="false"/>
+    <arg name="max_correspondence_distance" default="6.6"/>
+    <arg name="distance_threshold_for_hypotheses_merge" default="0.3"/>
+    <arg name="kalman_noise_covariance_increase_per_second" default="0.5"/>
+    <arg name="maximally_allowed_hypothesis_covariance" default="5.0"/>
+
+    <!-- Visualizer/Publisher Parameters -->
     <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
     <arg name="time_offset_for_predictions" default="0.05"/>
-
-    <arg name="measure_processing_time" default="false"/>
 
     <node pkg="multi_hypothesis_tracking" type="multi_human_tracking_node" name="multi_human_tracking_node"
           output="screen">
 
         <param name="input_topic" value="$(arg input_topic)"/>
+        <param name="world_frame_id" value="$(arg world_frame_id)"/>
+        <param name="measure_processing_time" value="$(arg measure_processing_time)"/>
 
         <param name="use_bhattacharyya_instead_of_euclidean_distance" value="$(arg use_bhattacharyya_instead_of_euclidean_distance)"/>
-        <param name="distance_threshold_for_hypotheses_merge" value="$(arg distance_threshold_for_hypotheses_merge)"/>
-        <param name="maximally_allowed_hypothesis_covariance" value="$(arg maximally_allowed_hypothesis_covariance)"/>
         <param name="max_correspondence_distance" value="$(arg max_correspondence_distance)"/>
+        <param name="distance_threshold_for_hypotheses_merge" value="$(arg distance_threshold_for_hypotheses_merge)"/>
         <param name="kalman_noise_covariance_increase_per_second" value="$(arg kalman_noise_covariance_increase_per_second)"/>
-        <param name="world_frame_id" value="$(arg world_frame_id)"/>
+        <param name="maximally_allowed_hypothesis_covariance" value="$(arg maximally_allowed_hypothesis_covariance)"/>
 
         <param name="hypothesis_age_threshold_in_seconds" value="$(arg hypothesis_age_threshold_in_seconds)"/>
         <param name="time_offset_for_predictions" value="$(arg time_offset_for_predictions)"/>
-
-        <param name="measure_processing_time" value="$(arg measure_processing_time)"/>
     </node>
 
 </launch>

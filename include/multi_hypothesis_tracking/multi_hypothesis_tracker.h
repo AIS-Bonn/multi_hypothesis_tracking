@@ -55,24 +55,20 @@ public:
   /** @brief Getter for #m_hypotheses. */
   inline std::vector<std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_hypotheses; }
 
-  /** @brief Setter for #m_distance_threshold_for_hypotheses_merge. */
-  inline void setDistanceThresholdForHypothesesMerge(double distance){ m_distance_threshold_for_hypotheses_merge = distance; }
-
   /** @brief Setter for #m_use_bhattacharyya_for_assignments. */
-  inline void
-  setUseBhattacharyyaDistance(bool use_bhattacharyya){ m_use_bhattacharyya_for_assignments = use_bhattacharyya; }
-
-  /** @brief Setter for covariance threshold #m_maximally_allowed_hypothesis_covariance. */
-  inline void setMaxAllowedHypothesisCovariance(float covariance){ m_maximally_allowed_hypothesis_covariance = covariance; }
+  inline void setUseBhattacharyyaDistance(bool use_bhattacharyya){ m_use_bhattacharyya_for_assignments = use_bhattacharyya; }
 
   /** @brief Setter for distance threshold #m_max_distance. */
   inline void setMaxCorrespondenceDistance(double distance){ m_max_distance = (int)m_dist_scale * distance; }
 
+  /** @brief Setter for #m_distance_threshold_for_hypotheses_merge. */
+  inline void setDistanceThresholdForHypothesesMerge(double distance){ m_distance_threshold_for_hypotheses_merge = distance; }
+
   /** @brief Setter for covariance increase per second. */
-  inline void setKalmanCovariancePerSecond(float covariance_per_second)
-  {
-    m_hypothesis_factory->setKalmanCovariancePerSecond(covariance_per_second);
-  }
+  inline void setKalmanCovariancePerSecond(float covariance_per_second){ m_hypothesis_factory->setKalmanCovariancePerSecond(covariance_per_second); }
+
+  /** @brief Setter for covariance threshold #m_maximally_allowed_hypothesis_covariance. */
+  inline void setMaxAllowedHypothesisCovariance(float covariance){ m_maximally_allowed_hypothesis_covariance = covariance; }
 
 protected:
   /**
@@ -112,24 +108,25 @@ protected:
                         const Detections& detections,
                         std::vector<std::shared_ptr<Hypothesis>>& hypotheses);
 
+  // Variables
   /** @brief Hypothesis factory.*/
   std::shared_ptr<HypothesisFactory> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses.*/
   std::vector<std::shared_ptr<Hypothesis>> m_hypotheses;
-
   /** @brief Counter for hypotheses IDs.*/
   unsigned int m_current_hypothesis_id;
-
+  /** @brief Scale from double to int, because distance is in double but hungarian needs int costs.*/
+  int m_dist_scale;
+  
+  // Parameters
   /** @brief If true, bhattacharyya distance is used for correspondences, else euclidean is used.*/
   bool m_use_bhattacharyya_for_assignments;
+  /** @brief Scaled distance threshold for assignments.*/
+  int m_max_distance;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
   double m_distance_threshold_for_hypotheses_merge;
   /** @brief Hypothesis is deleted if one eigen value of its covariance matrix is greater than this parameter. */
   float m_maximally_allowed_hypothesis_covariance;
-  /** @brief Scale from double to int, because distance is in double but hungarian needs int costs.*/
-  int m_dist_scale;
-  /** @brief Scaled distance threshold for assignments.*/
-  int m_max_distance;
 };
 
 };
