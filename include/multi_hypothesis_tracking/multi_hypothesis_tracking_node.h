@@ -8,10 +8,6 @@
 #ifndef __MULTI_OBJECT_TRACKING_NODE_H__
 #define __MULTI_OBJECT_TRACKING_NODE_H__
 
-#include <chrono>
-#include <fstream>
-#include <iostream>
-
 #include <geometry_msgs/PoseArray.h>
 
 #include <multi_hypothesis_tracking/definitions.h>
