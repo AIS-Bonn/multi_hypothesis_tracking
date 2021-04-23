@@ -90,16 +90,19 @@ public:
   const std::vector<std::shared_ptr<Hypothesis>>& getHypotheses();
 
 public:
+  // Member variables
   /** @brief The functionality. */
   MultiHypothesisTracker m_multi_hypothesis_tracker;
-  
   /** @brief Publishes results. */
   VisualizationsPublisher m_visualizations_publisher;
-
   /** @brief Provides transforms to the specified world frame. */
   std::shared_ptr<tf::TransformListener> m_transform_listener;
-
-  //Params
+  /** @brief Time when the last prediction was performed. */
+  double m_last_prediction_time;
+  
+  // Parameters retrievable from the ros parameter server
+  /** @brief The name of the topic providing detections as inputs. */
+  std::string m_input_topic;
   /** @brief Fixed frame the detections and tracks are in. */
   std::string m_world_frame_id;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
@@ -110,10 +113,8 @@ public:
   bool m_compute_likelihood;
   /** @brief Processing time per callback is measured if true. */
   bool m_measure_processing_time;
-
-  /** @brief Time when the last prediction was performed. */
-  double m_last_prediction_time;
-
+  
+  // Variables for processing time measuring
   std::chrono::microseconds m_summed_time_for_callbacks;
   int m_number_of_callbacks;
   std::ofstream m_time_file;
