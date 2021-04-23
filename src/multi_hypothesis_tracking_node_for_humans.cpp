@@ -85,7 +85,7 @@ void MultiHypothesisTrackingNodeForHumans::convert(const HumanMsg::ConstPtr& det
 int main(int argc,
          char** argv)
 {
-  ros::init(argc, argv, "multi_human_tracking");
+  ros::init(argc, argv, "multi_hypothesis_tracking_for_humans");
 
   if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info))
     ros::console::notifyLoggerLevelsChanged();
