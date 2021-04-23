@@ -170,11 +170,9 @@ void MultiHypothesisTracker::deleteSpuriousHypotheses(float max_covariance)
   }
 }
 
-//TODO: implement a reasonable merging function.
-void MultiHypothesisTracker::mergeCloseHypotheses(double distance_threshold)
+void MultiHypothesisTracker::mergeCloseHypotheses()
 {
   bool erased_it1 = false;
-  // implicitly deletes those hypothesis with latter born time
   auto it1 = m_hypotheses.begin();
   while(it1 != m_hypotheses.end())
   {
@@ -184,9 +182,8 @@ void MultiHypothesisTracker::mergeCloseHypotheses(double distance_threshold)
     {
       double distance = ((*it1)->getPosition() - (*it2)->getPosition()).norm();
 
-      if(distance < distance_threshold)
+      if(distance < m_distance_threshold_for_hypotheses_merge)
       {
-        // TODO: decide which hypothesis to delete
         if(!(*it1)->isStatic())
         {
           it2 = m_hypotheses.erase(it2);

@@ -105,8 +105,6 @@ public:
   std::string m_input_topic;
   /** @brief Fixed frame the detections and tracks are in. */
   std::string m_world_frame_id;
-  /** @brief Hypotheses are merged if their distance is below this parameter. */
-  double m_distance_threshold_for_hypotheses_merge;
   /** @brief Hypothesis is deleted if one eigen value of its covariance matrix is greater than this parameter. */
   float m_maximally_allowed_hypothesis_covariance;
   /** @brief Processing time per callback is measured if true. */

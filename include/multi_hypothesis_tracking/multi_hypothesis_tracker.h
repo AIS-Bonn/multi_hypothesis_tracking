@@ -50,20 +50,18 @@ public:
    */
   void deleteSpuriousHypotheses(float max_covariance);
 
-  /**
-   * @brief Deletes all hypotheses that are too close to others.
-   *
-   * //TODO: implement a reasonable merging function.
-   *
-   * @param[in] distance_threshold  two hypotheses with a distance below that threshold are merged
-   */
-  void mergeCloseHypotheses(double distance_threshold);
+  /** @brief Deletes the younger hypothesis if the distance between two hypotheses is below 
+   * #m_distance_threshold_for_hypotheses_merge. */
+  void mergeCloseHypotheses();
 
   /** @brief Deletes hypotheses that were marked for deletion. */
   void deleteMarkedHypotheses();
 
   /** @brief Getter for #m_hypotheses. */
   inline std::vector<std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_hypotheses; }
+
+  /** @brief Setter for #m_distance_threshold_for_hypotheses_merge. */
+  inline void setDistanceThresholdForHypothesesMerge(double distance){ m_distance_threshold_for_hypotheses_merge = distance; }
 
   /** @brief Setter for #m_use_bhattacharyya_for_assignments. */
   inline void
@@ -126,6 +124,8 @@ protected:
 
   /** @brief If true, bhattacharyya distance is used for correspondences, else euclidean is used.*/
   bool m_use_bhattacharyya_for_assignments;
+  /** @brief Hypotheses are merged if their distance is below this parameter. */
+  double m_distance_threshold_for_hypotheses_merge;
   /** @brief Scale from double to int, because distance is in double but hungarian needs int costs.*/
   int m_dist_scale;
   /** @brief Scaled distance threshold for assignments.*/
