@@ -22,15 +22,10 @@ namespace MultiHypothesisTracker
 
 typedef person_msgs::PersonCovList HumanMsg;
 
-/**
- * @brief Ros node to track multiple hypotheses simultaneously.
- */
 class MultiHumanTrackingNode : public MultiHypothesisTrackingBase
 {
 public:
-  /** @brief Constructor. */
   MultiHumanTrackingNode();
-  /** @brief Destructor. */
   ~MultiHumanTrackingNode(){};
 
   /**
