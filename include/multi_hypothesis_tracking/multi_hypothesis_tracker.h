@@ -52,9 +52,6 @@ public:
    * #m_distance_threshold_for_hypotheses_merge. */
   void mergeCloseHypotheses();
 
-  /** @brief Deletes hypotheses that were marked for deletion. */
-  void deleteMarkedHypotheses();
-
   /** @brief Getter for #m_hypotheses. */
   inline std::vector<std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_hypotheses; }
 
