@@ -123,7 +123,7 @@ void Hypothesis::correct(const Detection& detection)
   // update bounding box of assigned detection
   computeBoundingBox(detection.points, m_detections_bounding_box);
 
-  auto detection_box_center_position = (m_detections_bounding_box.max_corner + m_detections_bounding_box.min_corner) / 2.f;
+  auto detection_box_center_position = m_detections_bounding_box.getCenterPosition();
   auto detection_box_size = (m_detections_bounding_box.max_corner - m_detections_bounding_box.min_corner).eval();
   auto hypothesis_box_size = getHypothesisBoxSize();
   auto box_mean_size = (detection_box_size + hypothesis_box_size) / 2.f;
