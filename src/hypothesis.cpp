@@ -20,7 +20,6 @@ Hypothesis::Hypothesis(const Detection& detection,
     , m_static_distance_threshold(1.f)
     , m_cap_velocity(true)
     , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
-    , m_max_tracked_velocity(0.0)
     , m_number_of_assignments(0)
 {
   m_kalman_filter = std::make_shared<KalmanFilter>(detection.position);
