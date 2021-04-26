@@ -418,7 +418,7 @@ void VisualizationsPublisher::publishHypothesesBoundingBoxes(const Hypotheses& h
       hypotheses_boxes_marker.pose.orientation.z = 0.0;
       hypotheses_boxes_marker.pose.orientation.w = 1.0;
 
-      auto box_size = hypothesis->getHypothesisBoxSize();
+      auto box_size = hypothesis->getHypothesisBoundingBox().getSideLengths();
       hypotheses_boxes_marker.scale.x = std::max(static_cast<float>(box_size.x()), 0.1f);
       hypotheses_boxes_marker.scale.y = std::max(static_cast<float>(box_size.y()), 0.1f);
       hypotheses_boxes_marker.scale.z = std::max(static_cast<float>(box_size.z()), 0.1f);

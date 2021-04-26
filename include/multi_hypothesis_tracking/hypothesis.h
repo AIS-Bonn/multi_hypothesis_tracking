@@ -106,11 +106,6 @@ public:
   inline AxisAlignedBox& getDetectionsBoundingBox(){ return m_detections_bounding_box; }
   inline AxisAlignedBox& getHypothesisBoundingBox(){ return m_hypothesis_bounding_box; }
 
-  inline Eigen::Array3f getHypothesisBoxSize()
-  { 
-    return (m_hypothesis_bounding_box.max_corner - m_hypothesis_bounding_box.min_corner).eval(); 
-  }
-
   inline Eigen::Vector3f& getInitialPosition(){ return m_position_history[0]; }
   /** @brief Getter for #m_position_history. */
   inline std::vector<Eigen::Vector3f>& getPositionHistory(){ return m_position_history; }
