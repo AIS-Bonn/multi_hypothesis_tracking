@@ -153,6 +153,14 @@ Visualization Manager:
         mot_hypotheses_paths: true
       Queue Size: 100
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /multi_human_tracking_node/hypotheses_bounding_boxes
+      Name: HypothesesBoxes
+      Namespaces:
+        mot_hypotheses_bounding_boxes: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 235; 235; 235
@@ -196,7 +204,7 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5347963571548462
+      Pitch: 0.5397963523864746
       Target Frame: os_sensor
       Value: Orbit (rviz)
       Yaw: 4.688619613647461
