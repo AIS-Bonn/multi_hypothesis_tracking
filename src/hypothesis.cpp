@@ -23,13 +23,7 @@ Hypothesis::Hypothesis(const Detection& detection,
     , m_max_tracked_velocity(0.0)
     , m_number_of_assignments(0)
 {
-  int number_of_state_dimensions = (int)detection.position.size() * 2;   // position dimensions + velocity dimensions
-  Eigen::VectorXf initial_hypothesis_state(number_of_state_dimensions);
-  initial_hypothesis_state.setZero();
-  for(int i = 0; i < 3; i++)
-    initial_hypothesis_state(i) = detection.position(i);
-
-  m_kalman_filter = std::make_shared<KalmanFilter>(initial_hypothesis_state);
+  m_kalman_filter = std::make_shared<KalmanFilter>(detection.position);
   m_kalman_filter->setCovariancePerSecond(covariance_per_second);
 
   m_position_history.push_back(getPosition());
