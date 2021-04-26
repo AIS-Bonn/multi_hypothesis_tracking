@@ -118,6 +118,7 @@ public:
   
 protected:
   void updateHypothesisAfterPrediction();
+  void updateHypothesisAfterCorrection();
 
   /** @brief Check if hypothesis is still static. */
   void verifyStatic(Eigen::Array3f& min_corner_detection,

@@ -57,18 +57,8 @@ void Hypothesis::updateHypothesisAfterPrediction()
 
 void Hypothesis::correct(const Detection& detection)
 {
-  auto current_position = getPosition();
-
   m_kalman_filter->correct(detection.position, detection.covariance);
-
-  // if hypothesis' position was corrected, replace the latest predicted position by the corrected
-  m_position_history.back() = getPosition();
-  m_was_assigned_history.back() = true;
-  m_number_of_assignments++;
-
-  // update the positions of the points corresponding to that hypothesis
-  auto transform_predicted_to_corrected = (getPosition() - current_position).eval();
-  transformPoints(m_points, transform_predicted_to_corrected);
+  updateHypothesisAfterCorrection();
 
 
   // additional stuff and workarounds
@@ -132,6 +122,22 @@ void Hypothesis::correct(const Detection& detection)
 
 //	verifyStatic(m_detections_bounding_box);
   verifyStatic();
+}
+
+void Hypothesis::updateHypothesisAfterCorrection()
+{
+  auto predicted_position = m_position_history.back();
+  auto corrected_position = getPosition();
+
+  // update the positions of the points corresponding to this hypothesis
+  auto translation_from_predicted_to_corrected_position = (corrected_position - predicted_position).eval();
+  transformPoints(m_points, translation_from_predicted_to_corrected_position);
+  m_hypothesis_bounding_box.moveBox(translation_from_predicted_to_corrected_position.array());
+
+  // replace the latest predicted position by the corrected position
+  m_position_history.back() = corrected_position;
+  m_was_assigned_history.back() = true;
+  m_number_of_assignments++;
 }
 
 void Hypothesis::transformPoints(std::vector<Eigen::Vector3f>& points,
