@@ -144,8 +144,6 @@ protected:
   bool m_cap_velocity;
   /** @brief Bound for velocity. */
   double m_max_allowed_velocity;
-  /** @brief Maximal velocity this hypothesis had. */
-  double m_max_tracked_velocity;
 
   /** @brief Axis aligned bounding box of the detection that was assigned to this hypothesis. */
   AxisAlignedBox m_detections_bounding_box;

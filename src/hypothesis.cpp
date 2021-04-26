@@ -63,17 +63,10 @@ void Hypothesis::correct(const Detection& detection)
 
   // additional stuff and workarounds
 
-  Eigen::Vector3f current_velocity = getVelocity();
-
-  // keep track of maximal recorded velocity
-  double current_velocity_magnitude = current_velocity.norm();
-  if(current_velocity_magnitude > m_max_tracked_velocity)
-  {
-    m_max_tracked_velocity = current_velocity_magnitude;
-  }
-
   if(m_cap_velocity)
   {
+    Eigen::Vector3f current_velocity = getVelocity();
+    
     // high pass filter on velocity to prevent movements that are induced due to sensor noise or the high vertical resolution between the scan rings
     Eigen::Vector3f horizontal_velocity_vec = current_velocity;
     horizontal_velocity_vec.z() = 0.f;
