@@ -181,9 +181,7 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
     // TODO: make sure object is visible. If part of object is occluded the centroid moves -> object becomes mistakenly dynamic. see issues for more informations
 
     float min_overlap_of_initial_bounding_box = 0.95f;
-
-    double init_volume = (m_initial_bounding_box.max_corner - m_initial_bounding_box.min_corner).prod();
-
+    
     // expand detection bounding box a little to prevent wrong classification due to sensor noise
     Eigen::Array3f expanded_min_corner_detection = min_corner_detection - 0.03f;
     Eigen::Array3f expanded_max_corner_detection = max_corner_detection + 0.03f;
@@ -204,6 +202,7 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
     else
     {
       // if detection BB encloses init BB, update init BB as it's likely that object was occluded
+      float init_volume = m_initial_bounding_box.getVolume();
       if(intersection_volume / init_volume >= min_overlap_of_initial_bounding_box)
       {
         m_initial_bounding_box.min_corner = min_corner_detection.min(m_initial_bounding_box.min_corner);

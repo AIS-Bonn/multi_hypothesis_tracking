@@ -40,6 +40,7 @@ struct AxisAlignedBox
 
   Eigen::Array3f getCenterPosition(){ return (max_corner + min_corner) / 2.f; };
   Eigen::Array3f getSideLengths(){ return (max_corner - min_corner).eval(); };
+  float getVolume(){ return (max_corner - min_corner).prod(); };
   
   void moveBox(const Eigen::Array3f& offset)
   {
