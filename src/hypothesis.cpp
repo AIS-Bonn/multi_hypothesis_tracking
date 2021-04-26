@@ -38,19 +38,21 @@ Hypothesis::Hypothesis(const Detection& detection,
 
 void Hypothesis::predict(float dt)
 {
-  auto current_position = getPosition();
-
   m_kalman_filter->predict(dt);
+  updateHypothesisAfterPrediction();
+}
 
-  // safe predicted position
-  m_position_history.push_back(getPosition());
+void Hypothesis::updateHypothesisAfterPrediction()
+{
+  auto current_position = m_position_history.back();
+  auto predicted_position = getPosition();
+
+  m_position_history.push_back(predicted_position);
   m_was_assigned_history.push_back(false);
 
-  // update the positions of the points corresponding to that hypothesis
-  auto transform_current_to_predicted = (getPosition() - current_position).eval();
-  transformPoints(m_points, transform_current_to_predicted);
-
-  m_hypothesis_bounding_box.moveBox(transform_current_to_predicted.array());
+  auto translation_from_current_to_predicted_position = (predicted_position - current_position).eval();
+  transformPoints(m_points, translation_from_current_to_predicted_position);
+  m_hypothesis_bounding_box.moveBox(translation_from_current_to_predicted_position.array());
 }
 
 void Hypothesis::correct(const Detection& detection)

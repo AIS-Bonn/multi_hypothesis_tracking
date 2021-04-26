@@ -115,7 +115,9 @@ public:
 
   /** @brief Getter for point cloud. */
   inline std::vector<Eigen::Vector3f>& getPointCloud(){ return m_points; }
+  
 protected:
+  void updateHypothesisAfterPrediction();
 
   /** @brief Check if hypothesis is still static. */
   void verifyStatic(Eigen::Array3f& min_corner_detection,
