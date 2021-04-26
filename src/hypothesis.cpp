@@ -38,11 +38,9 @@ Hypothesis::Hypothesis(const Detection& detection,
 
   m_points = detection.points;
 
-  computeBoundingBox(m_points, m_min_corner_detection, m_max_corner_detection); // length width height
-  m_min_corner_hypothesis = m_min_corner_detection;
-  m_max_corner_hypothesis = m_max_corner_detection;
-  m_min_corner_init_hypothesis = m_min_corner_detection;
-  m_max_corner_init_hypothesis = m_max_corner_detection;
+  computeBoundingBox(m_points, m_detections_bounding_box);
+  m_hypothesis_bounding_box = m_detections_bounding_box;
+  m_initial_bounding_box = m_detections_bounding_box;
 }
 
 void Hypothesis::predict(float dt)
@@ -59,8 +57,8 @@ void Hypothesis::predict(float dt)
   auto transform_current_to_predicted = (getPosition() - current_position).eval();
   transformPoints(m_points, transform_current_to_predicted);
 
-  m_min_corner_hypothesis = (m_min_corner_hypothesis + transform_current_to_predicted.array()).eval();
-  m_max_corner_hypothesis = (m_max_corner_hypothesis + transform_current_to_predicted.array()).eval();
+  m_hypothesis_bounding_box.min_corner = (m_hypothesis_bounding_box.min_corner + transform_current_to_predicted.array()).eval();
+  m_hypothesis_bounding_box.max_corner = (m_hypothesis_bounding_box.max_corner + transform_current_to_predicted.array()).eval();
 }
 
 void Hypothesis::correct(const Detection& detection)
@@ -129,19 +127,19 @@ void Hypothesis::correct(const Detection& detection)
   m_points.insert(m_points.end(), corrected_detection_points.begin(), corrected_detection_points.end());
 
   // update hypothesis' bounding box using corrected detection points
-//  computeBoundingBox(corrected_detection_points, m_min_corner_hypothesis, m_max_corner_hypothesis);
+//  computeBoundingBox(corrected_detection_points, m_hypothesis_bounding_box);
   // update bounding box of assigned detection
-  computeBoundingBox(detection.points, m_min_corner_detection, m_max_corner_detection);
+  computeBoundingBox(detection.points, m_detections_bounding_box);
 
-  auto detection_centroid_position = (m_max_corner_detection + m_min_corner_detection) / 2.f;
-  auto detection_box_size = (m_max_corner_detection - m_min_corner_detection).eval();
-  auto hypothesis_box_size = (m_max_corner_hypothesis - m_min_corner_hypothesis).eval();
+  auto detection_box_center_position = (m_detections_bounding_box.max_corner + m_detections_bounding_box.min_corner) / 2.f;
+  auto detection_box_size = (m_detections_bounding_box.max_corner - m_detections_bounding_box.min_corner).eval();
+  auto hypothesis_box_size = getHypothesisBoxSize();
   auto box_mean_size = (detection_box_size + hypothesis_box_size) / 2.f;
 
-  m_max_corner_hypothesis = detection_centroid_position + (box_mean_size) / 2.f;
-  m_min_corner_hypothesis = detection_centroid_position - (box_mean_size) / 2.f;
+  m_hypothesis_bounding_box.min_corner = detection_box_center_position - (box_mean_size) / 2.f;
+  m_hypothesis_bounding_box.max_corner = detection_box_center_position + (box_mean_size) / 2.f;
 
-//	verifyStatic(m_min_corner_detection, m_max_corner_detection);
+//	verifyStatic(m_detections_bounding_box);
   verifyStatic();
 }
 
@@ -153,17 +151,16 @@ void Hypothesis::transformPoints(std::vector<Eigen::Vector3f>& points,
 }
 
 void Hypothesis::computeBoundingBox(const std::vector<Eigen::Vector3f>& points,
-                                    Eigen::Array3f& min_bounding_box,
-                                    Eigen::Array3f& max_bounding_box)
+                                    AxisAlignedBox& bounding_box)
 {
-  min_bounding_box = Eigen::Array3f::Constant(std::numeric_limits<float>::max());
-  max_bounding_box = Eigen::Array3f::Constant(-std::numeric_limits<float>::max());
+  bounding_box.min_corner = Eigen::Array3f::Constant(std::numeric_limits<float>::max());
+  bounding_box.max_corner = Eigen::Array3f::Constant(-std::numeric_limits<float>::max());
   for(const auto& point : points)
   {
-    for(std::size_t i = 0; i < 3; ++i)
+    for(Eigen::Index i = 0; i < 3; ++i)
     {
-      min_bounding_box[i] = std::min(min_bounding_box[i], point[i]);
-      max_bounding_box[i] = std::max(max_bounding_box[i], point[i]);
+      bounding_box.min_corner[i] = std::min(bounding_box.min_corner[i], point[i]);
+      bounding_box.max_corner[i] = std::max(bounding_box.max_corner[i], point[i]);
     }
   }
 }
@@ -196,14 +193,14 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
 
     float min_overlap_of_initial_bounding_box = 0.95f;
 
-    double init_volume = (m_max_corner_init_hypothesis - m_min_corner_init_hypothesis).prod();
+    double init_volume = (m_initial_bounding_box.max_corner - m_initial_bounding_box.min_corner).prod();
 
     // expand detection bounding box a little to prevent wrong classification due to sensor noise
     Eigen::Array3f expanded_min_corner_detection = min_corner_detection - 0.03f;
     Eigen::Array3f expanded_max_corner_detection = max_corner_detection + 0.03f;
 
-    Eigen::Array3f intersection_min_corner = expanded_min_corner_detection.max(m_min_corner_init_hypothesis);
-    Eigen::Array3f intersection_max_corner = expanded_max_corner_detection.min(m_max_corner_init_hypothesis);
+    Eigen::Array3f intersection_min_corner = expanded_min_corner_detection.max(m_initial_bounding_box.min_corner);
+    Eigen::Array3f intersection_max_corner = expanded_max_corner_detection.min(m_initial_bounding_box.max_corner);
 
     Eigen::Array3f diff = (intersection_max_corner - intersection_min_corner).max(Eigen::Array3f::Zero());
 
@@ -220,8 +217,8 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
       // if detection BB encloses init BB, update init BB as it's likely that object was occluded
       if(intersection_volume / init_volume >= min_overlap_of_initial_bounding_box)
       {
-        m_min_corner_init_hypothesis = min_corner_detection.min(m_min_corner_init_hypothesis);
-        m_max_corner_init_hypothesis = max_corner_detection.max(m_max_corner_init_hypothesis);
+        m_initial_bounding_box.min_corner = min_corner_detection.min(m_initial_bounding_box.min_corner);
+        m_initial_bounding_box.max_corner = max_corner_detection.max(m_initial_bounding_box.max_corner);
       }
     }
   }

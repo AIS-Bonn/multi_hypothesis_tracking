@@ -490,12 +490,12 @@ void VisualizationsPublisher::publishHypothesesFull(const Hypotheses& hypotheses
     // fill box
     box.id = hypothesis->getID();
 
-    const Eigen::Array3f& min_box = hypothesis->getMinBoxDetection();
+    const Eigen::Array3f& min_box = hypothesis->getDetectionsBoundingBox().min_corner;
     box.min_corner.x = min_box(0);
     box.min_corner.y = min_box(1);
     box.min_corner.z = min_box(2);
 
-    const Eigen::Array3f& max_box = hypothesis->getMaxBoxDetection();
+    const Eigen::Array3f& max_box = hypothesis->getDetectionsBoundingBox().max_corner;
     box.max_corner.x = max_box(0);
     box.max_corner.y = max_box(1);
     box.max_corner.z = max_box(2);
@@ -524,12 +524,12 @@ void VisualizationsPublisher::publishHypothesesBoxesEvaluation(const Hypotheses&
     box.id = hypothesis->getID();
     box.dynamic = !hypothesis->isStatic();
 
-    const Eigen::Array3f& min_box = hypothesis->getMinBoxHypothesis();
+    const Eigen::Array3f& min_box = hypothesis->getHypothesisBoundingBox().min_corner;
     box.min_corner.x = min_box(0);
     box.min_corner.y = min_box(1);
     box.min_corner.z = min_box(2);
 
-    const Eigen::Array3f& max_box = hypothesis->getMaxBoxHypothesis();
+    const Eigen::Array3f& max_box = hypothesis->getHypothesisBoundingBox().max_corner;
     box.max_corner.x = max_box(0);
     box.max_corner.y = max_box(1);
     box.max_corner.z = max_box(2);

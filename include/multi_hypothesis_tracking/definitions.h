@@ -8,6 +8,7 @@
 #ifndef MULTI_HYPOTHESIS_TRACKING_DEFINITIONS_H
 #define MULTI_HYPOTHESIS_TRACKING_DEFINITIONS_H
 
+#include <utility>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -30,10 +31,10 @@ struct Detections
   double time_stamp;                    ///< Time stamp when the detection was created.
 };
 
-struct Box
+struct AxisAlignedBox
 {
-  Box(){};
-  Box(const Eigen::Array3f& min, const Eigen::Array3f& max) : min_corner(min), max_corner(max){};
+  AxisAlignedBox(){};
+  AxisAlignedBox(Eigen::Array3f min, Eigen::Array3f  max) : min_corner(std::move(min)), max_corner(std::move(max)){};
   Eigen::Array3f min_corner;           ///< min corner of axis aligned bounding box.
   Eigen::Array3f max_corner;           ///< max corner of axis aligned bounding box.
 };

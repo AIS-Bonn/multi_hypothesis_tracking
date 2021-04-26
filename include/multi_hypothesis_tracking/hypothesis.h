@@ -65,15 +65,13 @@ public:
                        const Eigen::Vector3f& transform);
 
   /**
-   * @brief Computes the bounding box of a point cloud.
+   * @brief Computes the axis aligned bounding box of a point cloud.
    *
-   * @param[in]     points              points of cloud.
-   * @param[out]    min_bounding_box    min corner of bounding box.
-   * @param[out]    max_bounding_box    max corner of bounding box.
+   * @param[in]     points          point cloud.
+   * @param[out]    bounding_box    axis aligned bounding box around point cloud.
    */
   void computeBoundingBox(const std::vector<Eigen::Vector3f>& points,
-                          Eigen::Array3f& min_bounding_box,
-                          Eigen::Array3f& max_bounding_box);
+                          AxisAlignedBox& bounding_box);
 
   /**
    * @brief Checks if covariance exceeds max_covariance.
@@ -105,16 +103,13 @@ public:
   /** @brief Getter time of hypothesis initialization. */
   inline double getBornTime(){ return m_born_time; }
 
-  /** @brief Getter for #m_min_corner_detection. */
-  inline Eigen::Array3f& getMinBoxDetection(){ return m_min_corner_detection; }
-  /** @brief Getter for #m_max_corner_detection. */
-  inline Eigen::Array3f& getMaxBoxDetection(){ return m_max_corner_detection; }
-  /** @brief Getter for #m_min_corner_hypothesis. */
-  inline Eigen::Array3f& getMinBoxHypothesis(){ return m_min_corner_hypothesis; }
-  /** @brief Getter for #m_max_corner_hypothesis. */
-  inline Eigen::Array3f& getMaxBoxHypothesis(){ return m_max_corner_hypothesis; }
-  /** @brief Getter for size of hypothesis' bounding box. */
-  inline Eigen::Array3f getHypothesisBoxSize(){ return (m_max_corner_hypothesis - m_min_corner_hypothesis).eval(); }
+  inline AxisAlignedBox& getDetectionsBoundingBox(){ return m_detections_bounding_box; }
+  inline AxisAlignedBox& getHypothesisBoundingBox(){ return m_hypothesis_bounding_box; }
+
+  inline Eigen::Array3f getHypothesisBoxSize()
+  { 
+    return (m_hypothesis_bounding_box.max_corner - m_hypothesis_bounding_box.min_corner).eval(); 
+  }
   /** @brief Getter for #m_position_history. */
   inline std::vector<Eigen::Vector3f>& getPositionHistory(){ return m_position_history; }
   /** @brief Getter for #m_was_assigned_history. */
@@ -157,18 +152,12 @@ protected:
   /** @brief Maximal velocity this hypothesis had. */
   double m_max_tracked_velocity;
 
-  /** @brief Minimum corner of the detections' bounding box that was assigned to this hypothesis. */
-  Eigen::Array3f m_min_corner_detection;
-  /** @brief Maximum corner of the detections' bounding box that was assigned to this hypothesis. */
-  Eigen::Array3f m_max_corner_detection;
-  /** @brief Minimum corner of the hypothesis' bounding box. */
-  Eigen::Array3f m_min_corner_hypothesis;
-  /** @brief Maximum corner of the hypothesis' bounding box. */
-  Eigen::Array3f m_max_corner_hypothesis;
-  /** @brief Minimum corner of the hypothesis' bounding box at its initialization. */
-  Eigen::Array3f m_min_corner_init_hypothesis;
-  /** @brief Maximum corner of the hypothesis' bounding box at its initialization. */
-  Eigen::Array3f m_max_corner_init_hypothesis;
+  /** @brief Axis aligned bounding box of the detection that was assigned to this hypothesis. */
+  AxisAlignedBox m_detections_bounding_box;
+  /** @brief Axis aligned bounding box of this hypothesis. */
+  AxisAlignedBox m_hypothesis_bounding_box;
+  /** @brief Axis aligned bounding box of this hypothesis at creation. */
+  AxisAlignedBox m_initial_bounding_box;
 
   /** @brief Points representing object. */
   std::vector<Eigen::Vector3f> m_points;
