@@ -64,33 +64,7 @@ void Hypothesis::correct(const Detection& detection)
   // additional stuff and workarounds
 
   if(m_cap_velocity)
-  {
-    Eigen::Vector3f current_velocity = getVelocity();
-    
-    // high pass filter on velocity to prevent movements that are induced due to sensor noise or the high vertical resolution between the scan rings
-    Eigen::Vector3f horizontal_velocity_vec = current_velocity;
-    horizontal_velocity_vec.z() = 0.f;
-    if(horizontal_velocity_vec.norm() < 0.3f)
-    {
-      current_velocity.x() = 0.f;
-      current_velocity.y() = 0.f;
-    }
-    if(current_velocity.z() < 0.4f)
-      current_velocity.z() = 0.f;
-
-    // capping velocity to prevent "shooting" away objects when for example the mapping jumps
-    if(current_velocity.norm() > m_max_allowed_velocity)
-    {
-      current_velocity.normalize();
-      current_velocity *= m_max_allowed_velocity;
-      for(int i = 0; i < 3; i++)
-        m_kalman_filter->getState()(3 + i) = current_velocity(i);
-    }
-
-    // set the corrected velocity
-    for(int i = 0; i < 3; i++)
-      m_kalman_filter->getState()(3 + i) = current_velocity(i);
-  }
+    capVelocity();
 
   // transform detection points to the current state's position and add them to the hypothesis' points
   auto transform_detection_to_corrected = (getPosition() - detection.position).eval();
@@ -131,6 +105,35 @@ void Hypothesis::updateHypothesisAfterCorrection()
   m_position_history.back() = corrected_position;
   m_was_assigned_history.back() = true;
   m_number_of_assignments++;
+}
+
+void Hypothesis::capVelocity()
+{
+  Eigen::Vector3f current_velocity = getVelocity();
+
+  // high pass filter on velocity to prevent movements that are induced due to sensor noise or the high vertical resolution between the scan rings
+  Eigen::Vector3f horizontal_velocity_vec = current_velocity;
+  horizontal_velocity_vec.z() = 0.f;
+  if(horizontal_velocity_vec.norm() < 0.3f)
+  {
+    current_velocity.x() = 0.f;
+    current_velocity.y() = 0.f;
+  }
+  if(current_velocity.z() < 0.4f)
+    current_velocity.z() = 0.f;
+
+  // capping velocity to prevent "shooting" away objects when for example the mapping jumps
+  if(current_velocity.norm() > m_max_allowed_velocity)
+  {
+    current_velocity.normalize();
+    current_velocity *= m_max_allowed_velocity;
+    for(int i = 0; i < 3; i++)
+      m_kalman_filter->getState()(3 + i) = current_velocity(i);
+  }
+
+  // set the corrected velocity
+  for(int i = 0; i < 3; i++)
+    m_kalman_filter->getState()(3 + i) = current_velocity(i);
 }
 
 void Hypothesis::transformPoints(std::vector<Eigen::Vector3f>& points,
