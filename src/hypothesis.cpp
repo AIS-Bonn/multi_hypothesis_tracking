@@ -67,18 +67,7 @@ void Hypothesis::correct(const Detection& detection)
     capVelocity();
 
   updatePoints(detection);
-  
-
-
-  // update hypothesis' bounding box using corrected detection points
-//  computeBoundingBox(corrected_detection_points, m_hypothesis_bounding_box);
-  // update bounding box of assigned detection
-  computeBoundingBox(detection.points, m_detections_bounding_box);
-
-  auto detection_box_center_position = m_detections_bounding_box.getCenterPosition();
-  auto mean_side_lengths = (m_detections_bounding_box.getSideLengths() + m_hypothesis_bounding_box.getSideLengths()) / 2.f;
-  m_hypothesis_bounding_box.min_corner = detection_box_center_position - (mean_side_lengths) / 2.f;
-  m_hypothesis_bounding_box.max_corner = detection_box_center_position + (mean_side_lengths) / 2.f;
+  updateBoundingBox(detection);
 
 //	verifyStatic(m_detections_bounding_box);
   verifyStatic();
@@ -142,6 +131,19 @@ void Hypothesis::updatePoints(const Detection& detection)
   //TODO: filter if too many points in hypothesis
   m_points.reserve(m_points.size() + corrected_detection_points.size());
   m_points.insert(m_points.end(), corrected_detection_points.begin(), corrected_detection_points.end());
+}
+
+void Hypothesis::updateBoundingBox(const Detection& detection)
+{
+  // update hypothesis' bounding box using corrected detection points
+//  computeBoundingBox(corrected_detection_points, m_hypothesis_bounding_box);
+  // update bounding box of assigned detection
+  computeBoundingBox(detection.points, m_detections_bounding_box);
+
+  auto detection_box_center_position = m_detections_bounding_box.getCenterPosition();
+  auto mean_side_lengths = (m_detections_bounding_box.getSideLengths() + m_hypothesis_bounding_box.getSideLengths()) / 2.f;
+  m_hypothesis_bounding_box.min_corner = detection_box_center_position - (mean_side_lengths) / 2.f;
+  m_hypothesis_bounding_box.max_corner = detection_box_center_position + (mean_side_lengths) / 2.f;
 }
 
 void Hypothesis::transformPoints(std::vector<Eigen::Vector3f>& points,
