@@ -50,8 +50,7 @@ void Hypothesis::predict(float dt)
   auto transform_current_to_predicted = (getPosition() - current_position).eval();
   transformPoints(m_points, transform_current_to_predicted);
 
-  m_hypothesis_bounding_box.min_corner = (m_hypothesis_bounding_box.min_corner + transform_current_to_predicted.array()).eval();
-  m_hypothesis_bounding_box.max_corner = (m_hypothesis_bounding_box.max_corner + transform_current_to_predicted.array()).eval();
+  m_hypothesis_bounding_box.moveBox(transform_current_to_predicted.array());
 }
 
 void Hypothesis::correct(const Detection& detection)

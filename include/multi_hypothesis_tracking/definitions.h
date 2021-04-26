@@ -37,6 +37,12 @@ struct AxisAlignedBox
   AxisAlignedBox(Eigen::Array3f min, Eigen::Array3f  max) : min_corner(std::move(min)), max_corner(std::move(max)){};
   Eigen::Array3f min_corner;           ///< min corner of axis aligned bounding box.
   Eigen::Array3f max_corner;           ///< max corner of axis aligned bounding box.
+  
+  void moveBox(const Eigen::Array3f& offset)
+  {
+    min_corner = (min_corner + offset).eval();
+    max_corner = (max_corner + offset).eval();
+  };
 };
 
 }
