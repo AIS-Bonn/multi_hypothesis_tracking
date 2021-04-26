@@ -188,7 +188,7 @@ bool VisualizationsPublisher::isValid(std::shared_ptr<Hypothesis>& hypothesis,
 bool VisualizationsPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
                                           double current_time) const
 {
-  return current_time - hypothesis->getBornTime() >= m_hypothesis_age_threshold_in_seconds;
+  return current_time - hypothesis->getTimeStampOfBirth() >= m_hypothesis_age_threshold_in_seconds;
 }
 
 bool VisualizationsPublisher::wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const
