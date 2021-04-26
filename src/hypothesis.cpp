@@ -21,7 +21,7 @@ Hypothesis::Hypothesis(const Detection& detection,
     , m_cap_velocity(true)
     , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
     , m_max_tracked_velocity(0.0)
-    , m_was_assigned_counter(0)
+    , m_number_of_assignments(0)
 {
   int number_of_state_dimensions = (int)detection.position.size() * 2;   // position dimensions + velocity dimensions
   Eigen::VectorXf initial_hypothesis_state(number_of_state_dimensions);
@@ -69,7 +69,7 @@ void Hypothesis::correct(const Detection& detection)
   // if hypothesis' position was corrected, replace the latest predicted position by the corrected
   m_position_history.back() = getPosition();
   m_was_assigned_history.back() = true;
-  m_was_assigned_counter++;
+  m_number_of_assignments++;
 
   // update the positions of the points corresponding to that hypothesis
   auto transform_predicted_to_corrected = (getPosition() - current_position).eval();
