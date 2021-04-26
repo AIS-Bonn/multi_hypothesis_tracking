@@ -32,8 +32,7 @@ Hypothesis::Hypothesis(const Detection& detection,
   m_kalman = std::make_shared<KalmanFilter>(initial_hypothesis_state);
   m_kalman->setCovariancePerSecond(covariance_per_second);
 
-  m_first_position_in_track = getPosition();
-  m_position_history.push_back(m_first_position_in_track);
+  m_position_history.push_back(getPosition());
   m_was_assigned_history.push_back(true);
 
   m_points = detection.points;
@@ -229,7 +228,7 @@ void Hypothesis::verifyStatic()
   if(m_is_static)
   {
     // Compute just distance in xy direction and don't account for movement in z direction
-    Eigen::Vector3f xy_difference = getPosition() - m_first_position_in_track;
+    Eigen::Vector3f xy_difference = getPosition() - getInitialPosition();
     xy_difference.z() = 0.f;
 
     double distance_from_origin = xy_difference.norm();

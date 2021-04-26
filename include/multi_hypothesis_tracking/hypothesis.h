@@ -110,6 +110,8 @@ public:
   { 
     return (m_hypothesis_bounding_box.max_corner - m_hypothesis_bounding_box.min_corner).eval(); 
   }
+
+  inline Eigen::Vector3f& getInitialPosition(){ return m_position_history[0]; }
   /** @brief Getter for #m_position_history. */
   inline std::vector<Eigen::Vector3f>& getPositionHistory(){ return m_position_history; }
   /** @brief Getter for #m_was_assigned_history. */
@@ -133,9 +135,6 @@ protected:
 
   /** @brief Hypothesis ID. */
   unsigned int m_id;
-
-  /** @brief Initial position. */
-  Eigen::Vector3f m_first_position_in_track;
 
   /** @brief Time of initialization. */
   double m_born_time;
