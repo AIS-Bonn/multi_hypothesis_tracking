@@ -66,16 +66,9 @@ void Hypothesis::correct(const Detection& detection)
   if(m_cap_velocity)
     capVelocity();
 
-  // transform detection points to the current state's position and add them to the hypothesis' points
-  auto transform_detection_to_corrected = (getPosition() - detection.position).eval();
-  std::vector<Eigen::Vector3f> corrected_detection_points;
-  corrected_detection_points.reserve(detection.points.size());
-  for(const auto& point : detection.points)
-    corrected_detection_points.emplace_back(Eigen::Vector3f(point + transform_detection_to_corrected));
+  updatePoints(detection);
+  
 
-  //TODO: filter if too many points in hypothesis
-  m_points.reserve(m_points.size() + corrected_detection_points.size());
-  m_points.insert(m_points.end(), corrected_detection_points.begin(), corrected_detection_points.end());
 
   // update hypothesis' bounding box using corrected detection points
 //  computeBoundingBox(corrected_detection_points, m_hypothesis_bounding_box);
@@ -134,6 +127,21 @@ void Hypothesis::capVelocity()
   // set the corrected velocity
   for(int i = 0; i < 3; i++)
     m_kalman_filter->getState()(3 + i) = current_velocity(i);
+}
+
+void Hypothesis::updatePoints(const Detection& detection)
+{
+  // transform detection points to the current state's position and add them to the hypothesis' points
+  auto transform_detection_to_corrected = (getPosition() - detection.position).eval();
+  std::vector<Eigen::Vector3f> corrected_detection_points;
+  corrected_detection_points.reserve(detection.points.size());
+  for(const auto& point : detection.points)
+    corrected_detection_points.emplace_back(Eigen::Vector3f(point + transform_detection_to_corrected));
+
+  // TODO: add option to accumulate the detection's points in the hypothesis (or simply copy the points from the most recent detection as the hypothesis' points)
+  //TODO: filter if too many points in hypothesis
+  m_points.reserve(m_points.size() + corrected_detection_points.size());
+  m_points.insert(m_points.end(), corrected_detection_points.begin(), corrected_detection_points.end());
 }
 
 void Hypothesis::transformPoints(std::vector<Eigen::Vector3f>& points,

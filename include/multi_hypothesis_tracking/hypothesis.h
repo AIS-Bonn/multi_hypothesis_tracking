@@ -120,6 +120,7 @@ protected:
   void updateHypothesisAfterPrediction();
   void updateHypothesisAfterCorrection();
   void capVelocity();
+  void updatePoints(const Detection& detection);
 
   /** @brief Check if hypothesis is still static. */
   void verifyStatic(Eigen::Array3f& min_corner_detection,
