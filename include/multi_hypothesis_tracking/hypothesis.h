@@ -101,7 +101,7 @@ public:
   inline bool isStatic(){ return m_is_static; }
 
   /** @brief Getter time of hypothesis initialization. */
-  inline double getBornTime(){ return m_born_time; }
+  inline double getBornTime(){ return m_time_stamp_of_birth; }
 
   inline AxisAlignedBox& getDetectionsBoundingBox(){ return m_detections_bounding_box; }
   inline AxisAlignedBox& getHypothesisBoundingBox(){ return m_hypothesis_bounding_box; }
@@ -136,8 +136,7 @@ protected:
   /** @brief Hypothesis ID. */
   unsigned int m_id;
 
-  /** @brief Time of initialization. */
-  double m_born_time;
+  double m_time_stamp_of_birth;
 
   /** @brief Flag for immobility of hypothesis. */
   bool m_is_static;

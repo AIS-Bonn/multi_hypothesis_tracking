@@ -15,7 +15,7 @@ Hypothesis::Hypothesis(const Detection& detection,
                        double time_stamp,
                        float covariance_per_second)
   : m_id(id)
-    , m_born_time(time_stamp)
+    , m_time_stamp_of_birth(time_stamp)
     , m_is_static(true)
     , m_static_distance_threshold(1.f)
     , m_cap_velocity(true)
