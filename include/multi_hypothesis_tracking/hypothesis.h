@@ -91,11 +91,11 @@ public:
   inline unsigned int getID(){ return m_id; }
 
   /** @brief Getter for current position. */
-  inline Eigen::Vector3f getPosition(){ return m_kalman->getState().block<3, 1>(0, 0); }
+  inline Eigen::Vector3f getPosition(){ return m_kalman_filter->getState().block<3, 1>(0, 0); }
   /** @brief Getter for current velocity. */
-  inline Eigen::Vector3f getVelocity(){ return m_kalman->getState().block<3, 1>(3, 0); }
+  inline Eigen::Vector3f getVelocity(){ return m_kalman_filter->getState().block<3, 1>(3, 0); }
   /** @brief Getter for current position covariance matrix. */
-  inline Eigen::Matrix3f getCovariance(){ return m_kalman->getErrorCovariance().block<3, 3>(0, 0); }
+  inline Eigen::Matrix3f getCovariance(){ return m_kalman_filter->getErrorCovariance().block<3, 3>(0, 0); }
 
   /** @brief Getter for static property. */
   inline bool isStatic(){ return m_is_static; }
@@ -130,7 +130,7 @@ protected:
   void verifyStatic();
 
   /** @brief Kalman filter for state estimation. */
-  std::shared_ptr<KalmanFilter> m_kalman;
+  std::shared_ptr<KalmanFilter> m_kalman_filter;
 
   /** @brief Hypothesis ID. */
   unsigned int m_id;

@@ -29,8 +29,8 @@ Hypothesis::Hypothesis(const Detection& detection,
   for(int i = 0; i < 3; i++)
     initial_hypothesis_state(i) = detection.position(i);
 
-  m_kalman = std::make_shared<KalmanFilter>(initial_hypothesis_state);
-  m_kalman->setCovariancePerSecond(covariance_per_second);
+  m_kalman_filter = std::make_shared<KalmanFilter>(initial_hypothesis_state);
+  m_kalman_filter->setCovariancePerSecond(covariance_per_second);
 
   m_position_history.push_back(getPosition());
   m_was_assigned_history.push_back(true);
@@ -46,7 +46,7 @@ void Hypothesis::predict(float dt)
 {
   auto current_position = getPosition();
 
-  m_kalman->predict(dt);
+  m_kalman_filter->predict(dt);
 
   // safe predicted position
   m_position_history.push_back(getPosition());
@@ -64,7 +64,7 @@ void Hypothesis::correct(const Detection& detection)
 {
   auto current_position = getPosition();
 
-  m_kalman->correct(detection.position, detection.covariance);
+  m_kalman_filter->correct(detection.position, detection.covariance);
 
   // if hypothesis' position was corrected, replace the latest predicted position by the corrected
   m_position_history.back() = getPosition();
@@ -106,12 +106,12 @@ void Hypothesis::correct(const Detection& detection)
       current_velocity.normalize();
       current_velocity *= m_max_allowed_velocity;
       for(int i = 0; i < 3; i++)
-        m_kalman->getState()(3 + i) = current_velocity(i);
+        m_kalman_filter->getState()(3 + i) = current_velocity(i);
     }
 
     // set the corrected velocity
     for(int i = 0; i < 3; i++)
-      m_kalman->getState()(3 + i) = current_velocity(i);
+      m_kalman_filter->getState()(3 + i) = current_velocity(i);
   }
 
   // transform detection points to the current state's position and add them to the hypothesis' points
