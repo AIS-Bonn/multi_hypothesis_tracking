@@ -87,11 +87,9 @@ protected:
    * hypotheses -> Zeroes.
    *
    * @param[in]     detections      detections.
-   * @param[in]     hypotheses      already existing hypotheses.
    * @param[out]    cost_matrix     cost matrix.
    */
   void setupCostMatrix(const Detections& detections,
-                       std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                        int**& cost_matrix);
 
   /**
@@ -104,12 +102,10 @@ protected:
    * @param[in]     assignments     assignments from hungarian method.
    * @param[in]     cost_matrix     original cost_matrix hungarian method was initialized with.
    * @param[in]     detections      detections.
-   * @param[in,out] hypotheses      in current hypotheses, out corrected and new hypotheses.
    */
   void applyAssignments(int**& assignments,
                         int**& cost_matrix,
-                        const Detections& detections,
-                        std::vector<std::shared_ptr<Hypothesis>>& hypotheses);
+                        const Detections& detections);
 
   // Variables
   /** @brief Hypothesis factory.*/

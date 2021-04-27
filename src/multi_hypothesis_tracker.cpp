@@ -31,13 +31,13 @@ void MultiHypothesisTracker::correctHypothesesStates(const Detections& detection
     return;
 
   int** cost_matrix;
-  setupCostMatrix(detections, m_hypotheses, cost_matrix);
+  setupCostMatrix(detections, cost_matrix);
 
   hungarian_problem_t hung;
   size_t dim = detections.detections.size() + m_hypotheses.size();
   hungarian_init(&hung, cost_matrix, dim, dim, HUNGARIAN_MODE_MINIMIZE_COST);
   hungarian_solve(&hung);
-  applyAssignments(hung.assignment, cost_matrix, detections, m_hypotheses);
+  applyAssignments(hung.assignment, cost_matrix, detections);
 
   for(size_t i = 0; i < dim; i++)
     delete[] cost_matrix[i];
@@ -46,10 +46,9 @@ void MultiHypothesisTracker::correctHypothesesStates(const Detections& detection
 }
 
 void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
-                                             std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
                                              int**& cost_matrix)
 {
-  size_t hyp_size = hypotheses.size();
+  size_t hyp_size = m_hypotheses.size();
   size_t meas_size = detections.detections.size();
   size_t dim = hyp_size + meas_size;
 
@@ -108,10 +107,9 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
 
 void MultiHypothesisTracker::applyAssignments(int**& assignments,
                                               int**& cost_matrix,
-                                              const Detections& detections,
-                                              std::vector<std::shared_ptr<Hypothesis>>& hypotheses)
+                                              const Detections& detections)
 {
-  size_t hyp_size = hypotheses.size();
+  size_t hyp_size = m_hypotheses.size();
   size_t meas_size = detections.detections.size();
   size_t dim = hyp_size + meas_size;
 
