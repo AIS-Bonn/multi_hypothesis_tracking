@@ -411,7 +411,8 @@ void VisualizationsPublisher::publishHypothesesBoundingBoxes(const Hypotheses& h
       getColorByID(hypothesis->getID(), hypotheses_boxes_marker.color);
       hypotheses_boxes_marker.color.a = color_alpha;
 
-      eigenToGeometryMsgs(hypothesis->getPosition(), hypotheses_boxes_marker.pose.position);
+      eigenToGeometryMsgs(hypothesis->getHypothesisBoundingBox().getCenterPosition().matrix(), 
+                          hypotheses_boxes_marker.pose.position);
 
       hypotheses_boxes_marker.pose.orientation.x = 0.0;
       hypotheses_boxes_marker.pose.orientation.y = 0.0;
