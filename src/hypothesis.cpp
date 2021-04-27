@@ -140,7 +140,7 @@ void Hypothesis::updateBoundingBox(const Detection& detection)
   computeBoundingBox(detection.points, m_detections_bounding_box);
 
   auto detection_box_center_position = m_detections_bounding_box.getCenterPosition();
-  auto mean_side_lengths = (m_detections_bounding_box.getSideLengths() + m_hypothesis_bounding_box.getSideLengths()) / 2.f;
+  auto mean_side_lengths = ((m_detections_bounding_box.getSideLengths() + m_hypothesis_bounding_box.getSideLengths()) / 2.f).eval();
   m_hypothesis_bounding_box.min_corner = detection_box_center_position - (mean_side_lengths) / 2.f;
   m_hypothesis_bounding_box.max_corner = detection_box_center_position + (mean_side_lengths) / 2.f;
 }
