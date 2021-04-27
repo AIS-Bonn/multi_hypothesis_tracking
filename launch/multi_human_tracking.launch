@@ -18,7 +18,7 @@
     <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
     <arg name="time_offset_for_predictions" default="0.05"/>
 
-    <node pkg="multi_hypothesis_tracking" type="multi_human_tracking_node" name="multi_human_tracking_node"
+    <node pkg="multi_hypothesis_tracking" type="multi_hypothesis_tracking_node_for_humans" name="multi_hypothesis_tracking_node_for_humans"
           output="screen">
 
         <param name="input_topic" value="$(arg input_topic)"/>

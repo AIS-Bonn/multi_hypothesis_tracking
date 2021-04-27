@@ -115,15 +115,15 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_human_tracking_node/measurements_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_humans/detections_positions
       Name: Detections Positions
       Namespaces:
-        {}
+        mot_detections_markers: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_human_tracking_node/hypotheses_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_positions
       Name: Hypotheses Positions
       Namespaces:
         mot_hypotheses_positions_markers: true
@@ -131,7 +131,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_human_tracking_node/static_hypotheses_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_humans/static_hypotheses_positions
       Name: Static Hypotheses Positions
       Namespaces:
         mot_static_hypotheses_positions: true
@@ -139,7 +139,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_human_tracking_node/dynamic_hypotheses_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_humans/dynamic_hypotheses_positions
       Name: Dynamic Hypotheses Positions
       Namespaces:
         mot_dynamic_hypotheses_positions: true
@@ -147,7 +147,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_human_tracking_node/hypotheses_paths
+      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_paths
       Name: Paths
       Namespaces:
         mot_hypotheses_paths: true
@@ -155,7 +155,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /multi_human_tracking_node/hypotheses_bounding_boxes
+      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_bounding_boxes
       Name: HypothesesBoxes
       Namespaces:
         mot_hypotheses_bounding_boxes: true
@@ -189,25 +189,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 18.05397605895996
+      Distance: 11.27688217163086
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.07185059785842896
-        Y: 5.858668327331543
-        Z: 1.1405452489852905
+        X: -0.49808722734451294
+        Y: 0.8761487603187561
+        Z: 1.1106069087982178
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5397963523864746
+      Pitch: 0.43479692935943604
       Target Frame: os_sensor
       Value: Orbit (rviz)
-      Yaw: 4.688619613647461
+      Yaw: 4.678619384765625
     Saved: ~
 Window Geometry:
   "&Displays":
