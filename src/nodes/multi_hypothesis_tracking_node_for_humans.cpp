@@ -71,9 +71,9 @@ void MultiHypothesisTrackingNodeForHumans::convert(const HumanMsg::ConstPtr& det
     detection.points.clear();
     for(const auto& joint : person_detection.keypoints)
       if(joint.score > 0.0)
-        detection.points.emplace_back(Eigen::Vector3f(joint.joint.x,
-                                                      joint.joint.y,
-                                                      joint.joint.z));
+        detection.points.emplace_back(Eigen::Vector3f(static_cast<float>(joint.joint.x),
+                                                      static_cast<float>(joint.joint.y),
+                                                      static_cast<float>(joint.joint.z)));
 
     detections.detections.push_back(detection);
   }
