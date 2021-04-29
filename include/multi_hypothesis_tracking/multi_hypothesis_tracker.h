@@ -8,21 +8,20 @@
 #ifndef __MULTI_HYPOTHESIS_TRACKER_H__
 #define __MULTI_HYPOTHESIS_TRACKER_H__
 
+#include <utility>
 #include <vector>
 #include <queue>
 #include <iostream>
 #include <limits.h> // for INT_MAX
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypothesis.h>
+#include <multi_hypothesis_tracking/hypothesis_factory.h>
 #include <multi_hypothesis_tracking/hungarian.h>
 
 #include <multi_hypothesis_tracking/utils.h>
 
 namespace MultiHypothesisTracker
 {
-
-class HypothesisFactory;
 
 /**
  * @brief Multi hypothesis tracker class.
@@ -31,7 +30,7 @@ class MultiHypothesisTracker
 {
 public:
   /** @brief Constructor. */
-  explicit MultiHypothesisTracker(std::shared_ptr<HypothesisFactory> hypothesis_factory);
+  explicit MultiHypothesisTracker(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory);
   /** @brief Destructor. */
   ~MultiHypothesisTracker() = default;
 
@@ -56,7 +55,7 @@ public:
   void mergeCloseHypotheses();
 
   /** @brief Getter for #m_hypotheses. */
-  inline std::vector<std::shared_ptr<Hypothesis>>& getHypotheses(){ return m_hypotheses; }
+  inline std::vector<std::shared_ptr<HypothesisInterface>>& getHypotheses(){ return m_hypotheses; }
 
   /** @brief Setter for #m_use_bhattacharyya_for_assignments. */
   inline void setUseBhattacharyyaDistance(bool use_bhattacharyya){ m_use_bhattacharyya_for_assignments = use_bhattacharyya; }
@@ -72,6 +71,20 @@ public:
 
   /** @brief Setter for covariance threshold #m_maximally_allowed_hypothesis_covariance. */
   inline void setMaxAllowedHypothesisCovariance(float covariance){ m_maximally_allowed_hypothesis_covariance = covariance; }
+
+  /** @brief Setter for #m_hypothesis_factory - keeps parameters from previous factory. */
+  inline void setHypothesisFactory(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory,
+                                   bool transfer_parameters_from_previous_factory = true)
+  { 
+    float previous_factory_parameter = 0.f;
+    if(transfer_parameters_from_previous_factory)
+      previous_factory_parameter = m_hypothesis_factory->getKalmanCovariancePerSecond();
+    
+    m_hypothesis_factory = std::move(hypothesis_factory); 
+    
+    if(transfer_parameters_from_previous_factory)
+      m_hypothesis_factory->setKalmanCovariancePerSecond(previous_factory_parameter);
+  }
 
 protected:
   /**
@@ -109,9 +122,9 @@ protected:
 
   // Variables
   /** @brief Hypothesis factory.*/
-  std::shared_ptr<HypothesisFactory> m_hypothesis_factory;
+  std::shared_ptr<HypothesisFactoryInterface> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses.*/
-  std::vector<std::shared_ptr<Hypothesis>> m_hypotheses;
+  std::vector<std::shared_ptr<HypothesisInterface>> m_hypotheses;
   /** @brief Counter for hypotheses IDs.*/
   unsigned int m_current_hypothesis_id;
   /** @brief Scale from double to int, because distance is in double but hungarian needs int costs.*/

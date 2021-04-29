@@ -60,16 +60,20 @@ inline void convertDetectionsPointsToCloud(const Detections& detections,
 }
 
 /** @breif Computes the total number of points associated with the hypotheses. */
-inline int computeTotalNumberOfPoints(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses)
+inline int computeTotalNumberOfPoints(const std::vector<std::shared_ptr<HypothesisInterface>>& hypotheses)
 {
   int total_number_of_points = 0;
   for(const auto& hypothesis : hypotheses)
-    total_number_of_points += (int)hypothesis->getPointCloud().size();
+  {
+    std::shared_ptr<Hypothesis> point_hypothesis = std::static_pointer_cast<Hypothesis>(hypothesis);
+
+    total_number_of_points += (int)point_hypothesis->getPointCloud().size();
+  }
   return total_number_of_points;
 }
 
 /** @breif Converts and accumulates the points associated with the hypotheses into one pcl point cloud. */
-inline void convertHypothesesPointsToCloud(const std::vector<std::shared_ptr<Hypothesis>>& hypotheses,
+inline void convertHypothesesPointsToCloud(const std::vector<std::shared_ptr<HypothesisInterface>>& hypotheses,
                                            pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud)
 {
   int total_number_of_points = computeTotalNumberOfPoints(hypotheses);
@@ -77,8 +81,13 @@ inline void convertHypothesesPointsToCloud(const std::vector<std::shared_ptr<Hyp
   cloud->points.resize(total_number_of_points);
   int point_counter = 0;
   for(const auto& hypothesis : hypotheses)
-    for(size_t point_id = 0; point_id < hypothesis->getPointCloud().size(); point_id++, point_counter++)
-      cloud->points[point_counter].getVector3fMap() = hypothesis->getPointCloud().at(point_id);
+  {
+    std::shared_ptr<Hypothesis> point_hypothesis = std::static_pointer_cast<Hypothesis>(hypothesis);
+
+    for(size_t point_id = 0; point_id < point_hypothesis->getPointCloud().size(); point_id++, point_counter++)
+      cloud->points[point_counter].getVector3fMap() = point_hypothesis->getPointCloud().at(point_id);
+  }
+
 }
 
 inline void getColorByID(const unsigned int id,

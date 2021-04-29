@@ -12,6 +12,8 @@ namespace MultiHypothesisTracker
 
 MultiHypothesisTrackingNode::MultiHypothesisTrackingNode()
 {
+  m_multi_hypothesis_tracker.setHypothesisFactory(std::make_shared<HypothesisFactory>());
+
   ros::NodeHandle private_node_handle("~");
   m_object_detection_subscriber = private_node_handle.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(
     m_input_topic, 1,

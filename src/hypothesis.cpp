@@ -10,24 +10,14 @@
 namespace MultiHypothesisTracker
 {
 
-Hypothesis::Hypothesis(const Detection& detection,
-                       unsigned int id,
-                       double time_stamp,
+Hypothesis::Hypothesis(const Detection& detection, 
+                       unsigned int id, 
+                       double time_stamp, 
                        float covariance_per_second)
-  : m_id(id)
-    , m_time_stamp_of_birth(time_stamp)
-    , m_is_static(true)
-    , m_static_distance_threshold(1.f)
-    , m_cap_velocity(true)
-    , m_max_allowed_velocity(2.8) // 1.4m/s or 5km/h
-    , m_number_of_assignments(0)
+  : HypothesisBase(detection, id, time_stamp, covariance_per_second)
+    , m_cap_velocity(false)
+    , m_max_allowed_velocity(2.8)
 {
-  m_kalman_filter = std::make_shared<KalmanFilter>(detection.position);
-  m_kalman_filter->setCovariancePerSecond(covariance_per_second);
-
-  m_position_history.push_back(getPosition());
-  m_was_assigned_history.push_back(true);
-
   m_points = detection.points;
 
   computeBoundingBox(m_points, m_detections_bounding_box);
@@ -69,7 +59,7 @@ void Hypothesis::correct(const Detection& detection)
   updateBoundingBox(detection);
 
 //	verifyStatic(m_detections_bounding_box);
-  verifyStatic();
+  HypothesisBase::verifyStatic();
 }
 
 void Hypothesis::updateHypothesisAfterCorrection()
@@ -167,25 +157,6 @@ void Hypothesis::computeBoundingBox(const std::vector<Eigen::Vector3f>& points,
   }
 }
 
-bool Hypothesis::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
-                                      float max_covariance)
-{
-  Eigen::EigenSolver<Eigen::Matrix3f> eigen_solver(covariance);
-  auto eigen_values = eigen_solver.eigenvalues();
-
-//  std::cout << "eigen values of hyp with id = " << m_id << " are " << eigen_values.col(0)[0].real() << " "
-//            << eigen_values.col(0)[1].real() << " " << eigen_values.col(0)[2].real() << " " << std::endl;
-
-  return (eigen_values.col(0)[0].real() > max_covariance ||
-          eigen_values.col(0)[1].real() > max_covariance ||
-          eigen_values.col(0)[2].real() > max_covariance);
-}
-
-bool Hypothesis::isSpurious(float max_covariance)
-{
-  return exceedsMaxCovariance(getCovariance(), max_covariance);
-}
-
 void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
                               Eigen::Array3f& max_corner_detection)
 {
@@ -223,30 +194,6 @@ void Hypothesis::verifyStatic(Eigen::Array3f& min_corner_detection,
       }
     }
   }
-}
-
-void Hypothesis::verifyStatic()
-{
-  if(m_is_static)
-  {
-    // Compute just distance in xy direction and don't account for movement in z direction
-    Eigen::Vector3f xy_difference = getPosition() - getInitialPosition();
-    xy_difference.z() = 0.f;
-
-    double distance_from_origin = xy_difference.norm();
-    if(distance_from_origin > m_static_distance_threshold)
-    {
-      m_is_static = false;
-    }
-  }
-}
-
-
-std::shared_ptr<Hypothesis> HypothesisFactory::createHypothesis(const Detection& detection,
-                                                                const unsigned int id,
-                                                                const double time_stamp)
-{
-  return std::make_shared<Hypothesis>(detection, id, time_stamp, m_covariance_per_second);
 }
 
 };

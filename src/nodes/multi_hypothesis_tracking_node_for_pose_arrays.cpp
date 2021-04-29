@@ -12,6 +12,8 @@ namespace MultiHypothesisTracker
 
 MultiHypothesisTrackingNodeForPoseArrays::MultiHypothesisTrackingNodeForPoseArrays()
 {
+  m_multi_hypothesis_tracker.setHypothesisFactory(std::make_shared<HypothesisFactory>());
+
   ros::NodeHandle private_node_handle("~");
   m_pose_array_subscriber = private_node_handle.subscribe<PoseArrayMsg>(m_input_topic, 1,
                                                                         &MultiHypothesisTrackingNodeForPoseArrays::detectionPosesCallback,

@@ -10,7 +10,7 @@
 namespace MultiHypothesisTracker
 {
 
-MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr<HypothesisFactory> hypothesis_factory)
+MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory)
   : m_hypothesis_factory(hypothesis_factory)
     , m_current_hypothesis_id(0)
     , m_use_bhattacharyya_for_assignments(true)
@@ -129,7 +129,7 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
           // if assigned but distance too high -> prohibited assignment -> hypothesis unassignment
 
           // create new hypothesis from detection
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j], 
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j],
                                                                            m_current_hypothesis_id++,
                                                                            detections.time_stamp));
         }
@@ -142,7 +142,7 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
       {
         // if detection assigned to dummy hypothesis -> create new hypothesis
         if(assignments[i][j] == HUNGARIAN_ASSIGNED)
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j], 
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j],
                                                                            m_current_hypothesis_id++,
                                                                            detections.time_stamp));
       }

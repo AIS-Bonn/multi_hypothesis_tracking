@@ -31,11 +31,12 @@ include_directories(
 )
 
 # Library for a hypothesis using a Kalman Filter for pose updates
-add_library(hypothesis
+add_library(hypotheses
+  src/hypothesis_base.cpp
   src/hypothesis.cpp
   src/kalman_filter.cpp
 )
-target_link_libraries(hypothesis
+target_link_libraries(hypotheses
   ${EIGEN3_LIBRARIES}
 )
 
@@ -49,7 +50,7 @@ add_library(multi_hypothesis_tracker
   src/multi_hypothesis_tracker.cpp
 )
 target_link_libraries(multi_hypothesis_tracker
-  hypothesis
+  hypotheses
   hungarian
 )
 
@@ -58,7 +59,7 @@ add_library(visualizations_publisher
   src/visualizer/visualizations_publisher.cpp
 )
 target_link_libraries(visualizations_publisher
-  hypothesis
+  hypotheses
   ${catkin_LIBRARIES}
 )
 add_dependencies(visualizations_publisher

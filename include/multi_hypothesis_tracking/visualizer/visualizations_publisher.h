@@ -47,7 +47,7 @@ typedef multi_hypothesis_tracking_msgs::HypothesesFull HypothesesFullMsg;
 
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
-typedef std::vector<std::shared_ptr<Hypothesis>> Hypotheses;
+typedef std::vector<std::shared_ptr<HypothesisInterface>> Hypotheses;
 
 typedef visualization_msgs::Marker MarkerMsg;
 typedef visualization_msgs::MarkerArray MarkerArrayMsg;

@@ -12,6 +12,8 @@ namespace MultiHypothesisTracker
 
 MultiHypothesisTrackingNodeForHumans::MultiHypothesisTrackingNodeForHumans()
 {
+  m_multi_hypothesis_tracker.setHypothesisFactory(std::make_shared<HypothesisFactory>());
+  
   ros::NodeHandle private_node_handle("~");
   m_human_detection_subscriber = private_node_handle.subscribe<HumanMsg>(m_input_topic,
                                                                          1,
