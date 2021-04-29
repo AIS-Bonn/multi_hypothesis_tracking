@@ -75,11 +75,11 @@ public:
    */
   Eigen::MatrixXf& getErrorCovariance(){ return m_error_covariance; };
 
-  /**
-   * @brief Setter for #m_covariance_per_second.
-   * @param[in] covariance_per_second   new value for #m_covariance_per_second.
-   */
-  void setCovariancePerSecond(float covariance_per_second){ m_covariance_per_second = covariance_per_second; };
+  /** @brief Setter for #m_process_noise_covariance_per_second. */
+  void setProcessNoiseCovariancePerSecond(float covariance_per_second)
+  { 
+    m_process_noise_covariance_per_second = covariance_per_second; 
+  };
 
 protected:
 
@@ -119,7 +119,7 @@ protected:
   size_t m_control_dimensions;
 
   /** @brief Covariance that is added to the #m_error_covariance per second of prediction without correction. */
-  float m_covariance_per_second;
+  float m_process_noise_covariance_per_second;
 };
 
 };

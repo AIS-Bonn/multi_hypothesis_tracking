@@ -44,9 +44,9 @@ void MultiHypothesisTrackingBase::getRosParameters()
   private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", distance_threshold_for_hypotheses_merge, 0.1);
   m_multi_hypothesis_tracker.setDistanceThresholdForHypothesesMerge(distance_threshold_for_hypotheses_merge);
 
-  float kalman_noise_covariance_increase_per_second;
-  private_node_handle.param<float>("kalman_noise_covariance_increase_per_second", kalman_noise_covariance_increase_per_second, 0.5f);
-  m_multi_hypothesis_tracker.setKalmanCovariancePerSecond(kalman_noise_covariance_increase_per_second);
+  float kalman_process_noise_covariance_per_second;
+  private_node_handle.param<float>("kalman_process_noise_covariance_per_second", kalman_process_noise_covariance_per_second, 0.5f);
+  m_multi_hypothesis_tracker.setKalmanProcessNoiseCovariancePerSecond(kalman_process_noise_covariance_per_second);
 
   float maximally_allowed_hypothesis_covariance;
   private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance, 5.f);

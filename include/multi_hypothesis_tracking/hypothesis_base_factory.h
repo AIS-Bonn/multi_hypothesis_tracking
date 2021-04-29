@@ -30,7 +30,7 @@ public:
     return std::make_shared<HypothesisBase>(detection,
                                             m_number_of_created_hypotheses++,
                                             time_stamp,
-                                            m_covariance_per_second);
+                                            m_kalman_noise_covariance_increase_per_second);
   };
 };
 

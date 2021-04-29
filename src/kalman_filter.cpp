@@ -13,7 +13,7 @@ namespace MultiHypothesisTracker
 KalmanFilter::KalmanFilter(const Eigen::VectorXf& state)
   : m_detection_dimensions(state.size())
     , m_control_dimensions(1)
-    , m_covariance_per_second(0.5f)
+    , m_process_noise_covariance_per_second(0.5f)
 {
   m_state_dimensions = (int)state.size() * 2;   // position dimensions + velocity dimensions
   m_state = Eigen::VectorXf(m_state_dimensions);
@@ -69,7 +69,7 @@ void KalmanFilter::predict(float dt,
 
   // set up process_noise_covariance
   for(size_t i = 0; i < m_state_dimensions; i++)
-    m_process_noise_covariance(i, i) = dt * m_covariance_per_second;
+    m_process_noise_covariance(i, i) = dt * m_process_noise_covariance_per_second;
 
   // update error covariance
   m_error_covariance =
