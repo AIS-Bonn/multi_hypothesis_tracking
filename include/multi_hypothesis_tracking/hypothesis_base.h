@@ -53,7 +53,7 @@ public:
   }
 
   /** @brief Currently calls exceedsMaxCovariance to check if hypothesis is spurious. */
-  bool isWeak(float max_covariance) override;
+  bool isWeak() override;
 
   
   // Additional methods
@@ -83,6 +83,11 @@ public:
   void setProcessNoiseCovariancePerSecond(float covariance_per_second)
   {
     m_kalman_filter->setProcessNoiseCovariancePerSecond(covariance_per_second);
+  }
+  
+  void setMaxAllowedHypothesisCovariance(float maximally_allowed_hypothesis_covariance)
+  {
+    m_maximally_allowed_hypothesis_covariance = maximally_allowed_hypothesis_covariance;
   }
   
   /** @brief Getter for static property. */
@@ -120,6 +125,9 @@ protected:
   /** @brief Distance a hypothesis is allowed to move to still be considered static. */
   double m_static_distance_threshold;
 
+  /** @brief Hypothesis is deleted if one eigen value of its covariance matrix is greater than this parameter. */
+  float m_maximally_allowed_hypothesis_covariance;
+  
   /** @brief All positions of the hypothesis. */
   std::vector<Eigen::Vector3f> m_position_history;
   /** @brief Vector of bools indicating whether this hypothesis was assigned to a detection in the corresponding step.*/

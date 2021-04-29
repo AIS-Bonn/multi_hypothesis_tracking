@@ -17,6 +17,7 @@ HypothesisBase::HypothesisBase(const Detection& detection,
     , m_time_stamp_of_birth(time_stamp)
     , m_is_static(true)
     , m_static_distance_threshold(1.f)
+    , m_maximally_allowed_hypothesis_covariance(5.f)
     , m_number_of_assignments(0)
 {
   m_kalman_filter = std::make_shared<KalmanFilter>(detection.position);
@@ -68,9 +69,9 @@ bool HypothesisBase::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
           eigen_values.col(0)[2].real() > max_covariance);
 }
 
-bool HypothesisBase::isWeak(float max_covariance)
+bool HypothesisBase::isWeak()
 {
-  return exceedsMaxCovariance(getCovariance(), max_covariance);
+  return exceedsMaxCovariance(getCovariance(), m_maximally_allowed_hypothesis_covariance);
 }
 
 void HypothesisBase::verifyStatic()

@@ -43,10 +43,6 @@ void MultiHypothesisTrackingBase::getRosParameters()
   double distance_threshold_for_hypotheses_merge;
   private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", distance_threshold_for_hypotheses_merge, 0.1);
   m_multi_hypothesis_tracker.setDistanceThresholdForHypothesesMerge(distance_threshold_for_hypotheses_merge);
-
-  float maximally_allowed_hypothesis_covariance;
-  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance, 5.f);
-  m_multi_hypothesis_tracker.setMaxAllowedHypothesisCovariance(maximally_allowed_hypothesis_covariance);
 }
 
 void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()

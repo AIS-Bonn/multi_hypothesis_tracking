@@ -32,6 +32,8 @@ public:
                                                        time_stamp);
 
     hypothesis->setProcessNoiseCovariancePerSecond(m_kalman_process_noise_covariance_per_second);
+    hypothesis->setMaxAllowedHypothesisCovariance(m_maximally_allowed_hypothesis_covariance);
+    
     return hypothesis;
   };
 
@@ -40,8 +42,14 @@ public:
     m_kalman_process_noise_covariance_per_second = covariance_per_second;
   }
 
+  inline void setMaxAllowedHypothesisCovariance(float maximally_allowed_hypothesis_covariance)
+  {
+    m_maximally_allowed_hypothesis_covariance = maximally_allowed_hypothesis_covariance;
+  }
+  
   /** @brief Process noise covariance per second for kalman filter.*/
   float m_kalman_process_noise_covariance_per_second = 0.5f;
+  float m_maximally_allowed_hypothesis_covariance = 5.f;
 };
 
 }

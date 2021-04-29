@@ -66,9 +66,6 @@ public:
   /** @brief Setter for #m_distance_threshold_for_hypotheses_merge. */
   inline void setDistanceThresholdForHypothesesMerge(double distance){ m_distance_threshold_for_hypotheses_merge = distance; }
 
-
-  /** @brief Setter for covariance threshold #m_maximally_allowed_hypothesis_covariance. */
-  inline void setMaxAllowedHypothesisCovariance(float covariance){ m_maximally_allowed_hypothesis_covariance = covariance; }
   inline void setHypothesisFactory(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory)
   { 
     m_hypothesis_factory = std::move(hypothesis_factory); 
@@ -124,8 +121,6 @@ protected:
   int m_max_distance;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
   double m_distance_threshold_for_hypotheses_merge;
-  /** @brief Hypothesis is deleted if one eigen value of its covariance matrix is greater than this parameter. */
-  float m_maximally_allowed_hypothesis_covariance;
 };
 
 };

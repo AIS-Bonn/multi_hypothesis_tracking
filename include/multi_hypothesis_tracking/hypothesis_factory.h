@@ -32,6 +32,8 @@ public:
                                                        time_stamp);
 
     hypothesis->setProcessNoiseCovariancePerSecond(m_kalman_process_noise_covariance_per_second);
+    hypothesis->setMaxAllowedHypothesisCovariance(m_maximally_allowed_hypothesis_covariance);
+
     return hypothesis;
   };
 
