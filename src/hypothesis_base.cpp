@@ -70,7 +70,7 @@ bool HypothesisBase::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
           eigen_values.col(0)[2].real() > max_covariance);
 }
 
-bool HypothesisBase::isSpurious(float max_covariance)
+bool HypothesisBase::isWeak(float max_covariance)
 {
   return exceedsMaxCovariance(getCovariance(), max_covariance);
 }

@@ -46,7 +46,7 @@ public:
   /**
    * @brief Deletes hypotheses that are spurious
    *
-   * @see isSpurious()
+   * @see isWeak()
    */
   void deleteSpuriousHypotheses();
 

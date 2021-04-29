@@ -55,7 +55,7 @@ public:
   }
 
   /** @brief Currently calls exceedsMaxCovariance to check if hypothesis is spurious. */
-  bool isSpurious(float max_covariance) override;
+  bool isWeak(float max_covariance) override;
 
   
   // Additional methods

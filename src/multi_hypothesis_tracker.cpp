@@ -162,7 +162,7 @@ void MultiHypothesisTracker::deleteSpuriousHypotheses()
   auto it = m_hypotheses.begin();
   while(it != m_hypotheses.end())
   {
-    if((*it)->isSpurious(m_maximally_allowed_hypothesis_covariance))
+    if((*it)->isWeak(m_maximally_allowed_hypothesis_covariance))
     {
       it = m_hypotheses.erase(it);
       continue;

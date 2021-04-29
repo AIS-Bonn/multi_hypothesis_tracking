@@ -27,7 +27,7 @@ public:
   virtual Eigen::Vector3f getPosition() = 0;
   virtual Eigen::Matrix3f getCovariance() = 0;
 
-  virtual bool isSpurious(float m_maximally_allowed_hypothesis_covariance) = 0;
+  virtual bool isWeak(float m_maximally_allowed_hypothesis_covariance) = 0;
 };
 
 };
