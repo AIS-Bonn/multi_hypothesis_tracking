@@ -10,9 +10,8 @@
 namespace MultiHypothesisTracker
 {
 
-MultiHypothesisTracker::MultiHypothesisTracker(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory)
-  : m_hypothesis_factory(hypothesis_factory)
-    , m_use_bhattacharyya_for_assignments(true)
+MultiHypothesisTracker::MultiHypothesisTracker()
+  : m_use_bhattacharyya_for_assignments(true)
     , m_dist_scale(10000)
     , m_max_distance((int)(m_dist_scale * 20.0))
 {

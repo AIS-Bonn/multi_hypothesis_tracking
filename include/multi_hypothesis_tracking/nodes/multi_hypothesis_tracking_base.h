@@ -2,7 +2,7 @@
  *
  * Multi hypothesis tracking base node. 
  * Provides basic functionality using the multi hypothesis tracker.
- * Inheriting nodes have to receive detection messages and prove those to the processDetections method.
+ * Inheriting nodes have to receive detection messages and provide those to the processDetections method.
  *
  * @author Jan Razlaw
  */
@@ -33,6 +33,10 @@ class MultiHypothesisTrackingBase
 public:
   MultiHypothesisTrackingBase();
   ~MultiHypothesisTrackingBase(){ m_time_file.close(); };
+
+  /** @brief Sets a suitable HypothesisFactory for the #m_multi_hypothesis_tracker.
+   * @see MultiHypothesisTracker::setHypothesisFactory() */
+  virtual void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle) = 0;
 
   void getRosParameters();
   void prepareMeasuringProcessingTime();

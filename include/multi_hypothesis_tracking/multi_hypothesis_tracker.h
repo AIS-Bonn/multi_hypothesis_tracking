@@ -30,7 +30,7 @@ class MultiHypothesisTracker
 {
 public:
   /** @brief Constructor. */
-  explicit MultiHypothesisTracker(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory);
+  MultiHypothesisTracker();
   /** @brief Destructor. */
   ~MultiHypothesisTracker() = default;
 

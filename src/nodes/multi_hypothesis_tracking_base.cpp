@@ -2,7 +2,7 @@
  *
  * Multi hypothesis tracking base node. 
  * Provides basic functionality using the multi hypothesis tracker.
- * Inheriting nodes have to receive detection messages and prove those to the processDetections method.
+ * Inheriting nodes have to receive detection messages and provide those to the processDetections method.
  *
  * @author Jan Razlaw
  */
@@ -13,7 +13,7 @@ namespace MultiHypothesisTracker
 {
 
 MultiHypothesisTrackingBase::MultiHypothesisTrackingBase()
-  : m_multi_hypothesis_tracker(std::make_shared<HypothesisFactory>())
+  : m_multi_hypothesis_tracker()
     , m_transform_listener(std::make_shared<tf::TransformListener>())
     , m_last_prediction_time(0)
 {
