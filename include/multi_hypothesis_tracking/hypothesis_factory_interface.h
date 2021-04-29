@@ -21,27 +21,12 @@ public:
   /** @brief Creates hypothesis.
    *
    * @param[in] detection       initial state.
-   * @param[in] id              ID of created hypothesis.
    * @param[in] time_stamp      time stamp when the detection was created.
    *
    * @return pointer to created hypothesis.
    */
   virtual std::shared_ptr<HypothesisInterface> createHypothesis(const Detection& detection,
                                                                 double time_stamp) = 0;
-
-
-  inline float getKalmanProcessNoiseCovariancePerSecond() const
-  {
-    return m_kalman_process_noise_covariance_per_second;
-  }
-
-  inline void setKalmanProcessNoiseCovariancePerSecond(float covariance_per_second)
-  {
-    m_kalman_process_noise_covariance_per_second = covariance_per_second;
-  }
-
-  /** @brief Noise covariance increase per second for kalman filter.*/
-  float m_kalman_process_noise_covariance_per_second = 0.5f;
 
   int m_number_of_created_hypotheses = 0;
 };

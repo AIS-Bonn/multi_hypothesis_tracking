@@ -12,12 +12,24 @@ namespace MultiHypothesisTracker
 
 MultiHypothesisTrackingNodeForPoseArrays::MultiHypothesisTrackingNodeForPoseArrays()
 {
-  m_multi_hypothesis_tracker.setHypothesisFactory(std::make_shared<HypothesisFactory>());
-
   ros::NodeHandle private_node_handle("~");
-  m_pose_array_subscriber = private_node_handle.subscribe<PoseArrayMsg>(m_input_topic, 1,
+  initializeHypothesisFactory(private_node_handle);
+  
+  m_pose_array_subscriber = private_node_handle.subscribe<PoseArrayMsg>(m_input_topic, 
+                                                                        1,
                                                                         &MultiHypothesisTrackingNodeForPoseArrays::detectionPosesCallback,
                                                                         this);
+}
+
+void MultiHypothesisTrackingNodeForPoseArrays::initializeHypothesisFactory(const ros::NodeHandle& private_node_handle)
+{
+  auto hypothesis_factory = std::make_shared<HypothesisFactory>();
+
+  float kalman_process_noise_covariance_per_second;
+  private_node_handle.param<float>("kalman_process_noise_covariance_per_second", kalman_process_noise_covariance_per_second, 0.5f);
+  hypothesis_factory->setKalmanProcessNoiseCovariancePerSecond(kalman_process_noise_covariance_per_second);
+
+  m_multi_hypothesis_tracker.setHypothesisFactory(hypothesis_factory);
 }
 
 void MultiHypothesisTrackingNodeForPoseArrays::detectionPosesCallback(const PoseArrayMsg::ConstPtr& detections_message)

@@ -12,9 +12,8 @@ namespace MultiHypothesisTracker
 
 Hypothesis::Hypothesis(const Detection& detection, 
                        unsigned int id, 
-                       double time_stamp, 
-                       float kalman_process_noise_covariance_per_second)
-  : HypothesisBase(detection, id, time_stamp, kalman_process_noise_covariance_per_second)
+                       double time_stamp)
+  : HypothesisBase(detection, id, time_stamp)
     , m_cap_velocity(false)
     , m_max_allowed_velocity(2.8)
 {

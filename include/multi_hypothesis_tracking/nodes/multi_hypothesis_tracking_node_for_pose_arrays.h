@@ -28,6 +28,8 @@ public:
   MultiHypothesisTrackingNodeForPoseArrays();
   ~MultiHypothesisTrackingNodeForPoseArrays(){};
 
+  void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle);
+
   /**
    * @brief Callback function for PoseArray messages.
    *

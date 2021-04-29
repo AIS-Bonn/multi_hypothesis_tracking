@@ -29,12 +29,10 @@ public:
    * @param[in] detection                                   initial state.
    * @param[in] id                                          unique id assigned to this hypothesis.
    * @param[in] time_stamp                                  time stamp when the detection was created.
-   * @param[in] kalman_process_noise_covariance_per_second  parameter for kalman filter.
    */
   HypothesisBase(const Detection& detection,
                  unsigned int id,
-                 double time_stamp,
-                 float kalman_process_noise_covariance_per_second = 0.5f);
+                 double time_stamp);
   ~HypothesisBase() override = default;
 
   // Methods implementing the interface
@@ -82,6 +80,11 @@ public:
   
   inline int getNumberOfAssignments() const{ return m_number_of_assignments; }
 
+  void setProcessNoiseCovariancePerSecond(float covariance_per_second)
+  {
+    m_kalman_filter->setProcessNoiseCovariancePerSecond(covariance_per_second);
+  }
+  
   /** @brief Getter for static property. */
   inline bool isStatic() const { return m_is_static; }
   

@@ -12,13 +12,25 @@ namespace MultiHypothesisTracker
 
 MultiHypothesisTrackingNode::MultiHypothesisTrackingNode()
 {
-  m_multi_hypothesis_tracker.setHypothesisFactory(std::make_shared<HypothesisFactory>());
-
   ros::NodeHandle private_node_handle("~");
+  initializeHypothesisFactory(private_node_handle);
+  
   m_object_detection_subscriber = private_node_handle.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(
     m_input_topic, 1,
     &MultiHypothesisTrackingNode::detectionCallback,
     this);
+}
+
+void MultiHypothesisTrackingNode::initializeHypothesisFactory(const ros::NodeHandle& private_node_handle)
+{
+  auto hypothesis_factory = std::make_shared<HypothesisFactory>();
+
+  float kalman_process_noise_covariance_per_second;
+  private_node_handle.param<float>("kalman_process_noise_covariance_per_second", kalman_process_noise_covariance_per_second, 0.5f);
+  hypothesis_factory->setKalmanProcessNoiseCovariancePerSecond(kalman_process_noise_covariance_per_second);
+
+
+  m_multi_hypothesis_tracker.setHypothesisFactory(hypothesis_factory);
 }
 
 void MultiHypothesisTrackingNode::detectionCallback(const DetectionsMsg::ConstPtr& detections_message)

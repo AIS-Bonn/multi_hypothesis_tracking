@@ -25,15 +25,13 @@ public:
   /**
    * @brief Constructor.
    *
-   * @param[in] detection                                   initial state.
-   * @param[in] id                                          unique id assigned to this hypothesis.
-   * @param[in] time_stamp                                  time stamp when the detection was created.
-   * @param[in] kalman_process_noise_covariance_per_second  parameter for kalman filter.
+   * @param[in] detection    initial state.
+   * @param[in] id           unique id assigned to this hypothesis.
+   * @param[in] time_stamp   time stamp when the detection was created.
    */
   Hypothesis(const Detection& detection, 
              unsigned int id, 
-             double time_stamp, 
-             float kalman_process_noise_covariance_per_second);
+             double time_stamp);
   /** @brief Destructor. */
   ~Hypothesis() override = default;
 

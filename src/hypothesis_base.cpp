@@ -12,8 +12,7 @@ namespace MultiHypothesisTracker
 
 HypothesisBase::HypothesisBase(const Detection& detection,
                                unsigned int id,
-                               double time_stamp,
-                               float kalman_process_noise_covariance_per_second)
+                               double time_stamp)
   : m_id(id)
     , m_time_stamp_of_birth(time_stamp)
     , m_is_static(true)
@@ -21,7 +20,6 @@ HypothesisBase::HypothesisBase(const Detection& detection,
     , m_number_of_assignments(0)
 {
   m_kalman_filter = std::make_shared<KalmanFilter>(detection.position);
-  m_kalman_filter->setProcessNoiseCovariancePerSecond(kalman_process_noise_covariance_per_second);
 
   m_position_history.push_back(detection.position);
   m_was_assigned_history.push_back(true);

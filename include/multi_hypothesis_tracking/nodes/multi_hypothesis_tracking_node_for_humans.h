@@ -28,6 +28,8 @@ public:
   MultiHypothesisTrackingNodeForHumans();
   ~MultiHypothesisTrackingNodeForHumans(){};
 
+  void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle);
+
   /**
    * @brief Callback function for HumanMsg messages.
    *

@@ -31,6 +31,8 @@ public:
   MultiHypothesisTrackingNode();
   ~MultiHypothesisTrackingNode(){};
 
+  void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle);
+
   /**
    * @brief Callback function for ObjectDetection messages.
    *

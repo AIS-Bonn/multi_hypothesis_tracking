@@ -27,11 +27,21 @@ public:
   std::shared_ptr<HypothesisInterface> createHypothesis(const Detection& detection,
                                                         const double time_stamp) override
   {
-    return std::make_shared<HypothesisBase>(detection,
-                                            m_number_of_created_hypotheses++,
-                                            time_stamp,
-                                            m_kalman_noise_covariance_increase_per_second);
+    auto hypothesis = std::make_shared<HypothesisBase>(detection,
+                                                       m_number_of_created_hypotheses++,
+                                                       time_stamp);
+
+    hypothesis->setProcessNoiseCovariancePerSecond(m_kalman_process_noise_covariance_per_second);
+    return hypothesis;
   };
+
+  inline void setKalmanProcessNoiseCovariancePerSecond(float covariance_per_second)
+  {
+    m_kalman_process_noise_covariance_per_second = covariance_per_second;
+  }
+
+  /** @brief Process noise covariance per second for kalman filter.*/
+  float m_kalman_process_noise_covariance_per_second = 0.5f;
 };
 
 }

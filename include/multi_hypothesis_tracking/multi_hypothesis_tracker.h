@@ -66,27 +66,12 @@ public:
   /** @brief Setter for #m_distance_threshold_for_hypotheses_merge. */
   inline void setDistanceThresholdForHypothesesMerge(double distance){ m_distance_threshold_for_hypotheses_merge = distance; }
 
-  /** @brief Setter for process noise covariance per second in kalman filter. */
-  inline void setKalmanProcessNoiseCovariancePerSecond(float covariance_per_second)
-  {
-    m_hypothesis_factory->setKalmanProcessNoiseCovariancePerSecond(covariance_per_second); 
-  }
 
   /** @brief Setter for covariance threshold #m_maximally_allowed_hypothesis_covariance. */
   inline void setMaxAllowedHypothesisCovariance(float covariance){ m_maximally_allowed_hypothesis_covariance = covariance; }
-
-  /** @brief Setter for #m_hypothesis_factory - keeps parameters from previous factory. */
-  inline void setHypothesisFactory(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory,
-                                   bool transfer_parameters_from_previous_factory = true)
+  inline void setHypothesisFactory(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory)
   { 
-    float previous_factory_parameter = 0.f;
-    if(transfer_parameters_from_previous_factory)
-      previous_factory_parameter = m_hypothesis_factory->getKalmanProcessNoiseCovariancePerSecond();
-    
     m_hypothesis_factory = std::move(hypothesis_factory); 
-    
-    if(transfer_parameters_from_previous_factory)
-      m_hypothesis_factory->setKalmanProcessNoiseCovariancePerSecond(previous_factory_parameter);
   }
 
 protected:
