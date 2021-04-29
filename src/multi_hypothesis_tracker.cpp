@@ -153,11 +153,11 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
 
 void MultiHypothesisTracker::filterWeakHypotheses()
 {
-  deleteSpuriousHypotheses();
+  deleteWeakHypotheses();
   mergeCloseHypotheses();
 }
 
-void MultiHypothesisTracker::deleteSpuriousHypotheses()
+void MultiHypothesisTracker::deleteWeakHypotheses()
 {
   auto it = m_hypotheses.begin();
   while(it != m_hypotheses.end())

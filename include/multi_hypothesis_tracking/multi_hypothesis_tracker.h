@@ -48,7 +48,7 @@ public:
    *
    * @see isWeak()
    */
-  void deleteSpuriousHypotheses();
+  void deleteWeakHypotheses();
 
   /** @brief Deletes the younger hypothesis if the distance between two hypotheses is below 
    * #m_distance_threshold_for_hypotheses_merge. */
