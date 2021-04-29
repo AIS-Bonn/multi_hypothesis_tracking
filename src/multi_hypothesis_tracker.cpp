@@ -173,44 +173,19 @@ void MultiHypothesisTracker::deleteSpuriousHypotheses()
 
 void MultiHypothesisTracker::mergeCloseHypotheses()
 {
-  bool erased_it1 = false;
   auto it1 = m_hypotheses.begin();
   while(it1 != m_hypotheses.end())
   {
-    erased_it1 = false;
     auto it2 = it1 + 1;
     while(it2 != m_hypotheses.end())
     {
-      double distance = ((*it1)->getPosition() - (*it2)->getPosition()).norm();
-
-      if(distance < m_distance_threshold_for_hypotheses_merge)
-      {
-        if(!(*it1)->isStatic())
-        {
-          it2 = m_hypotheses.erase(it2);
-        }
-        else
-        {
-          if(!(*it2)->isStatic())
-          {
-            it1 = m_hypotheses.erase(it1);
-            erased_it1 = true;
-            break;
-          }
-          else
-          {
-            it2 = m_hypotheses.erase(it2);
-          }
-        }
-
-        continue;
-      }
-      ++it2;
+      double distance_between_hypotheses = ((*it1)->getPosition() - (*it2)->getPosition()).norm();
+      if(distance_between_hypotheses < m_distance_threshold_for_hypotheses_merge)
+        it2 = m_hypotheses.erase(it2);
+      else
+        ++it2;
     }
-    if(erased_it1)
-      continue;
-    else
-      ++it1;
+    ++it1;
   }
 }
 

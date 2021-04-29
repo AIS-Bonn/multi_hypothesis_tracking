@@ -28,7 +28,6 @@ public:
   virtual Eigen::Matrix3f getCovariance() = 0;
 
   virtual bool isSpurious(float m_maximally_allowed_hypothesis_covariance) = 0;
-  virtual bool isStatic() = 0;
 };
 
 };

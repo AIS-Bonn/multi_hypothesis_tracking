@@ -57,10 +57,7 @@ public:
   /** @brief Currently calls exceedsMaxCovariance to check if hypothesis is spurious. */
   bool isSpurious(float max_covariance) override;
 
-  /** @brief Getter for static property. */
-  inline bool isStatic() override{ return m_is_static; }
-
-
+  
   // Additional methods
 
   /** @brief Getter for unique hypothesis ID. */
@@ -85,6 +82,9 @@ public:
   
   inline int getNumberOfAssignments() const{ return m_number_of_assignments; }
 
+  /** @brief Getter for static property. */
+  inline bool isStatic() const { return m_is_static; }
+  
 protected:
   /**
    * @brief Checks if covariance exceeds max_covariance.
