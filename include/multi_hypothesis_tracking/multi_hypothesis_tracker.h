@@ -125,8 +125,7 @@ protected:
   std::shared_ptr<HypothesisFactoryInterface> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses.*/
   std::vector<std::shared_ptr<HypothesisInterface>> m_hypotheses;
-  /** @brief Counter for hypotheses IDs.*/
-  unsigned int m_current_hypothesis_id;
+
   /** @brief Scale from double to int, because distance is in double but hungarian needs int costs.*/
   int m_dist_scale;
   

@@ -20,16 +20,17 @@ public:
   /** @brief Creates hypothesis.
    *
    * @param[in] detection       detection to initialize the hypothesis' state.
-   * @param[in] id              unique ID of created hypothesis.
    * @param[in] time_stamp      time stamp when the detection was created.
    *
    * @return pointer to created hypothesis.
    */
   std::shared_ptr<HypothesisInterface> createHypothesis(const Detection& detection,
-                                                        const unsigned int id,
                                                         const double time_stamp) override
   {
-    return std::make_shared<Hypothesis>(detection, id, time_stamp, m_covariance_per_second);
+    return std::make_shared<Hypothesis>(detection,
+                                        m_number_of_created_hypotheses++,
+                                        time_stamp,
+                                        m_covariance_per_second);
   };
 
 };

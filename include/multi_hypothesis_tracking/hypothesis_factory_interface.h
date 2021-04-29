@@ -18,19 +18,6 @@ class HypothesisFactoryInterface
 public:
   virtual ~HypothesisFactoryInterface() = default;
 
-  inline float getKalmanCovariancePerSecond()
-  {
-    return m_covariance_per_second;
-  }
-  
-  inline void setKalmanCovariancePerSecond(float covariance_per_second)
-  {
-    m_covariance_per_second = covariance_per_second;
-  }
-  
-  /** @brief Covariance per second for kalman filter.*/
-  float m_covariance_per_second = 0.5f;
-
   /** @brief Creates hypothesis.
    *
    * @param[in] detection       initial state.
@@ -40,8 +27,23 @@ public:
    * @return pointer to created hypothesis.
    */
   virtual std::shared_ptr<HypothesisInterface> createHypothesis(const Detection& detection,
-                                                                unsigned int id,
                                                                 double time_stamp) = 0;
+
+
+  inline float getKalmanCovariancePerSecond()
+  {
+    return m_covariance_per_second;
+  }
+
+  inline void setKalmanCovariancePerSecond(float covariance_per_second)
+  {
+    m_covariance_per_second = covariance_per_second;
+  }
+
+  /** @brief Covariance per second for kalman filter.*/
+  float m_covariance_per_second = 0.5f;
+
+  int m_number_of_created_hypotheses = 0;
 };
 
 }
