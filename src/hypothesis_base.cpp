@@ -79,12 +79,7 @@ void HypothesisBase::verifyStatic()
 {
   if(m_is_static)
   {
-    // TODO: remove setting z to 0, this was just useful in a specific setting 
-    // Compute just distance in xy direction and don't account for movement in z direction
-    Eigen::Vector3f xy_difference = getPosition() - getInitialPosition();
-    xy_difference.z() = 0.f;
-
-    double distance_from_initial_position = xy_difference.norm();
+    double distance_from_initial_position = (getPosition() - getInitialPosition()).norm();
     if(distance_from_initial_position > m_static_distance_threshold)
       m_is_static = false;
   }

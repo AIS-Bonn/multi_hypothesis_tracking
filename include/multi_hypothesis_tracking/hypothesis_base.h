@@ -99,7 +99,8 @@ protected:
   static bool exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
                                    float max_covariance);
 
-  /** @brief Check if hypothesis is still static. */
+  /** @brief Update #m_is_static by checking if hypothesis is moved further than #m_static_distance_threshold from its 
+   * initial position. */
   void verifyStatic();
 
   void updateHypothesisAfterPrediction();
