@@ -38,7 +38,7 @@ void MultiHypothesisTrackingBase::getRosParameters()
 
   double max_correspondence_distance;
   private_node_handle.param<double>("max_correspondence_distance", max_correspondence_distance, 3.75);
-  m_multi_hypothesis_tracker.setMaxCorrespondenceDistance(max_correspondence_distance);
+  m_multi_hypothesis_tracker.setMaxCorrespondenceDistanceForAssignments(max_correspondence_distance);
 
   double distance_threshold_for_hypotheses_merge;
   private_node_handle.param<double>("distance_threshold_for_hypotheses_merge", distance_threshold_for_hypotheses_merge, 0.1);

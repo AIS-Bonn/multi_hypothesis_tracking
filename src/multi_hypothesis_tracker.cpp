@@ -12,8 +12,9 @@ namespace MultiHypothesisTracker
 
 MultiHypothesisTracker::MultiHypothesisTracker()
   : m_use_bhattacharyya_for_assignments(true)
-    , m_dist_scale(10000)
-    , m_max_distance((int)(m_dist_scale * 20.0))
+    , m_correspondence_distance_scale(10000)
+    , m_max_correspondence_distance_for_assignments(20.f)
+    , m_scaled_max_correspondence_distance_for_assignments(static_cast<int>((float)m_correspondence_distance_scale * m_max_correspondence_distance_for_assignments))
 {
 }
 
@@ -61,7 +62,7 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
       if(i < hyp_size && j < meas_size)
       {
         // Calculate distance between hypothesis and detection
-        double distance = -1.0;
+        float distance = -1.0;
         if(m_use_bhattacharyya_for_assignments)
         {
           distance = bhattacharyya(m_hypotheses[i]->getPosition(),
@@ -73,10 +74,9 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
         {
           distance = (m_hypotheses[i]->getPosition() - detections.detections[j].position.block<3, 1>(0, 0)).norm();
         }
-        int scaled_distance = (int)(m_dist_scale * distance);
-        if(scaled_distance < m_max_distance)
+        if(distance < m_max_correspondence_distance_for_assignments)
         {
-          cost_matrix[i][j] = scaled_distance;
+          cost_matrix[i][j] = static_cast<int>((float)m_correspondence_distance_scale * distance);
         }
         else
         {
@@ -87,12 +87,12 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
       else if(i < hyp_size && j >= meas_size)
       {
         // distance from a hypothesis to a dummy detection
-        cost_matrix[i][j] = m_max_distance;
+        cost_matrix[i][j] = m_scaled_max_correspondence_distance_for_assignments;
       }
       else if(i >= hyp_size && j < meas_size)
       {
         // distance from a detection to a dummy hypothesis
-        cost_matrix[i][j] = m_max_distance;
+        cost_matrix[i][j] = m_scaled_max_correspondence_distance_for_assignments;
       }
       else if(i >= hyp_size && j >= meas_size)
       {
@@ -118,7 +118,8 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
       if(i < hyp_size && j < meas_size)
       {
         // if hypothesis assigned to detection and distance below threshold -> correct hypothesis
-        if(assignments[i][j] == HUNGARIAN_ASSIGNED && cost_matrix[i][j] < m_max_distance)
+        if(assignments[i][j] == HUNGARIAN_ASSIGNED && 
+        cost_matrix[i][j] < m_scaled_max_correspondence_distance_for_assignments)
         {
           m_hypotheses[i]->correct(detections.detections[j]);
         }
