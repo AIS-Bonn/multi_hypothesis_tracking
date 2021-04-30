@@ -30,20 +30,20 @@ inline double getTimeHighRes()
 }
 
 /// See: https://en.wikipedia.org/wiki/Mahalanobis_distance
-inline double mahalanobis(const Eigen::Vector3f& dist,
-                          const Eigen::Matrix3f& cov)
+inline float mahalanobis(const Eigen::Vector3f& dist,
+                         const Eigen::Matrix3f& cov)
 {
   return (dist.transpose() * cov.inverse() * dist).eval()(0);
 }
 
 /// See: https://en.wikipedia.org/wiki/Bhattacharyya_distance
-inline double bhattacharyya(const Eigen::Vector3f& dist,
-                            const Eigen::Matrix3f& cov1,
-                            const Eigen::Matrix3f& cov2)
+inline float bhattacharyya(const Eigen::Vector3f& dist,
+                           const Eigen::Matrix3f& cov1,
+                           const Eigen::Matrix3f& cov2)
 {
   const Eigen::Matrix3f cov = (cov1 + cov2) / 2;
-  const double d1 = mahalanobis(dist, cov) / 8;
-  const double d2 = log(cov.determinant() / sqrt(cov1.determinant() * cov2.determinant())) / 2;
+  const float d1 = mahalanobis(dist, cov) / 8;
+  const float d2 = log(cov.determinant() / sqrt(cov1.determinant() * cov2.determinant())) / 2;
   return d1 + d2;
 }
 
