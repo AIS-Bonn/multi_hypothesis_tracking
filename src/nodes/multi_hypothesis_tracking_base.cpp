@@ -33,16 +33,22 @@ void MultiHypothesisTrackingBase::getRosParameters()
 
   // Parameters for m_multi_hypothesis_tracker
   bool use_bhattacharyya_instead_of_euclidean_distance;
-  private_node_handle.param<bool>("use_bhattacharyya_instead_of_euclidean_distance_for_assignments", use_bhattacharyya_instead_of_euclidean_distance, true);
+  private_node_handle.param<bool>("use_bhattacharyya_instead_of_euclidean_distance_for_assignments",
+                                  use_bhattacharyya_instead_of_euclidean_distance,
+                                  true);
   m_multi_hypothesis_tracker.setUseBhattacharyyaDistanceInsteadOfEuclideanForAssignments(
     use_bhattacharyya_instead_of_euclidean_distance);
 
   float max_correspondence_distance;
-  private_node_handle.param<float>("max_correspondence_distance_for_assignments", max_correspondence_distance, 3.75f);
+  private_node_handle.param<float>("max_correspondence_distance_for_assignments",
+                                   max_correspondence_distance,
+                                   3.75f);
   m_multi_hypothesis_tracker.setMaxCorrespondenceDistanceForAssignments(max_correspondence_distance);
 
   float distance_threshold_for_hypotheses_merge;
-  private_node_handle.param<float>("distance_threshold_for_hypotheses_merge", distance_threshold_for_hypotheses_merge, 0.1f);
+  private_node_handle.param<float>("distance_threshold_for_hypotheses_merge",
+                                   distance_threshold_for_hypotheses_merge,
+                                   0.1f);
   m_multi_hypothesis_tracker.setDistanceThresholdForHypothesesMerge(distance_threshold_for_hypotheses_merge);
 }
 
@@ -55,7 +61,8 @@ void MultiHypothesisTrackingBase::prepareMeasuringProcessingTime()
   m_processed_first_detections = false;
 }
 
-void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(std::chrono::high_resolution_clock::time_point callback_start_time)
+void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(
+  std::chrono::high_resolution_clock::time_point callback_start_time)
 {
   if(m_measure_processing_time && m_processed_first_detections)
   {
@@ -66,16 +73,16 @@ void MultiHypothesisTrackingBase::updateProcessingTimeMeasurements(std::chrono::
     m_number_of_callbacks++;
 
     ROS_DEBUG_STREAM("Processing time needed for one callback: " << time_for_one_callback.count() << " microseconds.");
-    ROS_DEBUG_STREAM("Mean processing time for a callback: " 
-    << m_summed_time_for_callbacks.count() / m_number_of_callbacks
-    << " microseconds.");
+    ROS_DEBUG_STREAM("Mean processing time for a callback: "
+                       << m_summed_time_for_callbacks.count() / m_number_of_callbacks
+                       << " microseconds.");
   }
 }
 
 void MultiHypothesisTrackingBase::publishVisualizations(const Detections& detections)
 {
   m_visualizations_publisher.publishDetectionsVisualizations(detections);
-  m_visualizations_publisher.publishHypothesesVisualizations(getHypotheses(), 
+  m_visualizations_publisher.publishHypothesesVisualizations(getHypotheses(),
                                                              ros::Time(detections.time_stamp));
 }
 
@@ -86,9 +93,9 @@ bool MultiHypothesisTrackingBase::transformToFrame(Detections& detections,
     return true;
 
   tf::StampedTransform transform;
-  if(!getTransform(detections.frame_id, 
+  if(!getTransform(detections.frame_id,
                    target_frame,
-                   detections.time_stamp, 
+                   detections.time_stamp,
                    transform))
     return false;
 
@@ -102,9 +109,9 @@ bool MultiHypothesisTrackingBase::getTransform(const std::string& source_frame,
                                                tf::StampedTransform& transform)
 {
   ros::Time ros_time_stamp = ros::Time(time_stamp);
-  if(!m_transform_listener->waitForTransform(target_frame, 
+  if(!m_transform_listener->waitForTransform(target_frame,
                                              source_frame,
-                                             ros_time_stamp, 
+                                             ros_time_stamp,
                                              ros::Duration(1.0)))
   {
     ROS_ERROR_STREAM("Could not wait for transform at time " << time_stamp);
@@ -113,14 +120,14 @@ bool MultiHypothesisTrackingBase::getTransform(const std::string& source_frame,
 
   try
   {
-    m_transform_listener->lookupTransform(target_frame, 
+    m_transform_listener->lookupTransform(target_frame,
                                           source_frame,
-                                          ros_time_stamp, 
+                                          ros_time_stamp,
                                           transform);
   }
   catch(tf::TransformException& ex)
   {
-    ROS_ERROR("Received an exception trying to transform a point from \"%s\" to \"%s\"", 
+    ROS_ERROR("Received an exception trying to transform a point from \"%s\" to \"%s\"",
               source_frame.c_str(),
               target_frame.c_str());
     return false;
@@ -135,7 +142,7 @@ void MultiHypothesisTrackingBase::transformDetections(Detections& detections,
   Eigen::Affine3d transform_eigen;
   tf::transformTFToEigen(transform, transform_eigen);
   Eigen::Affine3f transform_eigenf = transform_eigen.cast<float>();
-  
+
   for(auto& detection : detections.detections)
   {
     detection.position = transform_eigenf * detection.position;
