@@ -33,7 +33,7 @@ void MultiHypothesisTrackingBase::getRosParameters()
 
   // Parameters for m_multi_hypothesis_tracker
   bool use_bhattacharyya_instead_of_euclidean_distance;
-  private_node_handle.param<bool>("use_bhattacharyya_instead_of_euclidean_distance", use_bhattacharyya_instead_of_euclidean_distance, true);
+  private_node_handle.param<bool>("use_bhattacharyya_instead_of_euclidean_distance_for_assignments", use_bhattacharyya_instead_of_euclidean_distance, true);
   m_multi_hypothesis_tracker.setUseBhattacharyyaDistanceInsteadOfEuclideanForAssignments(
     use_bhattacharyya_instead_of_euclidean_distance);
 
