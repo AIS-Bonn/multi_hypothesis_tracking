@@ -23,15 +23,10 @@
 namespace MultiHypothesisTracker
 {
 
-/**
- * @brief Multi hypothesis tracker class.
- */
 class MultiHypothesisTracker
 {
 public:
-  /** @brief Constructor. */
   MultiHypothesisTracker();
-  /** @brief Destructor. */
   ~MultiHypothesisTracker() = default;
 
   /** @brief Calls predictNextHypothesesStates for each hypothesis. */
