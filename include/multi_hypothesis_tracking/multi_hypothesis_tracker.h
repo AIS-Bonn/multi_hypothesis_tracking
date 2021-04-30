@@ -43,17 +43,6 @@ public:
   /** @brief Calls methods to check which hypotheses are weak and deletes those. */
   void filterWeakHypotheses();
 
-  /**
-   * @brief Deletes hypotheses that are spurious
-   *
-   * @see isWeak()
-   */
-  void deleteWeakHypotheses();
-
-  /** @brief Deletes the younger hypothesis if the distance between two hypotheses is below 
-   * #m_distance_threshold_for_hypotheses_merge. */
-  void mergeCloseHypotheses();
-
   inline std::vector<std::shared_ptr<HypothesisInterface>>& getHypotheses()
   { 
     return m_hypotheses; 
@@ -114,6 +103,15 @@ protected:
                         int**& cost_matrix,
                         const Detections& detections);
 
+  /** @brief Deletes hypotheses that return true for their corresponding isWeak method.
+   * @see isWeak()
+   */
+  void deleteWeakHypotheses();
+
+  /** @brief Deletes the younger hypothesis if the distance between two hypotheses is below 
+   * #m_distance_threshold_for_hypotheses_merge. */
+  void mergeCloseHypotheses();
+  
   /** @brief Creates hypotheses of the requested type. */
   std::shared_ptr<HypothesisFactoryInterface> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses. */
