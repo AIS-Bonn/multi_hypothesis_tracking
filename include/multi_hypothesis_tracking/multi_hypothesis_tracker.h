@@ -128,7 +128,7 @@ protected:
   /** @brief Scaled distance threshold for assignments. */
   int m_scaled_max_correspondence_distance_for_assignments;
   /** @brief Hypotheses are merged if their distance is below this parameter. */
-  double m_distance_threshold_for_hypotheses_merge;
+  float m_distance_threshold_for_hypotheses_merge;
 };
 
 };
