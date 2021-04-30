@@ -28,12 +28,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h> // for INT_MAX
 
 #define HUNGARIAN_NOT_ASSIGNED 0
 #define HUNGARIAN_ASSIGNED 1
 
 #define HUNGARIAN_MODE_MINIMIZE_COST   0
 #define HUNGARIAN_MODE_MAXIMIZE_UTIL 1
+
+#define DO_NOT_ASSIGN INT_MAX
 
 typedef struct
 {

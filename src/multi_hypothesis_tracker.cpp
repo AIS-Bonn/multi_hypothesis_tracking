@@ -81,8 +81,7 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
         }
         else
         {
-          // if threshold exceeded, make sure assignment algorithm doesn't assign here
-          cost_matrix[i][j] = INT_MAX;
+          cost_matrix[i][j] = DO_NOT_ASSIGN;
         }
       }
       else if(i < hyp_size && j >= meas_size)

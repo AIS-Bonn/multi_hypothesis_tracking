@@ -12,7 +12,6 @@
 #include <vector>
 #include <queue>
 #include <iostream>
-#include <limits.h> // for INT_MAX
 
 #include <multi_hypothesis_tracking/definitions.h>
 #include <multi_hypothesis_tracking/hypotheses/hypothesis_factory.h>
