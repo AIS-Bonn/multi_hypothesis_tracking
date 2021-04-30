@@ -82,6 +82,9 @@ protected:
   void setupCostMatrix(const Detections& detections,
                        int**& cost_matrix);
 
+  float calculateDistance(const std::shared_ptr<HypothesisInterface>& hypothesis,
+                          const Detection& detection);
+
   /**
    * @brief Use assignments for hypothesis correction and initialization.
    *

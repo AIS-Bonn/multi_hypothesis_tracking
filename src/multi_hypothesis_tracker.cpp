@@ -62,19 +62,7 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
     {
       if(i < hyp_size && j < meas_size)
       {
-        // Calculate distance between hypothesis and detection
-        float distance = -1.0;
-        if(m_use_bhattacharyya_for_assignments)
-        {
-          distance = bhattacharyya(m_hypotheses[i]->getPosition(),
-                                   detections.detections[j].position.block<3, 1>(0, 0),
-                                   m_hypotheses[i]->getCovariance(),
-                                   detections.detections[j].covariance.block<3, 3>(0, 0));
-        }
-        else
-        {
-          distance = (m_hypotheses[i]->getPosition() - detections.detections[j].position.block<3, 1>(0, 0)).norm();
-        }
+        float distance = calculateDistance(m_hypotheses[i], detections.detections[j]);
         if(distance < m_max_correspondence_distance_for_assignments)
         {
           cost_matrix[i][j] = static_cast<int>((float)m_correspondence_distance_scale * distance);
@@ -100,6 +88,22 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
         cost_matrix[i][j] = 0;
       }
     }
+  }
+}
+
+float MultiHypothesisTracker::calculateDistance(const std::shared_ptr<HypothesisInterface>& hypothesis,
+                                                const Detection& detection)
+{
+  if(m_use_bhattacharyya_for_assignments)
+  {
+    return bhattacharyya(hypothesis->getPosition(),
+                         detection.position.block<3, 1>(0, 0),
+                         hypothesis->getCovariance(),
+                         detection.covariance.block<3, 3>(0, 0));
+  }
+  else
+  {
+    return (hypothesis->getPosition() - detection.position).norm();
   }
 }
 
