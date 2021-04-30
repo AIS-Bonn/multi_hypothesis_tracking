@@ -180,7 +180,7 @@ void MultiHypothesisTracker::mergeCloseHypotheses()
     auto it2 = it1 + 1;
     while(it2 != m_hypotheses.end())
     {
-      double distance_between_hypotheses = ((*it1)->getPosition() - (*it2)->getPosition()).norm();
+      float distance_between_hypotheses = ((*it1)->getPosition() - (*it2)->getPosition()).norm();
       if(distance_between_hypotheses < m_distance_threshold_for_hypotheses_merge)
         it2 = m_hypotheses.erase(it2);
       else
