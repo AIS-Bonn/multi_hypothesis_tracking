@@ -20,7 +20,7 @@ MultiHypothesisTracker::MultiHypothesisTracker()
 void MultiHypothesisTracker::predictNextHypothesesStates(double duration_since_previous_prediction)
 {
   for(auto& hypothesis : m_hypotheses)
-    hypothesis->predict(duration_since_previous_prediction);
+    hypothesis->predict(static_cast<float>(duration_since_previous_prediction));
 }
 
 void MultiHypothesisTracker::correctHypothesesStates(const Detections& detections)
