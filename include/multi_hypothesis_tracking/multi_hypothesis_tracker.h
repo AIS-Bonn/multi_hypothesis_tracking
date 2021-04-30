@@ -15,7 +15,7 @@
 #include <limits.h> // for INT_MAX
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypothesis_factory.h>
+#include <multi_hypothesis_tracking/hypotheses/hypothesis_factory.h>
 #include <multi_hypothesis_tracking/hungarian.h>
 
 #include <multi_hypothesis_tracking/utils.h>

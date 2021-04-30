@@ -32,8 +32,8 @@ include_directories(
 
 # Library for a hypothesis using a Kalman Filter for pose updates
 add_library(hypotheses
-  src/hypothesis_base.cpp
-  src/hypothesis.cpp
+  src/hypotheses/hypothesis_base.cpp
+  src/hypotheses/hypothesis.cpp
   src/kalman_filter.cpp
 )
 target_link_libraries(hypotheses

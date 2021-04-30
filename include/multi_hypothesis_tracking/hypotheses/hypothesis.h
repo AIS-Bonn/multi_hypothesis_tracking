@@ -11,7 +11,7 @@
 #include <memory> // for std::shared_ptr
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypothesis_base.h>
+#include <multi_hypothesis_tracking/hypotheses/hypothesis_base.h>
 
 namespace MultiHypothesisTracker
 {

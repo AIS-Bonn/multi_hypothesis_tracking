@@ -5,7 +5,7 @@
  * @author Jan Razlaw
  */
 
-#include "multi_hypothesis_tracking/hypothesis.h"
+#include "multi_hypothesis_tracking/hypotheses/hypothesis.h"
 
 namespace MultiHypothesisTracker
 {
@@ -108,17 +108,22 @@ void Hypothesis::capVelocity()
 
 void Hypothesis::updatePoints(const Detection& detection)
 {
-  // transform detection points to the current state's position and add them to the hypothesis' points
-  auto transform_detection_to_corrected = (getPosition() - detection.position).eval();
-  std::vector<Eigen::Vector3f> corrected_detection_points;
-  corrected_detection_points.reserve(detection.points.size());
-  for(const auto& point : detection.points)
-    corrected_detection_points.emplace_back(Eigen::Vector3f(point + transform_detection_to_corrected));
-
-  // TODO: add option to accumulate the detection's points in the hypothesis (or simply copy the points from the most recent detection as the hypothesis' points)
-  //TODO: filter if too many points in hypothesis
-  m_points.reserve(m_points.size() + corrected_detection_points.size());
-  m_points.insert(m_points.end(), corrected_detection_points.begin(), corrected_detection_points.end());
+  // TODO: For HumanHypothesis there are exaclty x joints. In convert function keep also those with a score of 0. 
+  //  Replace those points by the detections points that are set. Maybe this is irrelevant as soon as I track 
+  //  the joints with kalman filter.
+  m_points = detection.points;
+//  
+//  // transform detection points to the current state's position and add them to the hypothesis' points
+//  auto transform_detection_to_corrected = (getPosition() - detection.position).eval();
+//  std::vector<Eigen::Vector3f> corrected_detection_points;
+//  corrected_detection_points.reserve(detection.points.size());
+//  for(const auto& point : detection.points)
+//    corrected_detection_points.emplace_back(Eigen::Vector3f(point + transform_detection_to_corrected));
+//
+//  // TODO: add option to accumulate the detection's points in the hypothesis (or simply copy the points from the most recent detection as the hypothesis' points)
+//  //TODO: filter if too many points in hypothesis
+//  m_points.reserve(m_points.size() + corrected_detection_points.size());
+//  m_points.insert(m_points.end(), corrected_detection_points.begin(), corrected_detection_points.end());
 }
 
 void Hypothesis::updateBoundingBox(const Detection& detection)

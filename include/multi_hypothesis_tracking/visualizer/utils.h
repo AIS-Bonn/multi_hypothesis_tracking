@@ -15,7 +15,7 @@
 #include <geometry_msgs/Point.h>
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypothesis.h>
+#include <multi_hypothesis_tracking/hypotheses/hypothesis.h>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
