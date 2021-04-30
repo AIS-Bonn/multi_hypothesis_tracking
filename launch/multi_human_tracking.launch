@@ -8,8 +8,8 @@
     <arg name="measure_processing_time" default="false"/>
 
     <!-- Multi Hypotheses Tracker Parameters -->
-    <arg name="max_correspondence_distance" default="6.6"/>
     <arg name="use_bhattacharyya_instead_of_euclidean_distance_for_assignments" default="false"/>
+    <arg name="max_correspondence_distance_for_assignments" default="6.6"/>
     <arg name="distance_threshold_for_hypotheses_merge" default="0.3"/>
     <arg name="kalman_process_noise_covariance_per_second" default="0.5"/>
     <arg name="maximally_allowed_hypothesis_covariance" default="5.0"/>
@@ -25,8 +25,8 @@
         <param name="world_frame_id" value="$(arg world_frame_id)"/>
         <param name="measure_processing_time" value="$(arg measure_processing_time)"/>
 
-        <param name="max_correspondence_distance" value="$(arg max_correspondence_distance)"/>
         <param name="use_bhattacharyya_instead_of_euclidean_distance_for_assignments" value="$(arg use_bhattacharyya_instead_of_euclidean_distance_for_assignments)"/>
+        <param name="max_correspondence_distance_for_assignments" value="$(arg max_correspondence_distance_for_assignments)"/>
         <param name="distance_threshold_for_hypotheses_merge" value="$(arg distance_threshold_for_hypotheses_merge)"/>
         <param name="kalman_process_noise_covariance_per_second" value="$(arg kalman_process_noise_covariance_per_second)"/>
         <param name="maximally_allowed_hypothesis_covariance" value="$(arg maximally_allowed_hypothesis_covariance)"/>

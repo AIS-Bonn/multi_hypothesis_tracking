@@ -38,7 +38,7 @@ void MultiHypothesisTrackingBase::getRosParameters()
     use_bhattacharyya_instead_of_euclidean_distance);
 
   float max_correspondence_distance;
-  private_node_handle.param<float>("max_correspondence_distance", max_correspondence_distance, 3.75f);
+  private_node_handle.param<float>("max_correspondence_distance_for_assignments", max_correspondence_distance, 3.75f);
   m_multi_hypothesis_tracker.setMaxCorrespondenceDistanceForAssignments(max_correspondence_distance);
 
   float distance_threshold_for_hypotheses_merge;
