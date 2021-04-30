@@ -65,14 +65,17 @@ protected:
   /**
    * @brief Set up cost matrix for hungarian method.
    *
-   * Top left block: Pairwise thresholded distance between each
-   * detection and each hypothesis.
-   * Top right block: Fake distance of hypotheses to dummy detections
-   *    -> #m_max_distance
-   * Bottom left block: Fake distance of detections to dummy hypotheses
-   *    -> #m_max_distance
-   * Bottom right block: Fake distance between dummy detections and dummy
-   * hypotheses -> Zeroes.
+   * Top left block - real hypothesis & real detection: 
+   * Pairwise distance between each detection and each hypothesis - DO_NOT_ASSIGN if distance exceeds threshold.
+   *
+   * Top right block - real hypothesis & dummy detection: 
+   * Threshold distance, allowing assignment but only if there is no possible assignment between real & real.
+   * 
+   * Bottom left block - dummy hypothesis & real detection: 
+   * Same as top right block
+   * 
+   * Bottom right block - dummy hypothesis & dummy detection: 
+   * Filled with zeros to not interfere in hungarian method.
    *
    * @param[in]     detections      detections.
    * @param[out]    cost_matrix     cost matrix.
@@ -86,9 +89,9 @@ protected:
   /**
    * @brief Use assignments for hypothesis correction and initialization.
    *
-   * If detection assigned to hypothesis -> correct latter.
-   * If detection not assigned -> create new hypothesis.
-   * If hypothesis not assigned -> failed to detect the object corresponding to the hypothesis.
+   * If detection assigned to hypothesis -> correct hypothesis using detection.
+   * If detection not assigned -> create new hypothesis from detection.
+   * If hypothesis not assigned -> do nothing - failed to detect the object corresponding to the hypothesis.
    *
    * @param[in]     assignments     assignments from hungarian method.
    * @param[in]     cost_matrix     original cost_matrix hungarian method was initialized with.
