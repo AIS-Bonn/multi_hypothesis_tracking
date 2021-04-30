@@ -1,6 +1,6 @@
 /** @file
  *
- * Helper functions for multi object tracker.
+ * Helper functions for multi hypothesis tracker.
  *
  * @author Jan Razlaw
  */
@@ -22,9 +22,9 @@ namespace MultiHypothesisTracker
  */
 inline double getTimeHighRes()
 {
-  timeval curr_time;
-  gettimeofday(&curr_time, NULL);
-  double time_high_res = ((double)curr_time.tv_sec) + ((double)curr_time.tv_usec) * 1e-6;
+  timeval current_time;
+  gettimeofday(&current_time, NULL);
+  double time_high_res = ((double)current_time.tv_sec) + ((double)current_time.tv_usec) * 1e-6;
 
   return time_high_res;
 }
