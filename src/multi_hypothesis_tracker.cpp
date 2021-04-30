@@ -15,6 +15,7 @@ MultiHypothesisTracker::MultiHypothesisTracker()
     , m_correspondence_distance_scale(10000)
     , m_max_correspondence_distance_for_assignments(20.f)
     , m_scaled_max_correspondence_distance_for_assignments(static_cast<int>((float)m_correspondence_distance_scale * m_max_correspondence_distance_for_assignments))
+    , m_distance_threshold_for_hypotheses_merge(0.5f)
 {
 }
 
