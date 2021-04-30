@@ -84,11 +84,11 @@ protected:
                        int**& cost_matrix);
 
   /**
-   * @brief Use assignments for correction and initialization.
+   * @brief Use assignments for hypothesis correction and initialization.
    *
    * If detection assigned to hypothesis -> correct latter.
-   * If detection not assigned -> new hypothesis.
-   * If hypothesis not assigned -> failed to detect.
+   * If detection not assigned -> create new hypothesis.
+   * If hypothesis not assigned -> failed to detect the object corresponding to the hypothesis.
    *
    * @param[in]     assignments     assignments from hungarian method.
    * @param[in]     cost_matrix     original cost_matrix hungarian method was initialized with.
