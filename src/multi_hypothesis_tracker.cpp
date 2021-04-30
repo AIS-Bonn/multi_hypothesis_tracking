@@ -91,7 +91,7 @@ void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
           cost_matrix[hyp_id][det_id] = DO_NOT_ASSIGN;
       }
       else if((isRealHypothesis(hyp_id, hyp_size) && isDummyDetection(det_id, meas_size)) ||
-        (isDummyHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size)))
+              (isDummyHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size)))
       {
         cost_matrix[hyp_id][det_id] = m_scaled_max_correspondence_distance_for_assignments;
       }
@@ -140,7 +140,7 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
           {
             m_hypotheses[hyp_id]->correct(detections.detections[det_id]);
           }
-          // distance threshold exceeded -> create new hypothesis from detection
+            // distance threshold exceeded -> create new hypothesis from detection
           else
           {
             m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[det_id],

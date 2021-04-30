@@ -36,29 +36,30 @@ public:
   void filterWeakHypotheses();
 
   inline std::vector<std::shared_ptr<HypothesisInterface>>& getHypotheses()
-  { 
-    return m_hypotheses; 
+  {
+    return m_hypotheses;
   }
-  
+
   inline void setUseBhattacharyyaDistanceInsteadOfEuclideanForAssignments(bool use_bhattacharyya)
-  { 
-    m_use_bhattacharyya_for_assignments = use_bhattacharyya; 
+  {
+    m_use_bhattacharyya_for_assignments = use_bhattacharyya;
   }
-  
+
   inline void setMaxCorrespondenceDistanceForAssignments(float distance)
   {
     m_max_correspondence_distance_for_assignments = distance;
-    m_scaled_max_correspondence_distance_for_assignments = static_cast<int>((float)m_correspondence_distance_scale * distance); 
+    m_scaled_max_correspondence_distance_for_assignments = static_cast<int>((float)m_correspondence_distance_scale *
+                                                                            distance);
   }
-  
+
   inline void setDistanceThresholdForHypothesesMerge(float distance)
-  { 
-    m_distance_threshold_for_hypotheses_merge = distance; 
+  {
+    m_distance_threshold_for_hypotheses_merge = distance;
   }
-  
+
   inline void setHypothesisFactory(std::shared_ptr<HypothesisFactoryInterface> hypothesis_factory)
-  { 
-    m_hypothesis_factory = std::move(hypothesis_factory); 
+  {
+    m_hypothesis_factory = std::move(hypothesis_factory);
   }
 
 protected:
@@ -109,7 +110,7 @@ protected:
   /** @brief Deletes the younger hypothesis if the distance between two hypotheses is below 
    * #m_distance_threshold_for_hypotheses_merge. */
   void mergeCloseHypotheses();
-  
+
   /** @brief Creates hypotheses of the requested type. */
   std::shared_ptr<HypothesisFactoryInterface> m_hypothesis_factory;
   /** @brief Vector storing all tracked hypotheses. */

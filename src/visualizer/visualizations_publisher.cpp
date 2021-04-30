@@ -235,7 +235,7 @@ void VisualizationsPublisher::publishHypothesesPoints(const Hypotheses& hypothes
   PointCloud::Ptr cloud(new PointCloud);
   cloud->header.frame_id = m_world_frame_id;
   cloud->header.stamp = pcl_conversions::toPCL(stamp);
-
+  
   convertHypothesesPointsToCloud(hypotheses, cloud);
 
   m_hypotheses_points_publisher.publish(cloud);
