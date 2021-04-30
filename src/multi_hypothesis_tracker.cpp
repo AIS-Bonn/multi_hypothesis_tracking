@@ -127,41 +127,32 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
   size_t meas_size = detections.detections.size();
   size_t dim = hyp_size + meas_size;
 
-  for(size_t i = 0; i < dim; i++)
+  for(size_t hyp_id = 0; hyp_id < dim; hyp_id++)
   {
-    for(size_t j = 0; j < dim; j++)
+    for(size_t det_id = 0; det_id < dim; det_id++)
     {
-      if(i < hyp_size && j < meas_size)
+      if(assignments[hyp_id][det_id] == HUNGARIAN_ASSIGNED)
       {
-        // if hypothesis assigned to detection and distance below threshold -> correct hypothesis
-        if(assignments[i][j] == HUNGARIAN_ASSIGNED && 
-        cost_matrix[i][j] < m_scaled_max_correspondence_distance_for_assignments)
+        if(isRealHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size))
         {
-          m_hypotheses[i]->correct(detections.detections[j]);
+          // if valid assignment -> correct hypothesis
+          if(cost_matrix[hyp_id][det_id] < m_scaled_max_correspondence_distance_for_assignments)
+          {
+            m_hypotheses[hyp_id]->correct(detections.detections[det_id]);
+          }
+          // distance threshold exceeded -> create new hypothesis from detection
+          else
+          {
+            m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[det_id],
+                                                                             detections.time_stamp));
+          }
         }
-        else if(assignments[i][j] == HUNGARIAN_ASSIGNED)
+        else if(isDummyHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size))
         {
-          // if assigned but distance too high -> prohibited assignment -> hypothesis unassignment
-
-          // create new hypothesis from detection
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j],
+          // if real detection assigned to dummy hypothesis -> create new hypothesis
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[det_id],
                                                                            detections.time_stamp));
         }
-      }
-      else if(i < hyp_size && j >= meas_size)
-      {
-        // if hypothesis assigned to dummy detection -> failed to detect hypothesis
-      }
-      else if(i >= hyp_size && j < meas_size)
-      {
-        // if detection assigned to dummy hypothesis -> create new hypothesis
-        if(assignments[i][j] == HUNGARIAN_ASSIGNED)
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[j],
-                                                                           detections.time_stamp));
-      }
-      else if(i >= hyp_size && j >= meas_size)
-      {
-        // dummy hypothesis to dummy detection
       }
     }
   }
