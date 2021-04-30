@@ -43,7 +43,7 @@ public:
     return m_hypotheses; 
   }
   
-  inline void setUseBhattacharyyaDistance(bool use_bhattacharyya)
+  inline void setUseBhattacharyyaDistanceInsteadOfEuclideanForAssignments(bool use_bhattacharyya)
   { 
     m_use_bhattacharyya_for_assignments = use_bhattacharyya; 
   }
