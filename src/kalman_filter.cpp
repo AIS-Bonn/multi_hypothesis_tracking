@@ -28,7 +28,7 @@ void KalmanFilter::setUpInitialState(const Eigen::VectorXf& initial_position)
 {
   m_state = Eigen::VectorXf(m_number_of_state_dimensions);
   m_state.setZero();
-  for(int i = 0; i < m_number_of_detection_positions_dimensions; i++)
+  for(size_t i = 0; i < m_number_of_detection_positions_dimensions; i++)
     m_state(i) = initial_position(i);
 }
 
