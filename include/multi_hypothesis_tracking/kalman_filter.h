@@ -64,7 +64,8 @@ public:
 
   /** @brief Sets #m_process_noise_covariance_per_second. */
   void setProcessNoiseCovariancePerSecond(float covariance_per_second)
-  { 
+  {
+    assert(covariance_per_second > 0.f);
     m_process_noise_covariance_per_second = covariance_per_second; 
   };
 

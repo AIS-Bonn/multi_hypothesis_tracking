@@ -47,6 +47,7 @@ public:
 
   inline void setMaxCorrespondenceDistanceForAssignments(float distance)
   {
+    assert(distance > 0.f);
     m_max_correspondence_distance_for_assignments = distance;
     m_scaled_max_correspondence_distance_for_assignments = static_cast<int>((float)m_correspondence_distance_scale *
                                                                             distance);
@@ -54,6 +55,7 @@ public:
 
   inline void setDistanceThresholdForHypothesesMerge(float distance)
   {
+    assert(distance > 0.f);
     m_distance_threshold_for_hypotheses_merge = distance;
   }
 

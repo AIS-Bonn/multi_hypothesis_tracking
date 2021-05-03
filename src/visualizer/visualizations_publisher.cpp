@@ -42,9 +42,15 @@ void VisualizationsPublisher::initializePublishers(ros::NodeHandle& node_handle)
 void VisualizationsPublisher::getRosParameters(ros::NodeHandle& node_handle)
 {
   node_handle.param<std::string>("world_frame_id", m_world_frame_id, "world");
+  
   node_handle.param<double>("hypothesis_age_threshold_in_seconds", m_hypothesis_age_threshold_in_seconds, 0.5);
+  assert(m_hypothesis_age_threshold_in_seconds >= 0.0);
+
   node_handle.param<int>("number_of_assignments_threshold", m_number_of_assignments_threshold, 3);
+  assert(m_number_of_assignments_threshold >= 0);
+
   node_handle.param<double>("time_offset_for_predictions", m_time_offset_for_predictions, 0.0);
+  assert(m_time_offset_for_predictions >= 0.0);
 }
 
 void VisualizationsPublisher::publishDetectionsVisualizations(const Detections& detections)

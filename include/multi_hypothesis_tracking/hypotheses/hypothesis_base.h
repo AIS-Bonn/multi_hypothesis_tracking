@@ -87,6 +87,7 @@ public:
   
   void setMaxAllowedHypothesisCovariance(float maximally_allowed_hypothesis_covariance)
   {
+    assert(maximally_allowed_hypothesis_covariance > 0.f);
     m_maximally_allowed_hypothesis_covariance = maximally_allowed_hypothesis_covariance;
   }
   
