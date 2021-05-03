@@ -30,10 +30,6 @@ public:
   explicit KalmanFilter(const Eigen::VectorXf& initial_position);
   virtual ~KalmanFilter() = default;
 
-  void setUpInitialState(const Eigen::VectorXf& initial_position);
-  void setUpMatricesForPrediction();
-  void setUpMatricesForCorrection();
-
   /**
    * @brief Predicts the position after time_difference seconds without a control.
    *
@@ -73,7 +69,10 @@ public:
   };
 
 protected:
-
+  void setUpInitialState(const Eigen::VectorXf& initial_position);
+  void setUpMatricesForPrediction();
+  void setUpMatricesForCorrection();
+  
   /**
    * @brief Checks if a matrix is at least almost symmetrical.
    *
