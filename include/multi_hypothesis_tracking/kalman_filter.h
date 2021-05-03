@@ -27,14 +27,7 @@ class KalmanFilter
 {
 public:
 
-  /**
-   * @brief Constructor
-   *
-   * @param[in] state   initial state
-   */
-  explicit KalmanFilter(const Eigen::VectorXf& state);
-
-  /** @brief Destructor */
+  explicit KalmanFilter(const Eigen::VectorXf& initial_position);
   virtual ~KalmanFilter() = default;
 
   /**
