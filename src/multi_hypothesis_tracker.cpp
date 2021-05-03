@@ -72,32 +72,37 @@ bool isDummyDetection(const size_t index,
 void MultiHypothesisTracker::setupCostMatrix(const Detections& detections,
                                              int**& cost_matrix)
 {
-  size_t hyp_size = m_hypotheses.size();
-  size_t meas_size = detections.detections.size();
-  size_t dim = hyp_size + meas_size;
+  size_t number_of_real_hypotheses = m_hypotheses.size();
+  size_t number_of_real_detections = detections.detections.size();
+  size_t cost_matrix_dimension = number_of_real_hypotheses + number_of_real_detections;
 
-  cost_matrix = new int* [dim];
-  for(size_t hyp_id = 0; hyp_id < dim; hyp_id++)
+  cost_matrix = new int* [cost_matrix_dimension];
+  for(size_t hypothesis_id = 0; hypothesis_id < cost_matrix_dimension; hypothesis_id++)
   {
-    cost_matrix[hyp_id] = new int[dim];
-    for(size_t det_id = 0; det_id < dim; det_id++)
+    cost_matrix[hypothesis_id] = new int[cost_matrix_dimension];
+    for(size_t detection_id = 0; detection_id < cost_matrix_dimension; detection_id++)
     {
-      if(isRealHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size))
+      if(isRealHypothesis(hypothesis_id, number_of_real_hypotheses) &&
+         isRealDetection(detection_id, number_of_real_detections))
       {
-        float distance = calculateDistance(m_hypotheses[hyp_id], detections.detections[det_id]);
+        float distance = calculateDistance(m_hypotheses[hypothesis_id], 
+                                           detections.detections[detection_id]);
         if(distance < m_max_correspondence_distance_for_assignments)
-          cost_matrix[hyp_id][det_id] = static_cast<int>((float)m_correspondence_distance_scale * distance);
+          cost_matrix[hypothesis_id][detection_id] = static_cast<int>((float)m_correspondence_distance_scale * distance);
         else
-          cost_matrix[hyp_id][det_id] = DO_NOT_ASSIGN;
+          cost_matrix[hypothesis_id][detection_id] = DO_NOT_ASSIGN;
       }
-      else if((isRealHypothesis(hyp_id, hyp_size) && isDummyDetection(det_id, meas_size)) ||
-              (isDummyHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size)))
+      else if((isRealHypothesis(hypothesis_id, number_of_real_hypotheses) &&
+               isDummyDetection(detection_id, number_of_real_detections)) ||
+              (isDummyHypothesis(hypothesis_id, number_of_real_hypotheses) &&
+               isRealDetection(detection_id, number_of_real_detections)))
       {
-        cost_matrix[hyp_id][det_id] = m_scaled_max_correspondence_distance_for_assignments;
+        cost_matrix[hypothesis_id][detection_id] = m_scaled_max_correspondence_distance_for_assignments;
       }
-      else if(isDummyHypothesis(hyp_id, hyp_size) && isDummyDetection(det_id, meas_size))
+      else if(isDummyHypothesis(hypothesis_id, number_of_real_hypotheses) &&
+              isDummyDetection(detection_id, number_of_real_detections))
       {
-        cost_matrix[hyp_id][det_id] = 0;
+        cost_matrix[hypothesis_id][detection_id] = 0;
       }
     }
   }
@@ -123,34 +128,36 @@ void MultiHypothesisTracker::applyAssignments(int**& assignments,
                                               int**& cost_matrix,
                                               const Detections& detections)
 {
-  size_t hyp_size = m_hypotheses.size();
-  size_t meas_size = detections.detections.size();
-  size_t dim = hyp_size + meas_size;
+  size_t number_of_real_hypotheses = m_hypotheses.size();
+  size_t number_of_real_detections = detections.detections.size();
+  size_t cost_matrix_dimension = number_of_real_hypotheses + number_of_real_detections;
 
-  for(size_t hyp_id = 0; hyp_id < dim; hyp_id++)
+  for(size_t hypothesis_id = 0; hypothesis_id < cost_matrix_dimension; hypothesis_id++)
   {
-    for(size_t det_id = 0; det_id < dim; det_id++)
+    for(size_t detection_id = 0; detection_id < cost_matrix_dimension; detection_id++)
     {
-      if(assignments[hyp_id][det_id] == HUNGARIAN_ASSIGNED)
+      if(assignments[hypothesis_id][detection_id] == HUNGARIAN_ASSIGNED)
       {
-        if(isRealHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size))
+        if(isRealHypothesis(hypothesis_id, number_of_real_hypotheses) &&
+           isRealDetection(detection_id, number_of_real_detections))
         {
           // if valid assignment -> correct hypothesis
-          if(cost_matrix[hyp_id][det_id] < m_scaled_max_correspondence_distance_for_assignments)
+          if(cost_matrix[hypothesis_id][detection_id] < m_scaled_max_correspondence_distance_for_assignments)
           {
-            m_hypotheses[hyp_id]->correct(detections.detections[det_id]);
+            m_hypotheses[hypothesis_id]->correct(detections.detections[detection_id]);
           }
             // distance threshold exceeded -> create new hypothesis from detection
           else
           {
-            m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[det_id],
+            m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[detection_id],
                                                                              detections.time_stamp));
           }
         }
-        else if(isDummyHypothesis(hyp_id, hyp_size) && isRealDetection(det_id, meas_size))
+        else if(isDummyHypothesis(hypothesis_id, number_of_real_hypotheses) &&
+                isRealDetection(detection_id, number_of_real_detections))
         {
           // if real detection assigned to dummy hypothesis -> create new hypothesis
-          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[det_id],
+          m_hypotheses.emplace_back(m_hypothesis_factory->createHypothesis(detections.detections[detection_id],
                                                                            detections.time_stamp));
         }
       }
