@@ -16,6 +16,7 @@
 
     <!-- Visualizer/Publisher Parameters -->
     <arg name="hypothesis_age_threshold_in_seconds" default="0.0"/>
+    <arg name="number_of_assignments_threshold" default="3"/>
     <arg name="time_offset_for_predictions" default="0.05"/>
 
     <arg name="subscribe_to_poses_only" default="false"/>
@@ -34,6 +35,7 @@
         <param name="maximally_allowed_hypothesis_covariance" value="$(arg maximally_allowed_hypothesis_covariance)"/>
 
         <param name="hypothesis_age_threshold_in_seconds" value="$(arg hypothesis_age_threshold_in_seconds)"/>
+        <param name="number_of_assignments_threshold" value="$(arg number_of_assignments_threshold)"/>
         <param name="time_offset_for_predictions" value="$(arg time_offset_for_predictions)"/>
 
         <param name="subscribe_to_poses_only" value="$(arg subscribe_to_poses_only)"/>
