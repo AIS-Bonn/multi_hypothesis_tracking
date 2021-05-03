@@ -105,11 +105,8 @@ void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
 {
   assert(detection_position.size() == m_number_of_detection_positions_dimensions);
 
-  m_observation_noise_covariance = detection_covariance;
-
-  Eigen::MatrixXf temp = m_error_covariance * m_observation_model.transpose();
-  m_kalman_gain = temp * (m_observation_model * temp + m_observation_noise_covariance).inverse();
-
+  computeKalmanGain(detection_covariance);
+  
   Eigen::VectorXf expected_position = m_observation_model * m_state;
 
   // correct state
@@ -126,6 +123,14 @@ void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
   // check if cov matrix is symmetric as it should be
   if(!isAlmostSymmetric(m_error_covariance))
     std::cout << "KalmanFilter::correct: m_error_covariance is not symmetric!!!!!\n" << m_error_covariance << std::endl;
+}
+
+void KalmanFilter::computeKalmanGain(const Eigen::MatrixXf& detection_covariance)
+{
+  m_observation_noise_covariance = detection_covariance;
+
+  Eigen::MatrixXf temp = m_error_covariance * m_observation_model.transpose();
+  m_kalman_gain = temp * (m_observation_model * temp + m_observation_noise_covariance).inverse();
 }
 
 bool KalmanFilter::isAlmostSymmetric(const Eigen::MatrixXf& matrix,
