@@ -31,7 +31,9 @@ public:
   virtual ~KalmanFilter() = default;
 
   void setUpInitialState(const Eigen::VectorXf& initial_position);
+  void setUpMatricesForPrediction();
   
+
   /**
    * @brief Predicts the position after time_difference seconds without a control.
    *

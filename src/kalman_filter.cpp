@@ -17,16 +17,8 @@ KalmanFilter::KalmanFilter(const Eigen::VectorXf& initial_position)
 {
   m_number_of_state_dimensions = (int)initial_position.size() * 2;   // position dimensions + velocity dimensions
   setUpInitialState(initial_position);
+  setUpMatricesForPrediction();
 
-  // next_state = m_state_transition_model * m_state + m_control_input_model * control + process_noise  with process_noise ~ N(0,m_process_noise_covariance)
-  m_state_transition_model.resize(m_number_of_state_dimensions, m_number_of_state_dimensions);
-  m_state_transition_model.setIdentity();
-
-  m_control_input_model = Eigen::MatrixXf(m_number_of_state_dimensions, m_number_of_control_dimensions);
-  m_control_input_model.setZero();
-
-  m_process_noise_covariance = Eigen::MatrixXf(m_number_of_state_dimensions, m_number_of_state_dimensions);
-  m_process_noise_covariance.setIdentity();
 
 
   // detection = m_observation_model * current_state + observation_noise  with observation_noise ~ N(0,m_observation_noise_covariance)
@@ -47,6 +39,19 @@ void KalmanFilter::setUpInitialState(const Eigen::VectorXf& initial_position)
   m_state.setZero();
   for(int i = 0; i < m_number_of_detection_positions_dimensions; i++)
     m_state(i) = initial_position(i);
+}
+
+void KalmanFilter::setUpMatricesForPrediction()
+{
+  // next_state = m_state_transition_model * m_state + m_control_input_model * control + process_noise  with process_noise ~ N(0,m_process_noise_covariance)
+  m_state_transition_model = Eigen::MatrixXf(m_number_of_state_dimensions, m_number_of_state_dimensions);
+  m_state_transition_model.setIdentity();
+
+  m_control_input_model = Eigen::MatrixXf(m_number_of_state_dimensions, m_number_of_control_dimensions);
+  m_control_input_model.setZero();
+
+  m_process_noise_covariance = Eigen::MatrixXf(m_number_of_state_dimensions, m_number_of_state_dimensions);
+  m_process_noise_covariance.setIdentity();
 }
 
 void KalmanFilter::predict(float time_difference)
