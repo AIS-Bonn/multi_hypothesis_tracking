@@ -65,6 +65,19 @@ void KalmanFilter::predict(float time_difference)
 void KalmanFilter::predict(float time_difference,
                            const Eigen::VectorXf& control)
 {
+  predictState(time_difference, control);
+  predictErrorCovariance(time_difference);
+
+  // Check if cov matrix is symmetric as is should be
+  if(!isAlmostSymmetric(m_error_covariance))
+    std::cout << "KalmanFilter::predictNextHypothesesStates: m_error_covariance is not symmetric!!!!!" << std::endl;
+
+  // TODO: check if matrix is positive definite ?!?
+}
+
+void KalmanFilter::predictState(float time_difference,
+                                const Eigen::VectorXf& control)
+{
   m_state_transition_model.setIdentity();
   m_state_transition_model(0, 3) = time_difference;
   m_state_transition_model(1, 4) = time_difference;
@@ -74,18 +87,15 @@ void KalmanFilter::predict(float time_difference,
   m_control_input_model.setZero();
 
   m_state = m_state_transition_model * m_state + m_control_input_model * control;
+}
 
+void KalmanFilter::predictErrorCovariance(float time_difference)
+{
   for(size_t i = 0; i < m_number_of_state_dimensions; i++)
     m_process_noise_covariance(i, i) = time_difference * m_process_noise_covariance_per_second;
 
   m_error_covariance =
     m_state_transition_model * m_error_covariance * m_state_transition_model.transpose() + m_process_noise_covariance;
-
-  // check if cov matrix is symmetric as is should be
-  if(!isAlmostSymmetric(m_error_covariance))
-    std::cout << "KalmanFilter::predictNextHypothesesStates: m_error_covariance is not symmetric!!!!!" << std::endl;
-
-  // TODO: check if matrix is positive definite ?!?
 }
 
 void KalmanFilter::correct(const Eigen::VectorXf& detection_position,

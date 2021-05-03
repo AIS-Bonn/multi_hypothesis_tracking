@@ -72,7 +72,11 @@ protected:
   void setUpInitialState(const Eigen::VectorXf& initial_position);
   void setUpMatricesForPrediction();
   void setUpMatricesForCorrection();
-  
+
+  void predictState(float time_difference,
+                    const Eigen::VectorXf& control);
+  void predictErrorCovariance(float time_difference);
+
   /**
    * @brief Checks if a matrix is at least almost symmetrical.
    *
