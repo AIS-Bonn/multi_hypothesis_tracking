@@ -99,7 +99,7 @@ protected:
   Eigen::MatrixXf m_observation_noise_covariance;
 
   /** @brief Number of state dimensions. */
-  size_t m_state_dimensions;
+  size_t m_number_of_state_dimensions;
   /** @brief Number of dimensions of the detections position or state. */
   size_t m_number_of_detection_positions_dimensions;
   /** @brief Number of conrol dimensions. */
