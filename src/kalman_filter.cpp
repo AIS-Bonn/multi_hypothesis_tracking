@@ -50,7 +50,9 @@ void KalmanFilter::setUpMatricesForCorrection()
   // detection = m_observation_model * current_state + observation_noise  with observation_noise ~ N(0,m_observation_noise_covariance)
   m_observation_model = Eigen::MatrixXf(m_number_of_detection_positions_dimensions, m_number_of_state_dimensions);
   m_observation_model.setZero();
-
+  for(size_t i = 0; i < m_number_of_detection_positions_dimensions; i++)
+    m_observation_model(i, i) = 1.f;
+  
   m_observation_noise_covariance = Eigen::MatrixXf(m_number_of_detection_positions_dimensions, m_number_of_detection_positions_dimensions);
   m_observation_noise_covariance.setIdentity();
 }
@@ -102,10 +104,6 @@ void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
                            const Eigen::MatrixXf& detection_covariance)
 {
   assert(detection_position.size() == m_number_of_detection_positions_dimensions);
-
-  m_observation_model.setZero();
-  for(size_t i = 0; i < m_number_of_detection_positions_dimensions; i++)
-    m_observation_model(i, i) = 1.f;
 
   m_observation_noise_covariance = detection_covariance;
 
