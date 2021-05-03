@@ -31,20 +31,20 @@ public:
   virtual ~KalmanFilter() = default;
 
   /**
-   * @brief Predicts the position after dt seconds without a control.
+   * @brief Predicts the position after time_difference seconds without a control.
    *
-   * @param[in] dt  time delta that has passed
+   * @param[in] time_difference  time delta that has passed since previous prediction.
    * @see predictNextHypothesesStates(float, const Eigen::VectorXf&)
    */
-  void predict(float dt);
+  void predict(float time_difference);
 
   /**
-   * @brief Predicts the position after dt seconds.
+   * @brief Predicts the position after time_difference seconds.
    *
-   * @param[in] dt      time delta that has passed
-   * @param[in] control control vector that is applied during prediction
+   * @param[in] time_difference     time delta that has passed since previous prediction.
+   * @param[in] control             control vector that is applied during prediction.
    */
-  void predict(float dt,
+  void predict(float time_difference,
                const Eigen::VectorXf& control);
 
   /**

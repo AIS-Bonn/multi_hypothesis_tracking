@@ -45,21 +45,21 @@ KalmanFilter::KalmanFilter(const Eigen::VectorXf& initial_position)
   m_error_covariance.setIdentity();
 }
 
-void KalmanFilter::predict(float dt)
+void KalmanFilter::predict(float time_difference)
 {
   Eigen::VectorXf control(m_control_dimensions);
   control.setZero();
-  predict(dt, control);
+  predict(time_difference, control);
 }
 
-void KalmanFilter::predict(float dt,
+void KalmanFilter::predict(float time_difference,
                            const Eigen::VectorXf& control)
 {
   // set up state transition model
   m_state_transition_model.setIdentity();
-  m_state_transition_model(0, 3) = dt;
-  m_state_transition_model(1, 4) = dt;
-  m_state_transition_model(2, 5) = dt;
+  m_state_transition_model(0, 3) = time_difference;
+  m_state_transition_model(1, 4) = time_difference;
+  m_state_transition_model(2, 5) = time_difference;
 
   // set up control input model - here not used
   m_control_input_model.setZero();
@@ -69,7 +69,7 @@ void KalmanFilter::predict(float dt,
 
   // set up process_noise_covariance
   for(size_t i = 0; i < m_state_dimensions; i++)
-    m_process_noise_covariance(i, i) = dt * m_process_noise_covariance_per_second;
+    m_process_noise_covariance(i, i) = time_difference * m_process_noise_covariance_per_second;
 
   // update error covariance
   m_error_covariance =
