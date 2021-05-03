@@ -65,7 +65,12 @@ public:
 protected:
   /**
    * @brief Set up cost matrix for hungarian method.
+   * 
+   * The matrix is quadratic with the dimension (number of hypotheses + number of detections).
+   * This is done to allow assignments between real hypotheses/detections and dummy detections/hypotheses, 
+   * which is necessary to use the standard hungarian method with a different size of hypotheses and detections.
    *
+   * The cost matrix consists of 4 blocks:
    * Top left block - real hypothesis & real detection: 
    * Pairwise distance between each detection and each hypothesis - DO_NOT_ASSIGN if distance exceeds threshold.
    *
