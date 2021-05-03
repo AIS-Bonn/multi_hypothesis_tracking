@@ -32,7 +32,7 @@ public:
 
   void setUpInitialState(const Eigen::VectorXf& initial_position);
   void setUpMatricesForPrediction();
-  
+  void setUpMatricesForCorrection();
 
   /**
    * @brief Predicts the position after time_difference seconds without a control.
