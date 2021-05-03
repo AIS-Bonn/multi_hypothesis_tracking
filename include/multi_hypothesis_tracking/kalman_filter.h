@@ -101,7 +101,7 @@ protected:
   /** @brief Number of state dimensions. */
   size_t m_state_dimensions;
   /** @brief Number of dimensions of the detections position or state. */
-  size_t m_detection_dimensions;
+  size_t m_number_of_detection_positions_dimensions;
   /** @brief Number of conrol dimensions. */
   size_t m_control_dimensions;
 

@@ -11,14 +11,14 @@ namespace MultiHypothesisTracker
 {
 
 KalmanFilter::KalmanFilter(const Eigen::VectorXf& initial_position)
-  : m_detection_dimensions(initial_position.size())
+  : m_number_of_detection_positions_dimensions(initial_position.size())
     , m_control_dimensions(1)
     , m_process_noise_covariance_per_second(0.5f)
 {
   m_state_dimensions = (int)initial_position.size() * 2;   // position dimensions + velocity dimensions
   m_state = Eigen::VectorXf(m_state_dimensions);
   m_state.setZero();
-  for(int i = 0; i < m_detection_dimensions; i++)
+  for(int i = 0; i < m_number_of_detection_positions_dimensions; i++)
     m_state(i) = initial_position(i);
 
   
@@ -34,10 +34,10 @@ KalmanFilter::KalmanFilter(const Eigen::VectorXf& initial_position)
 
 
   // detection = m_observation_model * current_state + observation_noise  with observation_noise ~ N(0,m_observation_noise_covariance)
-  m_observation_model = Eigen::MatrixXf(m_detection_dimensions, m_state_dimensions);
+  m_observation_model = Eigen::MatrixXf(m_number_of_detection_positions_dimensions, m_state_dimensions);
   m_observation_model.setZero();
 
-  m_observation_noise_covariance = Eigen::MatrixXf(m_detection_dimensions, m_detection_dimensions);
+  m_observation_noise_covariance = Eigen::MatrixXf(m_number_of_detection_positions_dimensions, m_number_of_detection_positions_dimensions);
   m_observation_noise_covariance.setIdentity();
 
 
@@ -81,10 +81,10 @@ void KalmanFilter::predict(float time_difference,
 void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
                            const Eigen::MatrixXf& detection_covariance)
 {
-  assert(detection_position.size() == m_detection_dimensions);
+  assert(detection_position.size() == m_number_of_detection_positions_dimensions);
 
   m_observation_model.setZero();
-  for(size_t i = 0; i < m_detection_dimensions; i++)
+  for(size_t i = 0; i < m_number_of_detection_positions_dimensions; i++)
     m_observation_model(i, i) = 1.f;
 
   m_observation_noise_covariance = detection_covariance;
