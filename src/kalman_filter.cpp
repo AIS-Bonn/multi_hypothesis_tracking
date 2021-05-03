@@ -124,7 +124,7 @@ bool KalmanFilter::isAlmostSymmetric(const Eigen::MatrixXf& matrix,
 {
   for(int i = 1; i < matrix.rows(); i++)
     for(int j = i; j < matrix.cols(); j++)
-      if(fabs(matrix(i, j) - matrix(j, i)) > epsilon)
+      if(fabsf(matrix(i, j) - matrix(j, i)) > epsilon)
         return false;
 
   return true;
