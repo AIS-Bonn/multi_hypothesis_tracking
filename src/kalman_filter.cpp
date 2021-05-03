@@ -70,11 +70,7 @@ void KalmanFilter::predict(float time_difference,
   predictState(time_difference, control);
   predictErrorCovariance(time_difference);
 
-  // Check if cov matrix is symmetric as is should be
-  if(!isAlmostSymmetric(m_error_covariance))
-    std::cout << "KalmanFilter::predictNextHypothesesStates: m_error_covariance is not symmetric!!!!!" << std::endl;
-
-  // TODO: check if matrix is positive definite ?!?
+  isErrorCovarianceValid();
 }
 
 void KalmanFilter::predictState(float time_difference,
@@ -100,6 +96,16 @@ void KalmanFilter::predictErrorCovariance(float time_difference)
     m_state_transition_model * m_error_covariance * m_state_transition_model.transpose() + m_process_noise_covariance;
 }
 
+void KalmanFilter::isErrorCovarianceValid()
+{
+  // TODO: check if matrix is positive definite ?!?
+
+  // TODO: check if calculations are responsible for need for epsilon - if calculations are right, make covariance matrix symmetric by P = (P + P^T) / 2
+  // check if cov matrix is symmetric as it should be
+  if(!isAlmostSymmetric(m_error_covariance))
+    std::cout << "KalmanFilter: m_error_covariance is not symmetric!\n" << m_error_covariance << std::endl;
+}
+
 void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
                            const Eigen::MatrixXf& detection_covariance)
 {
@@ -119,10 +125,7 @@ void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
   m_error_covariance = (identity - m_kalman_gain * m_observation_model) * m_error_covariance;
 
 
-  // TODO: check if calculations are responsible for need for epsilon - if calculations are right, make covariance matrix symmetric by P = (P + P^T) / 2
-  // check if cov matrix is symmetric as it should be
-  if(!isAlmostSymmetric(m_error_covariance))
-    std::cout << "KalmanFilter::correct: m_error_covariance is not symmetric!!!!!\n" << m_error_covariance << std::endl;
+  isErrorCovarianceValid();
 }
 
 void KalmanFilter::computeKalmanGain(const Eigen::MatrixXf& detection_covariance)

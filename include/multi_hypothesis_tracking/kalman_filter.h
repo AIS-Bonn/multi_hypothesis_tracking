@@ -76,6 +76,8 @@ protected:
   void predictState(float time_difference,
                     const Eigen::VectorXf& control);
   void predictErrorCovariance(float time_difference);
+  /** @brief Error covariance has to be positive definite. */
+  void isErrorCovarianceValid();
   
   void computeKalmanGain(const Eigen::MatrixXf& detection_covariance);
 
