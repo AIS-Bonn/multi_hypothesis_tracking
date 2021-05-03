@@ -108,18 +108,18 @@ void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
   m_observation_noise_covariance = detection_covariance;
 
   Eigen::MatrixXf temp = m_error_covariance * m_observation_model.transpose();
-  Eigen::MatrixXf kalman_gain = temp * (m_observation_model * temp + m_observation_noise_covariance).inverse();
+  m_kalman_gain = temp * (m_observation_model * temp + m_observation_noise_covariance).inverse();
 
   Eigen::VectorXf expected_position = m_observation_model * m_state;
 
   // correct state
-  m_state = m_state + kalman_gain * (detection_position - expected_position);
+  m_state = m_state + m_kalman_gain * (detection_position - expected_position);
 
 
   // update error covariance
-  Eigen::MatrixXf identity(kalman_gain.rows(), m_observation_model.cols());
+  Eigen::MatrixXf identity(m_kalman_gain.rows(), m_observation_model.cols());
   identity.setIdentity();
-  m_error_covariance = (identity - kalman_gain * m_observation_model) * m_error_covariance;
+  m_error_covariance = (identity - m_kalman_gain * m_observation_model) * m_error_covariance;
 
 
   // TODO: check if calculations are responsible for need for epsilon - if calculations are right, make covariance matrix symmetric by P = (P + P^T) / 2

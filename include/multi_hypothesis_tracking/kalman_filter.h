@@ -105,6 +105,9 @@ protected:
   /** @brief Observation noise covariance matrix R. */
   Eigen::MatrixXf m_observation_noise_covariance;
 
+  /** @brief Kalman gain K. */
+  Eigen::MatrixXf m_kalman_gain;
+  
   size_t m_number_of_state_dimensions;
   size_t m_number_of_detection_positions_dimensions;
   size_t m_number_of_control_dimensions;
