@@ -98,11 +98,8 @@ protected:
   /** @brief Observation noise covariance matrix R. */
   Eigen::MatrixXf m_observation_noise_covariance;
 
-  /** @brief Number of state dimensions. */
   size_t m_number_of_state_dimensions;
-  /** @brief Number of dimensions of the detections position or state. */
   size_t m_number_of_detection_positions_dimensions;
-  /** @brief Number of conrol dimensions. */
   size_t m_number_of_control_dimensions;
 
   /** @brief Covariance that is added to the #m_error_covariance per second of prediction without correction. */
