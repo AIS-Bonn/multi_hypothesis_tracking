@@ -48,27 +48,21 @@ public:
                const Eigen::VectorXf& control);
 
   /**
-   * @brief Corrects the position using the position of current detection.
+   * @brief Corrects the position using the position of the current detection.
    *
-   * @param[in] detection_position    position of current detection.
-   * @param[in] detection_covariance  covariance of current detection.
+   * @param[in] detection_position    position of the current detection.
+   * @param[in] detection_covariance  covariance of the current detection.
    */
   void correct(const Eigen::VectorXf& detection_position,
                const Eigen::MatrixXf& detection_covariance);
 
-  /**
-   * @brief Getter for m_state.
-   * @return current state of filter.
-   */
+  /** @brief Gets the current state of the filter - consisting of the position and velocity. */
   Eigen::VectorXf& getState(){ return m_state; };
 
-  /**
-   * @brief Getter for m_error_covariance.
-   * @return current error covariance matrix P.
-   */
+  /** @brief Gets the current error covariance matrix P. */
   Eigen::MatrixXf& getErrorCovariance(){ return m_error_covariance; };
 
-  /** @brief Setter for #m_process_noise_covariance_per_second. */
+  /** @brief Sets #m_process_noise_covariance_per_second. */
   void setProcessNoiseCovariancePerSecond(float covariance_per_second)
   { 
     m_process_noise_covariance_per_second = covariance_per_second; 
@@ -77,17 +71,17 @@ public:
 protected:
 
   /**
-   * @brief Checks if a Matrix is at least almost symmetrical.
+   * @brief Checks if a matrix is at least almost symmetrical.
    *
-   * @param matrix  matrix to be checked
-   * @param epsilon maximally allowed difference between corresponding entries
+   * @param matrix      matrix to be checked.
+   * @param epsilon     maximally allowed difference between corresponding entries.
    *
-   * @return true if matrix is at least almost symmetrical, false otherwise
+   * @return true if matrix is at least almost symmetrical, false otherwise.
    */
   bool isAlmostSymmetric(const Eigen::MatrixXf& matrix,
                          float epsilon = 0.001f);
 
-  /** @brief Vector encoding the current state x. */
+  /** @brief Vector encoding the current state x - consisting of the position and the velocity. */
   Eigen::VectorXf m_state;
 
   /** @brief State transition model F. */

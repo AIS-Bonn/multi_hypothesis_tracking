@@ -55,7 +55,6 @@ void KalmanFilter::predict(float time_difference)
 void KalmanFilter::predict(float time_difference,
                            const Eigen::VectorXf& control)
 {
-  // set up state transition model
   m_state_transition_model.setIdentity();
   m_state_transition_model(0, 3) = time_difference;
   m_state_transition_model(1, 4) = time_difference;
@@ -64,14 +63,11 @@ void KalmanFilter::predict(float time_difference,
   // set up control input model - here not used
   m_control_input_model.setZero();
 
-  // update state according to models
   m_state = m_state_transition_model * m_state + m_control_input_model * control;
 
-  // set up process_noise_covariance
   for(size_t i = 0; i < m_state_dimensions; i++)
     m_process_noise_covariance(i, i) = time_difference * m_process_noise_covariance_per_second;
 
-  // update error covariance
   m_error_covariance =
     m_state_transition_model * m_error_covariance * m_state_transition_model.transpose() + m_process_noise_covariance;
 
@@ -87,20 +83,15 @@ void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
 {
   assert(detection_position.size() == m_detection_dimensions);
 
-  // set up observation model
   m_observation_model.setZero();
   for(size_t i = 0; i < m_detection_dimensions; i++)
     m_observation_model(i, i) = 1.f;
 
-  // set up observation noise covariance
   m_observation_noise_covariance = detection_covariance;
 
-  // compute kalman gain
   Eigen::MatrixXf temp = m_error_covariance * m_observation_model.transpose();
   Eigen::MatrixXf kalman_gain = temp * (m_observation_model * temp + m_observation_noise_covariance).inverse();
 
-
-  // compute the expected position
   Eigen::VectorXf expected_position = m_observation_model * m_state;
 
   // correct state
