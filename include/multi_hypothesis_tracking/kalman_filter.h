@@ -80,7 +80,9 @@ protected:
   void isErrorCovarianceValid();
   
   void computeKalmanGain(const Eigen::MatrixXf& detection_covariance);
-
+  void correctState(const Eigen::VectorXf& detection_position);
+  void correctErrorCovariance();
+  
   /**
    * @brief Checks if a matrix is at least almost symmetrical.
    *

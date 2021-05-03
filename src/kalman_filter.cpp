@@ -112,18 +112,8 @@ void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
   assert(detection_position.size() == m_number_of_detection_positions_dimensions);
 
   computeKalmanGain(detection_covariance);
-  
-  Eigen::VectorXf expected_position = m_observation_model * m_state;
-
-  // correct state
-  m_state = m_state + m_kalman_gain * (detection_position - expected_position);
-
-
-  // update error covariance
-  Eigen::MatrixXf identity(m_kalman_gain.rows(), m_observation_model.cols());
-  identity.setIdentity();
-  m_error_covariance = (identity - m_kalman_gain * m_observation_model) * m_error_covariance;
-
+  correctState(detection_position);
+  correctErrorCovariance();
 
   isErrorCovarianceValid();
 }
@@ -134,6 +124,19 @@ void KalmanFilter::computeKalmanGain(const Eigen::MatrixXf& detection_covariance
 
   Eigen::MatrixXf temp = m_error_covariance * m_observation_model.transpose();
   m_kalman_gain = temp * (m_observation_model * temp + m_observation_noise_covariance).inverse();
+}
+
+void KalmanFilter::correctState(const Eigen::VectorXf& detection_position)
+{
+  Eigen::VectorXf expected_position = m_observation_model * m_state;
+  m_state = m_state + m_kalman_gain * (detection_position - expected_position);
+}
+
+void KalmanFilter::correctErrorCovariance()
+{
+  Eigen::MatrixXf identity(m_kalman_gain.rows(), m_observation_model.cols());
+  identity.setIdentity();
+  m_error_covariance = (identity - m_kalman_gain * m_observation_model) * m_error_covariance;
 }
 
 bool KalmanFilter::isAlmostSymmetric(const Eigen::MatrixXf& matrix,
