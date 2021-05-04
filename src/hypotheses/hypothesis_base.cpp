@@ -60,7 +60,21 @@ void HypothesisBase::updateHistoryAfterCorrection()
   m_history.position_history.back() = corrected_position;
   m_history.assignment_history.back() = true;
   m_history.number_of_assignments++;
+}
 
+void HypothesisBase::verifyStatic()
+{
+  if(m_is_static)
+  {
+    double distance_from_initial_position = (getPosition() - getInitialPosition()).norm();
+    if(distance_from_initial_position > m_static_distance_threshold)
+      m_is_static = false;
+  }
+}
+
+bool HypothesisBase::isWeak()
+{
+  return exceedsMaxCovariance(getCovariance(), m_maximally_allowed_hypothesis_covariance);
 }
 
 bool HypothesisBase::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
@@ -72,21 +86,6 @@ bool HypothesisBase::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
   return (eigen_values.col(0)[0].real() > max_covariance ||
           eigen_values.col(0)[1].real() > max_covariance ||
           eigen_values.col(0)[2].real() > max_covariance);
-}
-
-bool HypothesisBase::isWeak()
-{
-  return exceedsMaxCovariance(getCovariance(), m_maximally_allowed_hypothesis_covariance);
-}
-
-void HypothesisBase::verifyStatic()
-{
-  if(m_is_static)
-  {
-    double distance_from_initial_position = (getPosition() - getInitialPosition()).norm();
-    if(distance_from_initial_position > m_static_distance_threshold)
-      m_is_static = false;
-  }
 }
 
 };
