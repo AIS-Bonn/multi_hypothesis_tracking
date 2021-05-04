@@ -27,7 +27,7 @@ struct HypothesisHistory
 /**
  * @brief Basic hypothesis class used for tracking.
  */
-class HypothesisBase : public HypothesisInterface
+class HypothesisBase : virtual public HypothesisInterface
 {
 public:
   /**
