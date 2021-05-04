@@ -83,17 +83,6 @@ protected:
   void computeKalmanGain(const Eigen::MatrixXf& detection_covariance);
   void correctState(const Eigen::VectorXf& detection_position);
   void correctErrorCovariance();
-  
-  /**
-   * @brief Checks if a matrix is at least almost symmetrical.
-   *
-   * @param matrix      matrix to be checked.
-   * @param epsilon     maximally allowed difference between corresponding entries.
-   *
-   * @return true if matrix is at least almost symmetrical, false otherwise.
-   */
-  bool isAlmostSymmetric(const Eigen::MatrixXf& matrix,
-                         float epsilon = 0.001f);
 
   /** @brief Vector encoding the current state x - consisting of the position and the velocity. */
   Eigen::VectorXf m_state;

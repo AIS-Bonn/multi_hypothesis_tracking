@@ -98,12 +98,9 @@ void KalmanFilter::predictErrorCovariance(float time_difference)
 
 void KalmanFilter::isErrorCovarianceValid()
 {
-  // TODO: check if matrix is positive definite ?!?
-
-  // TODO: check if calculations are responsible for need for epsilon - if calculations are right, make covariance matrix symmetric by P = (P + P^T) / 2
-  // check if cov matrix is symmetric as it should be
-  if(!isAlmostSymmetric(m_error_covariance))
-    std::cout << "KalmanFilter: m_error_covariance is not symmetric!\n" << m_error_covariance << std::endl;
+  // A valid error covariance matrix is positive definite
+  if(!m_error_covariance.ldlt().isPositive())
+    std::cout << "KalmanFilter: m_error_covariance is not positive!\n" << m_error_covariance << std::endl;
 }
 
 void KalmanFilter::correct(const Eigen::VectorXf& detection_position,
@@ -137,17 +134,6 @@ void KalmanFilter::correctErrorCovariance()
   Eigen::MatrixXf identity(m_kalman_gain.rows(), m_observation_model.cols());
   identity.setIdentity();
   m_error_covariance = (identity - m_kalman_gain * m_observation_model) * m_error_covariance;
-}
-
-bool KalmanFilter::isAlmostSymmetric(const Eigen::MatrixXf& matrix,
-                                     float epsilon)
-{
-  for(int i = 1; i < matrix.rows(); i++)
-    for(int j = i; j < matrix.cols(); j++)
-      if(fabsf(matrix(i, j) - matrix(j, i)) > epsilon)
-        return false;
-
-  return true;
 }
 
 };
