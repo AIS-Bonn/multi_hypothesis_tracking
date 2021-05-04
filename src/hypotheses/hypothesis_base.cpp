@@ -18,44 +18,49 @@ HypothesisBase::HypothesisBase(const Detection& detection,
     , m_is_static(true)
     , m_static_distance_threshold(1.f)
     , m_maximally_allowed_hypothesis_covariance(5.f)
-    , m_number_of_assignments(0)
 {
   m_kalman_filter = std::make_shared<KalmanFilter>(detection.position);
 
-  m_position_history.push_back(detection.position);
-  m_was_assigned_history.push_back(true);
+  initHistory(detection);
+}
+
+void HypothesisBase::initHistory(const Detection& detection)
+{
+  m_history.position_history.push_back(detection.position);
+  m_history.assignment_history.push_back(true);
+  m_history.number_of_assignments = 1;
 }
 
 void HypothesisBase::predict(float dt)
 {
   m_kalman_filter->predict(dt);
-  updateHypothesisAfterPrediction();
+  updateHistoryAfterPrediction();
 }
 
-void HypothesisBase::updateHypothesisAfterPrediction()
+void HypothesisBase::updateHistoryAfterPrediction()
 {
   const auto& predicted_position = getPosition();
-  m_position_history.push_back(predicted_position);
-  m_was_assigned_history.push_back(false);
+  m_history.position_history.push_back(predicted_position);
+  m_history.assignment_history.push_back(false);
 }
 
 void HypothesisBase::correct(const Detection& detection)
 {
   m_kalman_filter->correct(detection.position,
                            detection.covariance);
-  updateHypothesisAfterCorrection();
+  updateHistoryAfterCorrection();
+  verifyStatic();
 }
 
-void HypothesisBase::updateHypothesisAfterCorrection()
+void HypothesisBase::updateHistoryAfterCorrection()
 {
   const auto& corrected_position = getPosition();
 
   // replace the latest predicted position by the corrected position
-  m_position_history.back() = corrected_position;
-  m_was_assigned_history.back() = true;
-  m_number_of_assignments++;
+  m_history.position_history.back() = corrected_position;
+  m_history.assignment_history.back() = true;
+  m_history.number_of_assignments++;
 
-  verifyStatic();
 }
 
 bool HypothesisBase::exceedsMaxCovariance(const Eigen::Matrix3f& covariance,
