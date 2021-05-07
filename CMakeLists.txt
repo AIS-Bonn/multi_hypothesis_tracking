@@ -111,14 +111,14 @@ add_dependencies(${PROJECT_NAME}_node_for_pose_arrays
 )
 
 # Ros node as interface between incoming human_msgs and tracker
-add_executable(${PROJECT_NAME}_node_for_humans
-  src/nodes/multi_hypothesis_tracking_node_for_humans.cpp
+add_executable(${PROJECT_NAME}_node_for_human_poses
+  src/nodes/multi_hypothesis_tracking_node_for_human_poses.cpp
 )
-target_link_libraries(${PROJECT_NAME}_node_for_humans
+target_link_libraries(${PROJECT_NAME}_node_for_human_poses
   ${PROJECT_NAME}_base
   ${catkin_LIBRARIES}
 )
-add_dependencies(${PROJECT_NAME}_node_for_humans
+add_dependencies(${PROJECT_NAME}_node_for_human_poses
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )

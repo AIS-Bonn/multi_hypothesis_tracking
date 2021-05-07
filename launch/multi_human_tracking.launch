@@ -1,5 +1,5 @@
 <!-- -*- mode: XML -*- -->
-<!-- run multi_hypothesis_tracking/multi_human_tracking_node in a node -->
+<!-- run multi_hypothesis_tracking/multi_hypothesis_tracking_node_for_human_poses in a node -->
 
 <launch>
     <!-- Node Parameters -->
@@ -19,8 +19,8 @@
     <arg name="number_of_assignments_threshold" default="3"/>
     <arg name="time_offset_for_predictions" default="0.05"/>
 
-    <node pkg="multi_hypothesis_tracking" type="multi_hypothesis_tracking_node_for_humans" name="multi_hypothesis_tracking_node_for_humans"
-          output="screen">
+    <node pkg="multi_hypothesis_tracking" type="multi_hypothesis_tracking_node_for_human_poses"
+          name="multi_hypothesis_tracking_node_for_human_poses" output="screen">
 
         <param name="input_topic" value="$(arg input_topic)"/>
         <param name="world_frame_id" value="$(arg world_frame_id)"/>

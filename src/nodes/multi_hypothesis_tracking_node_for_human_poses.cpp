@@ -5,23 +5,23 @@
  * @author Jan Razlaw
  */
 
-#include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_node_for_humans.h>
+#include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_node_for_human_poses.h>
 
 namespace MultiHypothesisTracker
 {
 
-MultiHypothesisTrackingNodeForHumans::MultiHypothesisTrackingNodeForHumans()
+MultiHypothesisTrackingNodeForHumanPoses::MultiHypothesisTrackingNodeForHumanPoses()
 {
   ros::NodeHandle private_node_handle("~");
   initializeHypothesisFactory(private_node_handle);
   
   m_human_detection_subscriber = private_node_handle.subscribe<HumanMsg>(m_input_topic,
                                                                          1,
-                                                                         &MultiHypothesisTrackingNodeForHumans::detectionCallback,
+                                                                         &MultiHypothesisTrackingNodeForHumanPoses::detectionCallback,
                                                                          this);
 }
 
-void MultiHypothesisTrackingNodeForHumans::initializeHypothesisFactory(const ros::NodeHandle& private_node_handle)
+void MultiHypothesisTrackingNodeForHumanPoses::initializeHypothesisFactory(const ros::NodeHandle& private_node_handle)
 {
   auto hypothesis_factory = std::make_shared<HypothesisForHumanPoseFactory>();
 
@@ -36,7 +36,7 @@ void MultiHypothesisTrackingNodeForHumans::initializeHypothesisFactory(const ros
   m_multi_hypothesis_tracker.setHypothesisFactory(hypothesis_factory);
 }
 
-void MultiHypothesisTrackingNodeForHumans::detectionCallback(const HumanMsg::ConstPtr& detections_message)
+void MultiHypothesisTrackingNodeForHumanPoses::detectionCallback(const HumanMsg::ConstPtr& detections_message)
 {
   ROS_DEBUG_STREAM("MultiHumanTrackingNode::detectionCallback.");
 
@@ -54,8 +54,8 @@ void MultiHypothesisTrackingNodeForHumans::detectionCallback(const HumanMsg::Con
   publishVisualizations(detections);
 }
 
-void MultiHypothesisTrackingNodeForHumans::convert(const HumanMsg::ConstPtr& detections_message,
-                                                   Detections& detections)
+void MultiHypothesisTrackingNodeForHumanPoses::convert(const HumanMsg::ConstPtr& detections_message,
+                                                       Detections& detections)
 {
   detections.frame_id = detections_message->header.frame_id;
   detections.time_stamp = detections_message->header.stamp.toSec();
@@ -104,8 +104,8 @@ void MultiHypothesisTrackingNodeForHumans::convert(const HumanMsg::ConstPtr& det
   }
 }
 
-void MultiHypothesisTrackingNodeForHumans::convert(const boost::array<double, 6>& covariance_msg,
-                                                   Eigen::Matrix3f& covariance)
+void MultiHypothesisTrackingNodeForHumanPoses::convert(const boost::array<double, 6>& covariance_msg,
+                                                       Eigen::Matrix3f& covariance)
 {
   covariance(0, 0) = static_cast<float>(covariance_msg[0]);
   covariance(0, 1) = static_cast<float>(covariance_msg[1]);
@@ -125,12 +125,12 @@ void MultiHypothesisTrackingNodeForHumans::convert(const boost::array<double, 6>
 int main(int argc,
          char** argv)
 {
-  ros::init(argc, argv, "multi_hypothesis_tracking_node_for_humans");
+  ros::init(argc, argv, "multi_hypothesis_tracking_node_for_human_poses");
 
   if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info))
     ros::console::notifyLoggerLevelsChanged();
 
-  MultiHypothesisTracker::MultiHypothesisTrackingNodeForHumans tracker;
+  MultiHypothesisTracker::MultiHypothesisTrackingNodeForHumanPoses tracker;
 
   ros::spin();
 

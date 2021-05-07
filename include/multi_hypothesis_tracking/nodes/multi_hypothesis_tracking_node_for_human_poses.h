@@ -5,8 +5,8 @@
  * @author Jan Razlaw
  */
 
-#ifndef MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_HUMANS_H
-#define MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_HUMANS_H
+#ifndef MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_HUMAN_POSES_H
+#define MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_HUMAN_POSES_H
 
 #include <limits.h>
 
@@ -25,11 +25,11 @@ namespace MultiHypothesisTracker
 
 typedef person_msgs::PersonCovList HumanMsg;
 
-class MultiHypothesisTrackingNodeForHumans : public MultiHypothesisTrackingBase
+class MultiHypothesisTrackingNodeForHumanPoses : public MultiHypothesisTrackingBase
 {
 public:
-  MultiHypothesisTrackingNodeForHumans();
-  ~MultiHypothesisTrackingNodeForHumans(){};
+  MultiHypothesisTrackingNodeForHumanPoses();
+  ~MultiHypothesisTrackingNodeForHumanPoses(){};
 
   void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle) override;
 
@@ -46,8 +46,8 @@ public:
   /**
    * @brief Converts the human detections into the internal format.
    *
-   * @param[in]     detections_message             message containing detections.
-   * @param[out]    detections      detections in tracker format.
+   * @param[in]     detections_message      message containing detections.
+   * @param[out]    detections              detections in tracker format.
    */
   void convert(const HumanMsg::ConstPtr& detections_message,
                Detections& detections);

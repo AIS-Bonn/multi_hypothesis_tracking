@@ -7,7 +7,6 @@ Panels:
         - /Global Options1
         - /TF1
         - /TF1/Tree1
-        - /Skeletons3DFused1
       Splitter Ratio: 0.4267676770687103
     Tree Height: 1002
   - Class: rviz/Selection
@@ -115,7 +114,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_hypothesis_tracking_node_for_humans/detections_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_human_poses/detections_positions
       Name: Detections Positions
       Namespaces:
         mot_detections_markers: true
@@ -123,7 +122,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_human_poses/hypotheses_positions
       Name: Hypotheses Positions
       Namespaces:
         mot_hypotheses_positions_markers: true
@@ -131,15 +130,15 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_hypothesis_tracking_node_for_humans/static_hypotheses_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_human_poses/static_hypotheses_positions
       Name: Static Hypotheses Positions
       Namespaces:
-        mot_static_hypotheses_positions: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_hypothesis_tracking_node_for_humans/dynamic_hypotheses_positions
+      Marker Topic: /multi_hypothesis_tracking_node_for_human_poses/dynamic_hypotheses_positions
       Name: Dynamic Hypotheses Positions
       Namespaces:
         mot_dynamic_hypotheses_positions: true
@@ -147,7 +146,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_paths
+      Marker Topic: /multi_hypothesis_tracking_node_for_human_poses/hypotheses_paths
       Name: Paths
       Namespaces:
         mot_hypotheses_paths: true
@@ -155,7 +154,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_bounding_boxes
+      Marker Topic: /multi_hypothesis_tracking_node_for_human_poses/hypotheses_bounding_boxes
       Name: HypothesesBoxes
       Namespaces:
         mot_hypotheses_bounding_boxes: true
@@ -163,7 +162,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_tracked_joints
+      Marker Topic: /multi_hypothesis_tracking_node_for_human_poses/hypotheses_tracked_joints
       Name: TrackedJoints
       Namespaces:
         mot_hypotheses_tracked_joints: true
