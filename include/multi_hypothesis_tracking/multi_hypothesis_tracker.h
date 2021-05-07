@@ -12,7 +12,7 @@
 #include <vector>
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis_factory_interface.h>
+#include <multi_hypothesis_tracking/hypotheses/factories/hypothesis_factory_interface.h>
 #include <multi_hypothesis_tracking/hungarian.h>
 
 #include <multi_hypothesis_tracking/utils.h>

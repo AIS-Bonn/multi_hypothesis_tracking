@@ -9,7 +9,7 @@
 #define MULTI_HYPOTHESIS_TRACKING_HYPOTHESIS_FOR_SPARSE_LIDAR_FACTORY_H
 
 #include <multi_hypothesis_tracking/hypotheses/hypothesis_for_sparse_lidar.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis_with_bounding_box_factory.h>
+#include <multi_hypothesis_tracking/hypotheses/factories/hypothesis_with_bounding_box_factory.h>
 
 namespace MultiHypothesisTracker
 {

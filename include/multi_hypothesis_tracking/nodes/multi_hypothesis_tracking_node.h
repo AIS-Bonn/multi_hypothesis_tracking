@@ -9,7 +9,7 @@
 #define MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_H
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis_for_sparse_lidar_factory.h>
+#include <multi_hypothesis_tracking/hypotheses/factories/hypothesis_for_sparse_lidar_factory.h>
 #include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_base.h>
 
 #include <multi_hypothesis_tracking_msgs/ObjectDetections.h>

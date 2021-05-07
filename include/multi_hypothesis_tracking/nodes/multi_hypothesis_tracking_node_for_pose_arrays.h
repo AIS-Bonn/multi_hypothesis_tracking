@@ -11,7 +11,7 @@
 #include <geometry_msgs/PoseArray.h>
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis_base_factory.h>
+#include <multi_hypothesis_tracking/hypotheses/factories/hypothesis_base_factory.h>
 #include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_base.h>
 
 #include <ros/ros.h>

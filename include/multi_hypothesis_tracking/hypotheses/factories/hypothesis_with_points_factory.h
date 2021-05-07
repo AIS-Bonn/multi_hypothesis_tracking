@@ -9,7 +9,7 @@
 #define MULTI_HYPOTHESIS_TRACKING_HYPOTHESIS_WITH_POINTS_FACTORY_H
 
 #include <multi_hypothesis_tracking/hypotheses/hypothesis_with_points.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis_base_factory.h>
+#include <multi_hypothesis_tracking/hypotheses/factories/hypothesis_base_factory.h>
 
 namespace MultiHypothesisTracker
 {
