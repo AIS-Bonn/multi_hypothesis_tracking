@@ -5,38 +5,40 @@
  * @author Jan Razlaw
  */
 
-#include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_node.h>
+#include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_node_for_sparse_lidar.h>
 
 namespace MultiHypothesisTracker
 {
 
-MultiHypothesisTrackingNode::MultiHypothesisTrackingNode()
+MultiHypothesisTrackingNodeForSparseLidar::MultiHypothesisTrackingNodeForSparseLidar()
 {
   ros::NodeHandle private_node_handle("~");
   initializeHypothesisFactory(private_node_handle);
-  
+
   m_object_detection_subscriber = private_node_handle.subscribe<multi_hypothesis_tracking_msgs::ObjectDetections>(
     m_input_topic, 1,
-    &MultiHypothesisTrackingNode::detectionCallback,
+    &MultiHypothesisTrackingNodeForSparseLidar::detectionCallback,
     this);
 }
 
-void MultiHypothesisTrackingNode::initializeHypothesisFactory(const ros::NodeHandle& private_node_handle)
+void MultiHypothesisTrackingNodeForSparseLidar::initializeHypothesisFactory(const ros::NodeHandle& private_node_handle)
 {
   auto hypothesis_factory = std::make_shared<HypothesisForSparseLidarFactory>();
 
   float kalman_process_noise_covariance_per_second;
-  private_node_handle.param<float>("kalman_process_noise_covariance_per_second", kalman_process_noise_covariance_per_second, 0.5f);
+  private_node_handle.param<float>("kalman_process_noise_covariance_per_second",
+                                   kalman_process_noise_covariance_per_second, 0.5f);
   hypothesis_factory->setKalmanProcessNoiseCovariancePerSecond(kalman_process_noise_covariance_per_second);
 
   float maximally_allowed_hypothesis_covariance;
-  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance, 5.f);
+  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance,
+                                   5.f);
   hypothesis_factory->setMaxAllowedHypothesisCovariance(maximally_allowed_hypothesis_covariance);
 
   m_multi_hypothesis_tracker.setHypothesisFactory(hypothesis_factory);
 }
 
-void MultiHypothesisTrackingNode::detectionCallback(const DetectionsMsg::ConstPtr& detections_message)
+void MultiHypothesisTrackingNodeForSparseLidar::detectionCallback(const DetectionsMsg::ConstPtr& detections_message)
 {
   ROS_DEBUG_STREAM("Tracker::detectionCallback.");
 
@@ -54,8 +56,8 @@ void MultiHypothesisTrackingNode::detectionCallback(const DetectionsMsg::ConstPt
   publishVisualizations(detections);
 }
 
-void MultiHypothesisTrackingNode::convert(const DetectionsMsg::ConstPtr& detections_message,
-                                          Detections& detections)
+void MultiHypothesisTrackingNodeForSparseLidar::convert(const DetectionsMsg::ConstPtr& detections_message,
+                                                        Detections& detections)
 {
   detections.frame_id = detections_message->header.frame_id;
   detections.time_stamp = detections_message->header.stamp.toSec();
@@ -92,12 +94,12 @@ void MultiHypothesisTrackingNode::convert(const DetectionsMsg::ConstPtr& detecti
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "multi_hypothesis_tracking");
+  ros::init(argc, argv, "multi_hypothesis_tracking_node_for_sparse_lidar");
 
   if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info))
     ros::console::notifyLoggerLevelsChanged();
 
-  MultiHypothesisTracker::MultiHypothesisTrackingNode tracker;
+  MultiHypothesisTracker::MultiHypothesisTrackingNodeForSparseLidar tracker;
 
   ros::spin();
 

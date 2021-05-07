@@ -85,14 +85,14 @@ add_dependencies(${PROJECT_NAME}_base
 )
 
 # Ros node as interface between incoming object detection messages and tracker
-add_executable(${PROJECT_NAME}_node
-  src/nodes/${PROJECT_NAME}_node.cpp
+add_executable(${PROJECT_NAME}_node_for_sparse_lidar
+  src/nodes/${PROJECT_NAME}_node_for_sparse_lidar.cpp
 )
-target_link_libraries(${PROJECT_NAME}_node
+target_link_libraries(${PROJECT_NAME}_node_for_sparse_lidar
   ${PROJECT_NAME}_base
   ${catkin_LIBRARIES}
 )
-add_dependencies(${PROJECT_NAME}_node
+add_dependencies(${PROJECT_NAME}_node_for_sparse_lidar
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )

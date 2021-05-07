@@ -5,8 +5,8 @@
  * @author Jan Razlaw
  */
 
-#ifndef MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_H
-#define MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_H
+#ifndef MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_SPARSE_LIDAR_H
+#define MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_SPARSE_LIDAR_H
 
 #include <multi_hypothesis_tracking/definitions.h>
 #include <multi_hypothesis_tracking/hypotheses/factories/hypothesis_for_sparse_lidar_factory.h>
@@ -26,11 +26,11 @@ namespace MultiHypothesisTracker
 
 typedef multi_hypothesis_tracking_msgs::ObjectDetections DetectionsMsg;
 
-class MultiHypothesisTrackingNode : public MultiHypothesisTrackingBase
+class MultiHypothesisTrackingNodeForSparseLidar : public MultiHypothesisTrackingBase
 {
 public:
-  MultiHypothesisTrackingNode();
-  ~MultiHypothesisTrackingNode(){};
+  MultiHypothesisTrackingNodeForSparseLidar();
+  ~MultiHypothesisTrackingNodeForSparseLidar(){};
 
   void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle) override;
 
