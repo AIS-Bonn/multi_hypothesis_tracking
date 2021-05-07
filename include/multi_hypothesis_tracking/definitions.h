@@ -18,9 +18,10 @@ namespace MultiHypothesisTracker
 
 struct Detection
 {
-  Eigen::Vector3f position;             ///< Position of detection - e.g. center point.
-  Eigen::Matrix3f covariance;           ///< Covariance of detection.
-  std::vector<Eigen::Vector3f> points;  ///< Point cloud corresponding to detection.
+  Eigen::Vector3f position;                         ///< Position of detection - e.g. center point.
+  Eigen::Matrix3f covariance;                       ///< Covariance of detection.
+  std::vector<Eigen::Vector3f> points;              ///< Point cloud corresponding to detection.
+  std::vector<Eigen::Matrix3f> points_covariances;  ///< Covariances of points in cloud.
 };
 
 struct Detections

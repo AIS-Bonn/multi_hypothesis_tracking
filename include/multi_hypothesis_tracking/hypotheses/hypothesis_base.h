@@ -84,6 +84,7 @@ public:
     assert(maximally_allowed_hypothesis_covariance > 0.f);
     m_maximally_allowed_hypothesis_covariance = maximally_allowed_hypothesis_covariance;
   }
+  void setDoVerifyStatic(bool do_verify_static){ m_do_verify_static = do_verify_static; }
 
 protected:
   /** @brief Update #m_is_static by checking if hypothesis moved further than #m_static_distance_threshold from its 
@@ -114,6 +115,9 @@ protected:
 
   double m_time_stamp_of_birth;
 
+  /** @brief If true the #m_is_static flag is updated after each correction.
+   * Can be disabled to update the flag in an inheriting class. */
+  bool m_do_verify_static;
   bool m_is_static;
   /** @brief Distance a hypothesis is allowed to move to still be considered static. */
   double m_static_distance_threshold;

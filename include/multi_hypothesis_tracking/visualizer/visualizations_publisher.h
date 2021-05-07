@@ -34,7 +34,7 @@
 #include <multi_hypothesis_tracking_msgs/HypothesesFull.h>
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis.h>
+#include <multi_hypothesis_tracking/hypotheses/hypothesis_for_human_pose.h>
 #include <multi_hypothesis_tracking/utils.h>
 #include <multi_hypothesis_tracking/visualizer/utils.h>
 
@@ -94,11 +94,16 @@ public:
   /** @brief Publishes positions of valid hypotheses. */
   void publishHypothesesPositions(const Hypotheses& hypotheses,
                                   const ros::Time& stamp);
-  bool isValid(std::shared_ptr<Hypothesis>& hypothesis,
-               double current_time) const;
-  bool isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
-                   double current_time) const;
-  bool wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const;
+
+
+  template<typename HypothesisType>
+  bool isValid(const std::shared_ptr<HypothesisType>& hypothesis,
+               double current_time);
+  template<typename HypothesisType>
+  bool isOldEnough(const std::shared_ptr<HypothesisType>& hypothesis,
+                   double current_time);
+  template<typename HypothesisType>
+  bool wasAssignedOftenEnough(const std::shared_ptr<HypothesisType>& hypothesis);
 
   /** @brief Publishes covariances of valid hypotheses. */
   void publishHypothesesCovariances(const Hypotheses& hypotheses,

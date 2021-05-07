@@ -8,6 +8,7 @@
 #ifndef MULTI_HYPOTHESIS_TRACKING_HYPOTHESIS_FACTORY_INTERFACE_H
 #define MULTI_HYPOTHESIS_TRACKING_HYPOTHESIS_FACTORY_INTERFACE_H
 
+#include <memory>
 #include <multi_hypothesis_tracking/hypotheses/hypothesis_interface.h>
 
 namespace MultiHypothesisTracker

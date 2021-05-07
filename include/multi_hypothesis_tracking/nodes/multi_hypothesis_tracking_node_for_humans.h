@@ -8,9 +8,12 @@
 #ifndef MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_HUMANS_H
 #define MULTI_HYPOTHESIS_TRACKING_MULTI_HYPOTHESIS_TRACKING_NODE_FOR_HUMANS_H
 
+#include <limits.h>
+
 #include <person_msgs/PersonCovList.h>
 
 #include <multi_hypothesis_tracking/definitions.h>
+#include <multi_hypothesis_tracking/hypotheses/hypothesis_for_human_pose_factory.h>
 #include <multi_hypothesis_tracking/nodes/multi_hypothesis_tracking_base.h>
 
 #include <ros/ros.h>
@@ -50,6 +53,9 @@ public:
                Detections& detections);
 
 private:
+  void convert(const boost::array<double, 6>& covariance_msg,
+               Eigen::Matrix3f& covariance);
+  
   /** @brief Subscribes to detections. */
   ros::Subscriber m_human_detection_subscriber;
 };

@@ -173,7 +173,7 @@ void VisualizationsPublisher::publishHypothesesPositions(const Hypotheses& hypot
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisBase> hypothesis = std::dynamic_pointer_cast<HypothesisBase>(hypotheses[i]);
 
     if(isValid(hypothesis, current_time))
     {
@@ -185,19 +185,22 @@ void VisualizationsPublisher::publishHypothesesPositions(const Hypotheses& hypot
   m_hypotheses_positions_publisher.publish(hypothesis_marker);
 }
 
-bool VisualizationsPublisher::isValid(std::shared_ptr<Hypothesis>& hypothesis,
-                                      double current_time) const
+template<typename HypothesisType>
+bool VisualizationsPublisher::isValid(const std::shared_ptr<HypothesisType>& hypothesis,
+                                      double current_time)
 {
-  return isOldEnough(hypothesis, current_time) && wasAssignedOftenEnough(hypothesis);
+  return isOldEnough<HypothesisType>(hypothesis, current_time) && wasAssignedOftenEnough<HypothesisType>(hypothesis);
 }
 
-bool VisualizationsPublisher::isOldEnough(std::shared_ptr<Hypothesis>& hypothesis,
-                                          double current_time) const
+template<typename HypothesisType>
+bool VisualizationsPublisher::isOldEnough(const std::shared_ptr<HypothesisType>& hypothesis,
+                                          double current_time)
 {
   return current_time - hypothesis->getTimeStampOfBirth() >= m_hypothesis_age_threshold_in_seconds;
 }
 
-bool VisualizationsPublisher::wasAssignedOftenEnough(std::shared_ptr<Hypothesis>& hypothesis) const
+template<typename HypothesisType>
+bool VisualizationsPublisher::wasAssignedOftenEnough(const std::shared_ptr<HypothesisType>& hypothesis)
 {
   return hypothesis->getNumberOfAssignments() >= m_number_of_assignments_threshold;
 }
@@ -217,7 +220,7 @@ void VisualizationsPublisher::publishHypothesesCovariances(const Hypotheses& hyp
 
   for(size_t i = 0; i < hypotheses.size(); i++)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisBase> hypothesis = std::dynamic_pointer_cast<HypothesisBase>(hypotheses[i]);
     if(isValid(hypothesis, current_time))
     {
       hyp_covariance_marker.id = (int)i;
@@ -263,7 +266,7 @@ void VisualizationsPublisher::publishStaticHypothesesPositions(const Hypotheses&
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisBase> hypothesis = std::dynamic_pointer_cast<HypothesisBase>(hypotheses[i]);
 
     if(isValid(hypothesis, current_time) && hypothesis->isStatic())
     {
@@ -300,10 +303,9 @@ void VisualizationsPublisher::publishDynamicHypothesesPositions(const Hypotheses
   dynamic_objects_marker.header.stamp = stamp;
   double current_time = getTimeHighRes();
 
-  // Publish tracks
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisBase> hypothesis = std::dynamic_pointer_cast<HypothesisBase>(hypotheses[i]);
 
     if(isValid(hypothesis, current_time) && !hypothesis->isStatic())
     {
@@ -349,10 +351,10 @@ void VisualizationsPublisher::publishHypothesesPaths(const Hypotheses& hypothese
   // Publish paths
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisBase> hypothesis = std::dynamic_pointer_cast<HypothesisBase>(hypotheses[i]);
 
     if(isValid(hypothesis, current_time))
-    {
+    {      
       const std::vector<Eigen::Vector3f>& positions = hypothesis->getPositionHistory();
       const std::vector<bool>& was_assigned = hypothesis->getWasAssignedHistory();
 
@@ -409,7 +411,7 @@ void VisualizationsPublisher::publishHypothesesBoundingBoxes(const Hypotheses& h
   // Publish bounding boxes
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisWithBoundingBox> hypothesis = std::dynamic_pointer_cast<HypothesisWithBoundingBox>(hypotheses[i]);
 
     if(isValid(hypothesis, current_time))
     {
@@ -451,7 +453,7 @@ void VisualizationsPublisher::publishHypothesesPredictedPositions(const Hypothes
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisBase> hypothesis = std::dynamic_pointer_cast<HypothesisBase>(hypotheses[i]);
 
     if(isValid(hypothesis, current_time))
     {
@@ -482,7 +484,7 @@ void VisualizationsPublisher::publishHypothesesFull(const Hypotheses& hypotheses
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisWithBoundingBox> hypothesis = std::dynamic_pointer_cast<HypothesisWithBoundingBox>(hypotheses[i]);
 
     // TODO: add something like confidence to message to be able to seperate hypotheses that were just assigned from those that are tracked for a while
 
@@ -526,7 +528,7 @@ void VisualizationsPublisher::publishHypothesesBoxesEvaluation(const Hypotheses&
 
   for(size_t i = 0; i < hypotheses.size(); ++i)
   {
-    std::shared_ptr<Hypothesis> hypothesis = std::static_pointer_cast<Hypothesis>(hypotheses[i]);
+    std::shared_ptr<HypothesisWithBoundingBox> hypothesis = std::dynamic_pointer_cast<HypothesisWithBoundingBox>(hypotheses[i]);
 
     box.id = hypothesis->getID();
     box.dynamic = !hypothesis->isStatic();

@@ -33,7 +33,10 @@ include_directories(
 # Library for a hypothesis using a Kalman Filter for pose updates
 add_library(hypotheses
   src/hypotheses/hypothesis_base.cpp
-  src/hypotheses/hypothesis.cpp
+  src/hypotheses/hypothesis_with_points.cpp
+  src/hypotheses/hypothesis_with_bounding_box.cpp
+  src/hypotheses/hypothesis_for_sparse_lidar.cpp
+  src/hypotheses/hypothesis_for_human_pose.cpp
   src/kalman_filter.cpp
 )
 target_link_libraries(hypotheses

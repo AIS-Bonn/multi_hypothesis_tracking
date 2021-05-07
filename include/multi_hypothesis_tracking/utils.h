@@ -56,6 +56,11 @@ inline float bhattacharyya(const Eigen::Vector3f& mean_1,
   return bhattacharyya(means_diff, cov_1, cov_2);
 }
 
+inline bool isFinite(const Eigen::Vector3f& vector)
+{
+  return std::isfinite(vector.x()) && std::isfinite(vector.y()) && std::isfinite(vector.z());
+}
+
 }
 
 #endif //MULTI_OBJECT_TRACKING_UTILS_H

@@ -23,7 +23,7 @@ MultiHypothesisTrackingNode::MultiHypothesisTrackingNode()
 
 void MultiHypothesisTrackingNode::initializeHypothesisFactory(const ros::NodeHandle& private_node_handle)
 {
-  auto hypothesis_factory = std::make_shared<HypothesisFactory>();
+  auto hypothesis_factory = std::make_shared<HypothesisForSparseLidarFactory>();
 
   float kalman_process_noise_covariance_per_second;
   private_node_handle.param<float>("kalman_process_noise_covariance_per_second", kalman_process_noise_covariance_per_second, 0.5f);

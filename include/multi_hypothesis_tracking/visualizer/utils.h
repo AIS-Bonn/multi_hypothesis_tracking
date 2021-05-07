@@ -15,7 +15,7 @@
 #include <geometry_msgs/Point.h>
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis.h>
+#include <multi_hypothesis_tracking/hypotheses/hypothesis_with_points.h>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -65,7 +65,7 @@ inline int computeTotalNumberOfPoints(const std::vector<std::shared_ptr<Hypothes
   int total_number_of_points = 0;
   for(const auto& hypothesis : hypotheses)
   {
-    std::shared_ptr<Hypothesis> point_hypothesis = std::static_pointer_cast<Hypothesis>(hypothesis);
+    std::shared_ptr<HypothesisWithPoints> point_hypothesis = std::dynamic_pointer_cast<HypothesisWithPoints>(hypothesis);
 
     total_number_of_points += (int)point_hypothesis->getPointCloud().size();
   }
@@ -82,7 +82,7 @@ inline void convertHypothesesPointsToCloud(const std::vector<std::shared_ptr<Hyp
   int point_counter = 0;
   for(const auto& hypothesis : hypotheses)
   {
-    std::shared_ptr<Hypothesis> point_hypothesis = std::static_pointer_cast<Hypothesis>(hypothesis);
+    std::shared_ptr<HypothesisWithPoints> point_hypothesis = std::dynamic_pointer_cast<HypothesisWithPoints>(hypothesis);
 
     for(size_t point_id = 0; point_id < point_hypothesis->getPointCloud().size(); point_id++, point_counter++)
       cloud->points[point_counter].getVector3fMap() = point_hypothesis->getPointCloud().at(point_id);

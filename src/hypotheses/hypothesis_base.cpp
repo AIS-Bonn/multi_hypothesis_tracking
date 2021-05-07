@@ -15,6 +15,7 @@ HypothesisBase::HypothesisBase(const Detection& detection,
                                double time_stamp)
   : m_id(id)
     , m_time_stamp_of_birth(time_stamp)
+    , m_do_verify_static(true)
     , m_is_static(true)
     , m_static_distance_threshold(1.f)
     , m_maximally_allowed_hypothesis_covariance(5.f)
@@ -49,7 +50,8 @@ void HypothesisBase::correct(const Detection& detection)
   m_kalman_filter->correct(detection.position,
                            detection.covariance);
   updateHistoryAfterCorrection();
-  verifyStatic();
+  if(m_do_verify_static)
+    verifyStatic();
 }
 
 void HypothesisBase::updateHistoryAfterCorrection()
