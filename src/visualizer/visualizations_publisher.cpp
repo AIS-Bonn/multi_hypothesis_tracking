@@ -515,7 +515,7 @@ void VisualizationsPublisher::publishHypothesesTrackedJoints(const Hypotheses& h
 
       const auto& is_tracked_joint_initialized = hypothesis->getIsTrackedJointInitialized();
       const auto& tracked_joints = hypothesis->getTrackedJoints();
-      for(int joint_id = 0; joint_id < tracked_joints.size(); joint_id++)
+      for(size_t joint_id = 0; joint_id < tracked_joints.size(); joint_id++)
       {
         if(is_tracked_joint_initialized[joint_id])
         {

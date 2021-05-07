@@ -23,7 +23,7 @@ HypothesisForHumanPose::HypothesisForHumanPose(const Detection& detection,
   // Set static property to false right away, because humans are by default potentially dynamic 
   disableVerifyingStaticStatus();
 
-  for(int joint_id = 0; joint_id < detection.points.size(); joint_id++)
+  for(size_t joint_id = 0; joint_id < detection.points.size(); joint_id++)
   {
     if(std::isnan(detection.points[joint_id].x()))
     {
@@ -49,7 +49,7 @@ void HypothesisForHumanPose::predict(float time_difference)
 {
   HypothesisBase::predict(time_difference);
 
-  for(int joint_id = 0; joint_id < m_tracked_joints.size(); joint_id++)
+  for(size_t joint_id = 0; joint_id < m_tracked_joints.size(); joint_id++)
   {
     if(m_is_tracked_joint_initialized[joint_id])
       m_tracked_joints[joint_id]->predict(time_difference);
@@ -68,7 +68,7 @@ void HypothesisForHumanPose::correct(const Detection& detection)
 {
   HypothesisBase::correct(detection);
 
-  for(int joint_id = 0; joint_id < m_tracked_joints.size(); joint_id++)
+  for(size_t joint_id = 0; joint_id < m_tracked_joints.size(); joint_id++)
   {
     if(!std::isnan(detection.points[joint_id].x()) && m_is_tracked_joint_initialized[joint_id])
     {
