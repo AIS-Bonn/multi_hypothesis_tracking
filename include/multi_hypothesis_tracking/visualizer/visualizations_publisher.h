@@ -129,6 +129,10 @@ public:
   void publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
                                            const ros::Time& stamp);
 
+  /** @brief Publishes tracked joints of valid hypotheses. */
+  void publishHypothesesTrackedJoints(const Hypotheses& hypotheses,
+                                      const ros::Time& stamp);
+
   /** @brief Publishes full hypotheses messages. */
   void publishHypothesesFull(const Hypotheses& hypotheses,
                              const ros::Time& stamp);
@@ -164,6 +168,8 @@ private:
   ros::Publisher m_hypotheses_paths_publisher;
   ros::Publisher m_hypotheses_bounding_boxes_publisher;
   ros::Publisher m_hypotheses_predicted_positions_publisher;
+  
+  ros::Publisher m_hypotheses_tracked_joints_publisher;
 
   ros::Publisher m_hypotheses_full_publisher;
   ros::Publisher m_hypotheses_box_evaluation_publisher;

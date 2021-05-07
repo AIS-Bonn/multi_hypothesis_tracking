@@ -161,6 +161,14 @@ Visualization Manager:
         mot_hypotheses_bounding_boxes: true
       Queue Size: 100
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /multi_hypothesis_tracking_node_for_humans/hypotheses_tracked_joints
+      Name: TrackedJoints
+      Namespaces:
+        mot_hypotheses_tracked_joints: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 235; 235; 235

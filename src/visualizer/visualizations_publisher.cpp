@@ -34,6 +34,8 @@ void VisualizationsPublisher::initializePublishers(ros::NodeHandle& node_handle)
   m_hypotheses_bounding_boxes_publisher = node_handle.advertise<MarkerArrayMsg>("hypotheses_bounding_boxes", 1);
   m_hypotheses_predicted_positions_publisher = node_handle.advertise<MarkerMsg>("hypotheses_predicted_positions", 1);
 
+  m_hypotheses_tracked_joints_publisher = node_handle.advertise<MarkerArrayMsg>("hypotheses_tracked_joints", 1);
+
   m_hypotheses_full_publisher = node_handle.advertise<HypothesesFullMsg>("hypotheses_full", 1);
   m_hypotheses_box_evaluation_publisher = node_handle.advertise<HypothesesEvaluationBoxesMsg>(
     "hypotheses_boxes_evaluation", 1, true);
@@ -76,6 +78,8 @@ void VisualizationsPublisher::publishHypothesesVisualizations(const Hypotheses& 
   publishHypothesesPaths(hypotheses, stamp);
   publishHypothesesBoundingBoxes(hypotheses, stamp);
   publishHypothesesPredictedPositions(hypotheses, stamp);
+  
+  publishHypothesesTrackedJoints(hypotheses, stamp);
 
   publishHypothesesFull(hypotheses, stamp);
   publishHypothesesBoxesEvaluation(hypotheses, stamp);
@@ -467,6 +471,68 @@ void VisualizationsPublisher::publishHypothesesPredictedPositions(const Hypothes
     }
   }
   m_hypotheses_predicted_positions_publisher.publish(hypothesis_marker);
+}
+
+void VisualizationsPublisher::publishHypothesesTrackedJoints(const Hypotheses& hypotheses,
+                                                             const ros::Time& stamp)
+{
+  if(m_hypotheses_tracked_joints_publisher.getNumSubscribers() == 0 || hypotheses.empty())
+    return;
+
+  MarkerArrayMsg human_poses_markers;
+
+  float color_alpha = 0.5;
+  MarkerMsg tracked_joints_marker = createMarker(0.0, 0.5, 0.5, "mot_hypotheses_tracked_joints");
+  tracked_joints_marker.type = MarkerMsg::SPHERE_LIST;
+  tracked_joints_marker.action = MarkerMsg::ADD;
+  tracked_joints_marker.color.a = color_alpha;
+  tracked_joints_marker.header.stamp = stamp;
+  double current_time = getTimeHighRes();
+
+  // Publish bounding boxes
+  for(size_t i = 0; i < hypotheses.size(); ++i)
+  {
+    std::shared_ptr<HypothesisForHumanPose> hypothesis = std::dynamic_pointer_cast<HypothesisForHumanPose>(hypotheses[i]);
+
+    if(isValid(hypothesis, current_time))
+    {
+      tracked_joints_marker.id = hypothesis->getID();
+      getColorByID(hypothesis->getID(), tracked_joints_marker.color);
+      tracked_joints_marker.color.a = color_alpha;
+
+      tracked_joints_marker.pose.position.x = 0.0;
+      tracked_joints_marker.pose.position.y = 0.0;
+      tracked_joints_marker.pose.position.z = 0.0;
+      
+      tracked_joints_marker.pose.orientation.x = 0.0;
+      tracked_joints_marker.pose.orientation.y = 0.0;
+      tracked_joints_marker.pose.orientation.z = 0.0;
+      tracked_joints_marker.pose.orientation.w = 1.0;
+
+      tracked_joints_marker.scale.x = 0.1f;
+      tracked_joints_marker.scale.y = 0.1f;
+      tracked_joints_marker.scale.z = 0.1f;
+
+      const auto& is_tracked_joint_initialized = hypothesis->getIsTrackedJointInitialized();
+      const auto& tracked_joints = hypothesis->getTrackedJoints();
+      for(int joint_id = 0; joint_id < tracked_joints.size(); joint_id++)
+      {
+        if(is_tracked_joint_initialized[joint_id])
+        {
+          geometry_msgs::Point current_joint_position;
+          eigenToGeometryMsgs(tracked_joints[joint_id]->getState().block<3, 1>(0, 0),
+                              current_joint_position);
+          tracked_joints_marker.points.push_back(current_joint_position);
+          tracked_joints_marker.colors.push_back(tracked_joints_marker.color);
+        }
+      }
+      
+      tracked_joints_marker.lifetime = ros::Duration(0, 100000000); // 0.1 seconds
+
+      human_poses_markers.markers.push_back(tracked_joints_marker);
+    }
+  }
+  m_hypotheses_tracked_joints_publisher.publish(human_poses_markers);
 }
 
 void VisualizationsPublisher::publishHypothesesFull(const Hypotheses& hypotheses,
