@@ -29,6 +29,7 @@ public:
   MultiHypothesisTrackingNodeForPoseArrays();
   ~MultiHypothesisTrackingNodeForPoseArrays(){};
 
+private:
   void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle) override;
 
   /**
@@ -50,7 +51,6 @@ public:
   void convert(const PoseArrayMsg::ConstPtr& msg,
                Detections& detections);
 
-public:
   /** @brief Subscribes to pose arrays. */
   ros::Subscriber m_pose_array_subscriber;
 };
