@@ -31,6 +31,7 @@ public:
   MultiHypothesisTrackingNodeForHumanPoses();
   ~MultiHypothesisTrackingNodeForHumanPoses(){};
 
+private:
   void initializeHypothesisFactory(const ros::NodeHandle& private_node_handle) override;
 
   /**
@@ -52,7 +53,6 @@ public:
   void convert(const HumanMsg::ConstPtr& detections_message,
                Detections& detections);
 
-private:
   void convert(const boost::array<double, 6>& covariance_msg,
                Eigen::Matrix3f& covariance);
   
