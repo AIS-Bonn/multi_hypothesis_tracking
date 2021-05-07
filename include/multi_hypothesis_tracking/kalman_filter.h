@@ -5,8 +5,8 @@
  * @author Jan Razlaw
  */
 
-#ifndef __KALMAN_FILTER_H__
-#define __KALMAN_FILTER_H__
+#ifndef MULTI_HYPOTHESIS_TRACKING_KALMAN_FILTER_H
+#define MULTI_HYPOTHESIS_TRACKING_KALMAN_FILTER_H
 
 #include <Eigen/Eigenvalues>
 #include <Eigen/Cholesky>
@@ -114,4 +114,4 @@ protected:
 
 };
 
-#endif //__KALMAN_FILTER_H__
+#endif //MULTI_HYPOTHESIS_TRACKING_KALMAN_FILTER_H

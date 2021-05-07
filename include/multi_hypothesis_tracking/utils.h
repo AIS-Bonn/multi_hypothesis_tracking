@@ -5,8 +5,8 @@
  * @author Jan Razlaw
  */
 
-#ifndef MULTI_OBJECT_TRACKING_UTILS_H
-#define MULTI_OBJECT_TRACKING_UTILS_H
+#ifndef MULTI_HYPOTHESIS_TRACKING_UTILS_H
+#define MULTI_HYPOTHESIS_TRACKING_UTILS_H
 
 #include <sys/time.h>
 #include <Eigen/Dense>
@@ -63,4 +63,4 @@ inline bool isFinite(const Eigen::Vector3f& vector)
 
 }
 
-#endif //MULTI_OBJECT_TRACKING_UTILS_H
+#endif //MULTI_HYPOTHESIS_TRACKING_UTILS_H

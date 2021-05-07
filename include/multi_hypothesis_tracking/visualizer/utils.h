@@ -5,8 +5,8 @@
  * @author Jan Razlaw
  */
 
-#ifndef MULTI_HYPOTHESIS_TRACKING_UTILS_H
-#define MULTI_HYPOTHESIS_TRACKING_UTILS_H
+#ifndef MULTI_HYPOTHESIS_TRACKING_VISUALIZER_UTILS_H
+#define MULTI_HYPOTHESIS_TRACKING_VISUALIZER_UTILS_H
 
 #include <stdlib.h>     /* srand, rand */
 
@@ -102,4 +102,4 @@ inline void getColorByID(const unsigned int id,
 
 }
 
-#endif //MULTI_HYPOTHESIS_TRACKING_UTILS_H
+#endif //MULTI_HYPOTHESIS_TRACKING_VISUALIZER_UTILS_H
