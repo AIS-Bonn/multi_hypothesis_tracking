@@ -32,7 +32,7 @@ class MultiHypothesisTrackingBase
 {
 public:
   MultiHypothesisTrackingBase();
-  ~MultiHypothesisTrackingBase(){ m_time_file.close(); };
+  ~MultiHypothesisTrackingBase(){ if(m_measure_processing_time) m_time_file.close(); };
 
   /** @brief Sets a suitable HypothesisFactory for the #m_multi_hypothesis_tracker.
    * @see MultiHypothesisTracker::setHypothesisFactory() */
