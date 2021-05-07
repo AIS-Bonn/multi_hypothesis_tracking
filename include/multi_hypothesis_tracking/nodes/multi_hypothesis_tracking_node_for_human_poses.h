@@ -55,7 +55,7 @@ private:
 
   void convert(const boost::array<double, 6>& covariance_msg,
                Eigen::Matrix3f& covariance);
-  
+
   /** @brief Subscribes to detections. */
   ros::Subscriber m_human_detection_subscriber;
 };

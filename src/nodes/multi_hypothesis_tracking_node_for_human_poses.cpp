@@ -14,7 +14,7 @@ MultiHypothesisTrackingNodeForHumanPoses::MultiHypothesisTrackingNodeForHumanPos
 {
   ros::NodeHandle private_node_handle("~");
   initializeHypothesisFactory(private_node_handle);
-  
+
   m_human_detection_subscriber = private_node_handle.subscribe<HumanMsg>(m_input_topic,
                                                                          1,
                                                                          &MultiHypothesisTrackingNodeForHumanPoses::detectionCallback,
@@ -26,13 +26,15 @@ void MultiHypothesisTrackingNodeForHumanPoses::initializeHypothesisFactory(const
   auto hypothesis_factory = std::make_shared<HypothesisForHumanPoseFactory>();
 
   float kalman_process_noise_covariance_per_second;
-  private_node_handle.param<float>("kalman_process_noise_covariance_per_second", kalman_process_noise_covariance_per_second, 0.5f);
+  private_node_handle.param<float>("kalman_process_noise_covariance_per_second",
+                                   kalman_process_noise_covariance_per_second, 0.5f);
   hypothesis_factory->setKalmanProcessNoiseCovariancePerSecond(kalman_process_noise_covariance_per_second);
 
   float maximally_allowed_hypothesis_covariance;
-  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance, 5.f);
+  private_node_handle.param<float>("maximally_allowed_hypothesis_covariance", maximally_allowed_hypothesis_covariance,
+                                   5.f);
   hypothesis_factory->setMaxAllowedHypothesisCovariance(maximally_allowed_hypothesis_covariance);
-  
+
   m_multi_hypothesis_tracker.setHypothesisFactory(hypothesis_factory);
 }
 
@@ -49,7 +51,7 @@ void MultiHypothesisTrackingNodeForHumanPoses::detectionCallback(const HumanMsg:
     return;
 
   processDetections(detections);
-  
+
   updateProcessingTimeMeasurements(callback_start_time);
   publishVisualizations(detections);
 }
