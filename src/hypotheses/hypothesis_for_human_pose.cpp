@@ -18,24 +18,14 @@ HypothesisForHumanPose::HypothesisForHumanPose(const Detection& detection,
   : HypothesisBase(detection, id, time_stamp)
     , HypothesisWithPoints(detection, id, time_stamp, false)
     , HypothesisWithBoundingBox(detection, id, time_stamp)
-    , m_is_tracked_joint_initialized(detection.points.size(), false)
+    , m_tracked_joints(detection.points.size(), nullptr)
 {
   // Set static property to false right away, because humans are by default potentially dynamic 
   disableVerifyingStaticStatus();
 
   for(size_t joint_id = 0; joint_id < detection.points.size(); joint_id++)
-  {
-    if(std::isnan(detection.points[joint_id].x()))
-    {
-      // TODO: replace init with fake kalman filter 
-      m_tracked_joints.emplace_back(std::make_shared<KalmanFilter>(Eigen::Vector3f(0.f, 0.f, 0.f)));
-    }
-    else
-    {
-      m_tracked_joints.emplace_back(std::make_shared<KalmanFilter>(detection.points[joint_id]));
-      m_is_tracked_joint_initialized[joint_id] = true;
-    }
-  }
+    if(isFinite(detection.points[joint_id]))
+      m_tracked_joints[joint_id]= std::make_shared<KalmanFilter>(detection.points[joint_id]); 
 }
 
 void HypothesisForHumanPose::disableVerifyingStaticStatus()
@@ -49,11 +39,9 @@ void HypothesisForHumanPose::predict(float time_difference)
 {
   HypothesisBase::predict(time_difference);
 
-  for(size_t joint_id = 0; joint_id < m_tracked_joints.size(); joint_id++)
-  {
-    if(m_is_tracked_joint_initialized[joint_id])
-      m_tracked_joints[joint_id]->predict(time_difference);
-  }
+  for(auto& tracked_joint : m_tracked_joints)
+    if(tracked_joint != nullptr)
+      tracked_joint->predict(time_difference);
 
   updateHypothesisAfterPrediction();
 }
@@ -70,18 +58,13 @@ void HypothesisForHumanPose::correct(const Detection& detection)
 
   for(size_t joint_id = 0; joint_id < m_tracked_joints.size(); joint_id++)
   {
-    if(!std::isnan(detection.points[joint_id].x()) && m_is_tracked_joint_initialized[joint_id])
+    if(isFinite(detection.points[joint_id]))
     {
-      if(m_is_tracked_joint_initialized[joint_id])
-      {
+      if(m_tracked_joints[joint_id] != nullptr)
         m_tracked_joints[joint_id]->correct(detection.points[joint_id],
                                             detection.points_covariances[joint_id]);
-      }
       else
-      {
         m_tracked_joints[joint_id] = std::make_shared<KalmanFilter>(detection.points[joint_id]);
-        m_is_tracked_joint_initialized[joint_id] = true;
-      }
     }
   }
 
@@ -92,6 +75,16 @@ void HypothesisForHumanPose::updateHypothesisAfterCorrection(const Detection& de
 {
   m_points = getTrackedJointsPositions();
   HypothesisWithBoundingBox::updateBoxesAfterCorrection(detection);
+}
+
+std::vector<Eigen::Vector3f> HypothesisForHumanPose::getTrackedJointsPositions()
+{
+  std::vector<Eigen::Vector3f> joint_positions;
+  for(const auto& tracked_joint : m_tracked_joints)
+    if(tracked_joint != nullptr)
+      joint_positions.emplace_back(tracked_joint->getState().block<3, 1>(0, 0));
+
+  return joint_positions;
 }
 
 };

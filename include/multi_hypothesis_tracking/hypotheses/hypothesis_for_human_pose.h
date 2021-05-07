@@ -14,6 +14,7 @@
 
 #include <multi_hypothesis_tracking/definitions.h>
 #include <multi_hypothesis_tracking/hypotheses/hypothesis_with_bounding_box.h>
+#include <multi_hypothesis_tracking/utils.h>
 
 namespace MultiHypothesisTracker
 {
@@ -44,24 +45,13 @@ public:
   /** @brief Corrects the hypothesis' state and joint positions using the detection. */
   void correct(const Detection& detection) override;
 
-  inline std::vector<bool>& getIsTrackedJointInitialized(){ return m_is_tracked_joint_initialized; }
   inline std::vector<std::shared_ptr<KalmanFilter>>& getTrackedJoints(){ return m_tracked_joints; }
-  inline std::vector<Eigen::Vector3f> getTrackedJointsPositions()
-  {
-    std::vector<Eigen::Vector3f> joint_positions;
-    for(size_t joint_id = 0; joint_id < m_tracked_joints.size(); joint_id++)
-    {
-      if(m_is_tracked_joint_initialized[joint_id])
-        joint_positions.emplace_back(m_tracked_joints[joint_id]->getState().block<3, 1>(0, 0));
-    }
-    return joint_positions;
-  }
+  std::vector<Eigen::Vector3f> getTrackedJointsPositions();
 
 protected:
   void updateHypothesisAfterPrediction();
   void updateHypothesisAfterCorrection(const Detection& detection);
 
-  std::vector<bool> m_is_tracked_joint_initialized;
   std::vector<std::shared_ptr<KalmanFilter>> m_tracked_joints;
 };
 

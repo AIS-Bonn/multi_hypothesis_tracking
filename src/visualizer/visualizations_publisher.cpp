@@ -513,14 +513,13 @@ void VisualizationsPublisher::publishHypothesesTrackedJoints(const Hypotheses& h
       tracked_joints_marker.scale.y = 0.1f;
       tracked_joints_marker.scale.z = 0.1f;
 
-      const auto& is_tracked_joint_initialized = hypothesis->getIsTrackedJointInitialized();
       const auto& tracked_joints = hypothesis->getTrackedJoints();
-      for(size_t joint_id = 0; joint_id < tracked_joints.size(); joint_id++)
+      for(const auto & tracked_joint : tracked_joints)
       {
-        if(is_tracked_joint_initialized[joint_id])
+        if(tracked_joint != nullptr)
         {
           geometry_msgs::Point current_joint_position;
-          eigenToGeometryMsgs(tracked_joints[joint_id]->getState().block<3, 1>(0, 0),
+          eigenToGeometryMsgs(tracked_joint->getState().block<3, 1>(0, 0),
                               current_joint_position);
           tracked_joints_marker.points.push_back(current_joint_position);
           tracked_joints_marker.colors.push_back(tracked_joints_marker.color);
