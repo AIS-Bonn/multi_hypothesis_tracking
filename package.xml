@@ -4,11 +4,11 @@
 	<description>
 		Provides generic libraries for Multi Hypothesis Tracking.
 		Exemplary ROS nodes accepting different detection message types show how to use the tracker.
+		
+		Once adopted from Jörg Stückler and Max Schwarz.
 	</description>
 
-	<author email="stueckler@ais.uni-bonn.de">Jörg Stückler</author>
-	<maintainer email="max.schwarz@uni-bonn.de">Max Schwarz</maintainer>
-	<maintainer email="s6jarazl@uni-bonn.de">Jan Razlaw</maintainer>
+	<author email="razlaw@ais.uni-bonn.de">Jan Razlaw</author>
 	
 	<license>BSD</license>
 	
