@@ -15,12 +15,8 @@
 
     <param if="$(arg use_bag)" name="/use_sim_time" value="true"/>
 
-    <!-- ============= Rviz / rqt =============  -->
-    <arg name="use_rqt" default="false"/>
-    <node unless="$(arg use_rqt)" name="rivz" pkg="rviz" type="rviz"
-          args="-d $(find multi_hypothesis_tracking)/launch/human_tracking.rviz"/>
-    <node if="$(arg use_rqt)" name="rqt_gui" pkg="rqt_gui" type="rqt_gui" output="screen" required="true" args=""/>
-
+    <!-- ============= Rviz =============  -->
+    <node name="rivz" pkg="rviz" type="rviz" args="-d $(find multi_hypothesis_tracking)/launch/human_tracking.rviz"/>
 
     <include file="$(find multi_hypothesis_tracking)/launch/multi_human_tracking.launch">
         <arg name="world_frame_id" value="base"/>
