@@ -9,8 +9,6 @@
 
     <node if="$(arg use_bag)" pkg="rosbag" type="play" name="play"
           args="--clock -r $(arg rate) -s $(arg start) $(arg bagname)" output="screen" respawn="false">
-        <!--remap from="/velodyne_points" to="/velodyne_points_frombag" /-->
-        <!--<remap from="/tf" to="/tf_frombag" />-->
     </node>
 
     <param if="$(arg use_bag)" name="/use_sim_time" value="true"/>
