@@ -34,7 +34,7 @@
 #include <multi_hypothesis_tracking_msgs/HypothesesFull.h>
 
 #include <multi_hypothesis_tracking/definitions.h>
-#include <multi_hypothesis_tracking/hypotheses/hypothesis_for_human_pose.h>
+#include <multi_hypothesis_tracking/hypotheses/hypothesis_with_bounding_box.h>
 #include <multi_hypothesis_tracking/utils.h>
 #include <multi_hypothesis_tracking/visualizer/utils.h>
 
@@ -129,10 +129,6 @@ public:
   void publishHypothesesPredictedPositions(const Hypotheses& hypotheses,
                                            const ros::Time& stamp);
 
-  /** @brief Publishes tracked joints of valid hypotheses. */
-  void publishHypothesesTrackedJoints(const Hypotheses& hypotheses,
-                                      const ros::Time& stamp);
-
   /** @brief Publishes full hypotheses messages. */
   void publishHypothesesFull(const Hypotheses& hypotheses,
                              const ros::Time& stamp);
@@ -169,8 +165,6 @@ private:
   ros::Publisher m_hypotheses_bounding_boxes_publisher;
   ros::Publisher m_hypotheses_predicted_positions_publisher;
   
-  ros::Publisher m_hypotheses_tracked_joints_publisher;
-
   ros::Publisher m_hypotheses_full_publisher;
   ros::Publisher m_hypotheses_box_evaluation_publisher;
 };

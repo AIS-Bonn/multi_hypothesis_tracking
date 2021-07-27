@@ -8,7 +8,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DAPC_CAPTURE_DEBUG=1")
 find_package(Eigen3 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
-  person_msgs
   multi_hypothesis_tracking_msgs
   pcl_ros
   sensor_msgs
@@ -36,7 +35,6 @@ add_library(hypotheses
   src/hypotheses/hypothesis_with_points.cpp
   src/hypotheses/hypothesis_with_bounding_box.cpp
   src/hypotheses/hypothesis_for_sparse_lidar.cpp
-  src/hypotheses/hypothesis_for_human_pose.cpp
   src/kalman_filter.cpp
 )
 target_link_libraries(hypotheses
@@ -106,19 +104,6 @@ target_link_libraries(${PROJECT_NAME}_node_for_pose_arrays
   ${catkin_LIBRARIES}
 )
 add_dependencies(${PROJECT_NAME}_node_for_pose_arrays
-  ${${PROJECT_NAME}_EXPORTED_TARGETS}
-  ${catkin_EXPORTED_TARGETS}
-)
-
-# Ros node as interface between incoming human_msgs and tracker
-add_executable(${PROJECT_NAME}_node_for_human_poses
-  src/nodes/multi_hypothesis_tracking_node_for_human_poses.cpp
-)
-target_link_libraries(${PROJECT_NAME}_node_for_human_poses
-  ${PROJECT_NAME}_base
-  ${catkin_LIBRARIES}
-)
-add_dependencies(${PROJECT_NAME}_node_for_human_poses
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )
