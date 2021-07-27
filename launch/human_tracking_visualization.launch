@@ -3,7 +3,7 @@
 
     <!-- ========= Bagplayer ========== -->
     <arg name="use_bag" default="true"/>
-    <arg name="bagname" default="/home/razlaw/bags/human_pose_tracking/2020-10-07_multiperson_3Dpose_out.bag"/>
+    <arg name="bagname" default="/home/razlaw/bags/human_pose_tracking/estimated_human_poses.bag"/>
     <arg name="rate" default="1"/>
     <arg name="start" default="0"/>
 
