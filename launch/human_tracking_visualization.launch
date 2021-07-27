@@ -18,6 +18,7 @@
     <!-- ============= Rviz =============  -->
     <node name="rivz" pkg="rviz" type="rviz" args="-d $(find multi_hypothesis_tracking)/launch/human_tracking.rviz"/>
 
+    <!-- ============= Multi Hypothesis Tracker =============  -->
     <include file="$(find multi_hypothesis_tracking)/launch/multi_human_tracking.launch">
         <arg name="world_frame_id" value="base"/>
     </include>
